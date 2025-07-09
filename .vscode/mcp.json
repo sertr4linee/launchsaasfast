@@ -1,5 +1,6 @@
 {
 	"servers": {
+		//shrimp
 		"shrimp-task-manager": {
 			"command": "node",
 			"args": [
@@ -24,8 +25,5 @@
 		// 		"SUPABASE_ACCESS_TOKEN": "sbp_f053007084e046308ded772d049d2a8282ccc878"
 		// 	}
 		// }
-	},
-	"inputs": [
-		
-	]
+	}
 }
