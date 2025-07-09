@@ -42,9 +42,9 @@ export const Header: React.FC = () => {
           </Button>
           {open && (
             <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50 flex flex-col">
-              <Link href="/account" passHref legacyBehavior>
+              <Link href="/account">
                 <Button asChild variant="ghost" className="justify-start w-full rounded-none">
-                  <a className="block px-4 py-2 text-left">Mon compte</a>
+                  <span className="block px-4 py-2 text-left">Mon compte</span>
                 </Button>
               </Link>
               <div className="border-t my-1" />
