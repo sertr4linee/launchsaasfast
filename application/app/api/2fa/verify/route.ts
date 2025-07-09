@@ -16,8 +16,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Code, factor_id ou challenge_id manquant" }, { status: 400 });
   }
 
-  // Crée un client Supabase avec le token utilisateur
-  const supabase = createClient(access_token);
+  // Crée un client Supabase et injecte le token utilisateur
+  const supabase = createClient();
+  await supabase.auth.setSession({ access_token, refresh_token: "" });
 
   // Vérifie le code TOTP avec challengeId
   const { error } = await supabase.auth.mfa.verify({ factorId: factor_id, challengeId: challenge_id, code });

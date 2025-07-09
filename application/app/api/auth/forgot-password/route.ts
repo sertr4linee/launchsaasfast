@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/utils/supabaseClient";
+import { createClient } from "@/utils/supabaseClient";
 
 export async function POST(req: NextRequest) {
+  const supabase = createClient();
   const { email } = await req.json();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: process.env.NEXT_PUBLIC_SITE_URL

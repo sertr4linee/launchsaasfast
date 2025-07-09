@@ -1,6 +1,7 @@
 "use client";
+
 import { useState } from "react";
-import { TwoFactorEnrollment } from "@/components/TwoFactorEnrollment";
+import TwoFactorEnrollment from "@/components/TwoFactorEnrollment";
 
 export default function SecurityPage() {
   const [show2FA, setShow2FA] = useState(false);

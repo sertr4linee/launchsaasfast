@@ -10,8 +10,9 @@ export async function POST(req: NextRequest) {
   }
   const access_token = authHeader.replace("Bearer ", "");
 
-  // Crée un client Supabase avec le token utilisateur
-  const supabase = createClient(access_token);
+  // Crée un client Supabase et injecte le token utilisateur
+  const supabase = createClient();
+  await supabase.auth.setSession({ access_token, refresh_token: "" });
 
   // Nettoie les facteurs TOTP non vérifiés
   const { data: factors } = await supabase.auth.mfa.listFactors();
