@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SupabaseProvider } from "@/components/SupabaseProvider";
 
+import StagewiseToolbarClient from "./stagewise-toolbar-client";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,6 +33,8 @@ export default function RootLayout({
       >
         <SupabaseProvider>
           {children}
+          {/* Stagewise Toolbar only in development mode */}
+          <StagewiseToolbarClient />
         </SupabaseProvider>
       </body>
     </html>
