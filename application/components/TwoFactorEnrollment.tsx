@@ -1,8 +1,8 @@
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
+import { createClient } from "@/utils/supabaseClient";
 
-export function TwoFactorEnrollment() {
+export default function TwoFactorEnrollment() {
   const [step, setStep] = useState<"idle"|"enrolling"|"show_qr"|"verifying"|"done">("idle");
   const [qr, setQr] = useState<string>("");
   const [secret, setSecret] = useState<string>("");
@@ -13,6 +13,7 @@ export function TwoFactorEnrollment() {
   const [success, setSuccess] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [loadingSession, setLoadingSession] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
     let ignore = false;

@@ -1,6 +1,70 @@
 
+
 "use client";
 import { useSupabase } from "@/components/SupabaseProvider";
+import { useState } from "react";
+
+function EditProfileForm({ user }: { user: any }) {
+  const { supabase } = useSupabase();
+  const [email, setEmail] = useState(user.email || "");
+  const [name, setName] = useState(user.user_metadata?.name || "");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+    // Update email
+    const { error: emailError } = await supabase.auth.updateUser({ email });
+    // Update name (user_metadata)
+    let metaError = null;
+    if (name !== user.user_metadata?.name) {
+      const { error } = await supabase.auth.updateUser({ data: { name } });
+      metaError = error;
+    }
+    if (emailError || metaError) {
+      setMessage("Erreur lors de la mise à jour : " + (emailError?.message || metaError?.message));
+    } else {
+      setMessage("Profil mis à jour !");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-gray-900 p-4 rounded mb-8">
+      <h2 className="text-lg font-semibold mb-2 text-gray-200">Modifier le profil</h2>
+      <div className="mb-4">
+        <label className="block text-gray-300 mb-1">Nom</label>
+        <input
+          type="text"
+          className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-800 text-gray-100"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Votre nom"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-300 mb-1">Email</label>
+        <input
+          type="email"
+          className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-800 text-gray-100"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Votre email"
+        />
+      </div>
+      <button
+        type="submit"
+        className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+        disabled={loading}
+      >
+        {loading ? "Mise à jour..." : "Enregistrer"}
+      </button>
+      {message && <p className="mt-2 text-sm text-center">{message}</p>}
+    </form>
+  );
+}
 
 export default function AccountPage() {
   const { session } = useSupabase();
@@ -25,7 +89,10 @@ export default function AccountPage() {
           <div className="text-red-400">Aucun utilisateur connecté.</div>
         )}
       </div>
-      {/* Formulaire d'édition du nom/email à ajouter ici */}
+      {/* Formulaire d'édition du nom/email */}
+      {user && (
+        <EditProfileForm user={user} />
+      )}
       <div className="mt-12">
         <h2 className="text-xl font-semibold mb-2 text-red-400">Delete account</h2>
         <div className="bg-gray-900 p-4 rounded mb-2">
