@@ -1,0 +1,112 @@
+{
+  "tasks": [
+    {
+      "id": "5d24238d-1071-439d-b251-bde71947048d",
+      "name": "Initialisation du projet et configuration de base",
+      "description": "Créer le projet Next.js/TypeScript, initialiser le repo, installer les dépendances principales (Next.js, Tailwind, Supabase, Shadcn UI, etc.), configurer le linter et le formatteur.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-07-09T00:47:26.275Z",
+      "updatedAt": "2025-07-09T00:47:26.275Z",
+      "relatedFiles": [],
+      "implementationGuide": "- Créer le projet Next.js\n- Ajouter TypeScript\n- Installer Tailwind, Shadcn UI, Supabase JS, etc.\n- Configurer les fichiers de base (tsconfig, tailwind.config, etc.)\n- Mettre en place le repo Git\n- Ajouter un README\n- Vérifier que le projet démarre en dev.",
+      "verificationCriteria": "Le projet démarre, les dépendances sont installées, la base technique est prête."
+    },
+    {
+      "id": "29f4410d-1f64-49f7-b437-879d3291bd31",
+      "name": "Mise en place de l’authentification email/password",
+      "description": "Implémenter le flow d’inscription, connexion, vérification email, reset password via Supabase et API routes Next.js.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "5d24238d-1071-439d-b251-bde71947048d"
+        }
+      ],
+      "createdAt": "2025-07-09T00:47:26.275Z",
+      "updatedAt": "2025-07-09T00:47:26.275Z",
+      "relatedFiles": [],
+      "implementationGuide": "- Créer les pages/formulaires d’inscription et connexion\n- Créer les API routes pour signup/login/logout\n- Intégrer Supabase Auth côté serveur\n- Gérer la vérification email et le reset password\n- Afficher les erreurs et feedbacks utilisateur.",
+      "verificationCriteria": "Un utilisateur peut s’inscrire, se connecter, recevoir un email de vérification, réinitialiser son mot de passe."
+    },
+    {
+      "id": "631010c2-9e51-415a-acef-cee9338c1857",
+      "name": "Ajout de l’authentification sociale (Google, GitHub)",
+      "description": "Permettre la connexion/inscription via Google et GitHub (OAuth), gestion des callbacks et de la configuration Supabase.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "29f4410d-1f64-49f7-b437-879d3291bd31"
+        }
+      ],
+      "createdAt": "2025-07-09T00:47:26.275Z",
+      "updatedAt": "2025-07-09T00:47:26.275Z",
+      "relatedFiles": [],
+      "implementationGuide": "- Activer les providers dans Supabase\n- Créer les boutons de login social\n- Gérer les callbacks OAuth dans les API routes\n- Lier/délier les comptes sociaux dans les paramètres utilisateur.",
+      "verificationCriteria": "Un utilisateur peut se connecter/inscrire avec Google ou GitHub, lier/délier son compte social."
+    },
+    {
+      "id": "3441eb62-257a-42a2-bcd0-50ccc88fc253",
+      "name": "Implémentation de la double authentification (2FA)",
+      "description": "Ajouter la 2FA (app d’authentification, SMS, codes de secours), gestion de l’activation, vérification et récupération.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "631010c2-9e51-415a-acef-cee9338c1857"
+        }
+      ],
+      "createdAt": "2025-07-09T00:47:26.275Z",
+      "updatedAt": "2025-07-09T00:47:26.275Z",
+      "relatedFiles": [],
+      "implementationGuide": "- Ajouter la gestion 2FA dans les paramètres\n- Intégrer l’app d’authentification (TOTP)\n- Optionnel: intégrer SMS (Twilio)\n- Générer et stocker les codes de secours\n- Gérer les flows d’activation, vérification, récupération.",
+      "verificationCriteria": "Un utilisateur peut activer la 2FA, se connecter avec, utiliser un code de secours, désactiver la 2FA."
+    },
+    {
+      "id": "151dab3c-2c4c-4675-98c2-1d74b9688aee",
+      "name": "Gestion des sessions devices et sécurité avancée",
+      "description": "Mettre en place le tracking des devices, la révocation de session, le niveau d’authentification (AAL), et le rate limiting.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "3441eb62-257a-42a2-bcd0-50ccc88fc253"
+        }
+      ],
+      "createdAt": "2025-07-09T00:47:26.275Z",
+      "updatedAt": "2025-07-09T00:47:26.275Z",
+      "relatedFiles": [],
+      "implementationGuide": "- Créer la table device_sessions\n- Afficher la liste des devices connectés\n- Permettre la révocation\n- Gérer le AAL\n- Intégrer Upstash Redis pour le rate limiting sur les API routes.",
+      "verificationCriteria": "L’utilisateur peut voir/révoquer ses devices, le rate limiting fonctionne, la sécurité est renforcée."
+    },
+    {
+      "id": "c6300851-9ab3-4e80-b2e1-7c86e0240fd1",
+      "name": "Exports RGPD et gestion des données utilisateur",
+      "description": "Permettre à l’utilisateur d’exporter ses données (auth, activité, etc.) via Trigger.dev, stockage sécurisé, email de téléchargement.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "151dab3c-2c4c-4675-98c2-1d74b9688aee"
+        }
+      ],
+      "createdAt": "2025-07-09T00:47:26.275Z",
+      "updatedAt": "2025-07-09T00:47:26.275Z",
+      "relatedFiles": [],
+      "implementationGuide": "- Créer la table data_export_requests\n- Intégrer Trigger.dev\n- Générer et stocker l’export\n- Envoyer le lien de téléchargement par email\n- Supprimer le fichier après téléchargement.",
+      "verificationCriteria": "L’utilisateur peut demander et télécharger un export de ses données, le process est sécurisé."
+    },
+    {
+      "id": "82505bce-06df-4ba7-a45a-47fe0932df12",
+      "name": "Personnalisation UI/UX et documentation",
+      "description": "Adapter l’UI (Shadcn, Tailwind), personnaliser les emails, rédiger la documentation d’intégration et d’utilisation.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "c6300851-9ab3-4e80-b2e1-7c86e0240fd1"
+        }
+      ],
+      "createdAt": "2025-07-09T00:47:26.275Z",
+      "updatedAt": "2025-07-09T00:47:26.275Z",
+      "relatedFiles": [],
+      "implementationGuide": "- Personnaliser les composants UI\n- Adapter les templates d’emails\n- Rédiger un guide d’intégration et d’utilisation\n- Ajouter des exemples d’extension.",
+      "verificationCriteria": "L’UI est personnalisée, les emails sont cohérents, la doc est claire et complète."
+    }
+  ]
+}
