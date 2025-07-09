@@ -13,10 +13,10 @@ export default function VerifyEmailPage() {
       const params = new URLSearchParams(hash);
       const access_token = params.get("access_token");
       const type = params.get("type");
-      if (access_token && type === "signup") {
-        setMessage("Ton email a bien été vérifié ! Tu peux maintenant te connecter.");
+      if (access_token) {
+        setMessage("Connexion réussie ! Tu es bien authentifié(e) avec Google.");
         setLoading(false);
-        setTimeout(() => router.push("/login"), 2000);
+        setTimeout(() => router.push("/"), 2000);
         return;
       }
     }
