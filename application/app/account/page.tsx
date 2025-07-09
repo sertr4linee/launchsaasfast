@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { AlertTriangle, CheckCircle, User, Mail, Calendar, Trash2 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useUserDevices } from "@/components/hooks/useUserDevices"
+import { Smartphone } from "lucide-react"
 
 function EditProfileForm({ user }: { user: any }) {
   const { supabase } = useSupabase()
@@ -107,6 +109,9 @@ export default function AccountPage() {
   const { session } = useSupabase()
   const user = session?.user
 
+  // --- Gestion des devices/sessions utilisateur ---
+  const { devices, loading, error, revokeDevice } = useUserDevices()
+
   if (!user) {
     return (
       <Alert>
@@ -176,6 +181,52 @@ export default function AccountPage() {
       <EditProfileForm user={user} />
 
       <Separator />
+
+      {/* Section Devices/Sessions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Smartphone className="h-5 w-5" />
+            Devices & Sessions
+          </CardTitle>
+          <CardDescription>Manage your active sessions and devices</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {loading ? (
+            <div className="text-sm text-muted-foreground">Loading sessions...</div>
+          ) : error ? (
+            <Alert className="border-red-200 bg-red-50">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">{error}</AlertDescription>
+            </Alert>
+          ) : devices.length === 0 ? (
+            <div className="text-sm text-muted-foreground">No active sessions found.</div>
+          ) : (
+            <div className="space-y-2">
+              {devices.map((device) => (
+                <div key={device.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                  <div>
+                    <div className="font-mono text-xs text-slate-700 dark:text-slate-300">{device.id}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{device.user_agent}</div>
+                    <div className="text-xs text-slate-400">{device.ip}</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {device.current && <Badge variant="default">Current</Badge>}
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={device.current}
+                      onClick={() => revokeDevice(device.id)}
+                    >
+                      Revoke
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Danger Zone */}
       <Card className="border-red-200 dark:border-red-800">
