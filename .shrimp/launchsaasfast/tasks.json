@@ -107,6 +107,88 @@
       "relatedFiles": [],
       "implementationGuide": "- Personnaliser les composants UI\n- Adapter les templates d’emails\n- Rédiger un guide d’intégration et d’utilisation\n- Ajouter des exemples d’extension.",
       "verificationCriteria": "L’UI est personnalisée, les emails sont cohérents, la doc est claire et complète."
+    },
+    {
+      "id": "deb2f208-f5c8-41dc-bbc6-38eec6c28292",
+      "name": "Configurer la double authentification (2FA/TOTP)",
+      "description": "Permettre à l’utilisateur d’activer la double authentification via une app TOTP (Google Authenticator, Authy, etc.) depuis son profil.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-07-09T01:31:11.967Z",
+      "updatedAt": "2025-07-09T01:31:11.967Z",
+      "relatedFiles": [
+        {
+          "path": "app/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de gestion du profil utilisateur"
+        },
+        {
+          "path": "app/api/2fa/enable/route.ts",
+          "type": "CREATE",
+          "description": "API pour activer 2FA"
+        },
+        {
+          "path": "app/api/2fa/verify/route.ts",
+          "type": "CREATE",
+          "description": "API pour vérifier le code TOTP"
+        }
+      ],
+      "implementationGuide": "- Ajouter une page/profil pour activer 2FA\n- Générer un secret TOTP côté backend\n- Afficher un QR code à scanner\n- Vérifier le code TOTP entré par l’utilisateur\n- Stocker l’état 2FA dans Supabase\n- Adapter le login pour demander le code si 2FA activé\n- Utiliser la lib speakeasy côté backend et qrcode côté front.",
+      "verificationCriteria": "L’utilisateur peut activer 2FA, scanner un QR code, valider un code TOTP, et la connexion demande le code si activé.",
+      "analysisResult": "Le système d’authentification est découpé en modules atomiques (email/password, social login, 2FA, gestion des sessions, export GDPR). Chaque provider social (Google, GitHub) a sa propre route et bouton, la logique est factorisable. L’architecture respecte Next.js et Supabase, l’UI est cohérente. Les tâches doivent être suivies, marquées comme complétées, et la prochaine étape proposée à chaque fois. Optimisation : centraliser la gestion des providers et automatiser la complétion des tâches."
+    },
+    {
+      "id": "8cb8f1fa-a62f-4787-a151-5179a33e0cf5",
+      "name": "Gérer les sessions et devices utilisateurs",
+      "description": "Permettre à l’utilisateur de voir et révoquer ses sessions/devices actifs.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-07-09T01:31:11.967Z",
+      "updatedAt": "2025-07-09T01:31:11.967Z",
+      "relatedFiles": [
+        {
+          "path": "app/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Section gestion des devices"
+        },
+        {
+          "path": "app/api/sessions/list/route.ts",
+          "type": "CREATE",
+          "description": "API pour lister les sessions"
+        },
+        {
+          "path": "app/api/sessions/revoke/route.ts",
+          "type": "CREATE",
+          "description": "API pour révoquer une session"
+        }
+      ],
+      "implementationGuide": "- Ajouter une section dans le profil\n- Lister les sessions actives (via Supabase)\n- Permettre la révocation d’une session\n- Afficher device, date, IP\n- Adapter l’API pour gérer la suppression de session.",
+      "verificationCriteria": "L’utilisateur voit ses sessions/devices et peut en révoquer une.",
+      "analysisResult": "Le système d’authentification est découpé en modules atomiques (email/password, social login, 2FA, gestion des sessions, export GDPR). Chaque provider social (Google, GitHub) a sa propre route et bouton, la logique est factorisable. L’architecture respecte Next.js et Supabase, l’UI est cohérente. Les tâches doivent être suivies, marquées comme complétées, et la prochaine étape proposée à chaque fois. Optimisation : centraliser la gestion des providers et automatiser la complétion des tâches."
+    },
+    {
+      "id": "e6691b7a-65ed-4608-9c47-657a0d337270",
+      "name": "Exporter les données utilisateur (GDPR)",
+      "description": "Permettre à l’utilisateur de télécharger toutes ses données personnelles (profil, sessions, historique, etc.) au format JSON.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-07-09T01:31:11.967Z",
+      "updatedAt": "2025-07-09T01:31:11.967Z",
+      "relatedFiles": [
+        {
+          "path": "app/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Bouton d’export GDPR"
+        },
+        {
+          "path": "app/api/gdpr/export/route.ts",
+          "type": "CREATE",
+          "description": "API d’export GDPR"
+        }
+      ],
+      "implementationGuide": "- Ajouter un bouton d’export dans le profil\n- Créer une API qui rassemble les données\n- Générer un fichier JSON à télécharger\n- Sécuriser l’accès à l’API.",
+      "verificationCriteria": "L’utilisateur peut télécharger un fichier JSON avec toutes ses données.",
+      "analysisResult": "Le système d’authentification est découpé en modules atomiques (email/password, social login, 2FA, gestion des sessions, export GDPR). Chaque provider social (Google, GitHub) a sa propre route et bouton, la logique est factorisable. L’architecture respecte Next.js et Supabase, l’UI est cohérente. Les tâches doivent être suivies, marquées comme complétées, et la prochaine étape proposée à chaque fois. Optimisation : centraliser la gestion des providers et automatiser la complétion des tâches."
     }
   ]
 }
