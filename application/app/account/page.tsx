@@ -1,110 +1,209 @@
+"use client"
+import { useSupabase } from "@/components/SupabaseProvider"
+import type React from "react"
 
-
-"use client";
-import { useSupabase } from "@/components/SupabaseProvider";
-import { useState } from "react";
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { AlertTriangle, CheckCircle, User, Mail, Calendar, Trash2 } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 function EditProfileForm({ user }: { user: any }) {
-  const { supabase } = useSupabase();
-  const [email, setEmail] = useState(user.email || "");
-  const [name, setName] = useState(user.user_metadata?.name || "");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const { supabase } = useSupabase()
+  const [email, setEmail] = useState(user.email || "")
+  const [name, setName] = useState(user.user_metadata?.name || "")
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState("")
+  const [messageType, setMessageType] = useState<"success" | "error">("success")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-    // Update email
-    const { error: emailError } = await supabase.auth.updateUser({ email });
-    // Update name (user_metadata)
-    let metaError = null;
-    if (name !== user.user_metadata?.name) {
-      const { error } = await supabase.auth.updateUser({ data: { name } });
-      metaError = error;
+    e.preventDefault()
+    setLoading(true)
+    setMessage("")
+
+    try {
+      // Update email
+      const { error: emailError } = await supabase.auth.updateUser({ email })
+
+      // Update name (user_metadata)
+      let metaError = null
+      if (name !== user.user_metadata?.name) {
+        const { error } = await supabase.auth.updateUser({ data: { name } })
+        metaError = error
+      }
+
+      if (emailError || metaError) {
+        setMessage("Error updating profile: " + (emailError?.message || metaError?.message))
+        setMessageType("error")
+      } else {
+        setMessage("Profile updated successfully!")
+        setMessageType("success")
+      }
+    } catch (error) {
+      setMessage("An unexpected error occurred")
+      setMessageType("error")
     }
-    if (emailError || metaError) {
-      setMessage("Erreur lors de la mise à jour : " + (emailError?.message || metaError?.message));
-    } else {
-      setMessage("Profil mis à jour !");
-    }
-    setLoading(false);
-  };
+
+    setLoading(false)
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-900 p-4 rounded mb-8">
-      <h2 className="text-lg font-semibold mb-2 text-gray-200">Modifier le profil</h2>
-      <div className="mb-4">
-        <label className="block text-gray-300 mb-1">Nom</label>
-        <input
-          type="text"
-          className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-800 text-gray-100"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Votre nom"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-300 mb-1">Email</label>
-        <input
-          type="email"
-          className="w-full px-3 py-2 rounded border border-gray-700 bg-gray-800 text-gray-100"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="Votre email"
-        />
-      </div>
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-        disabled={loading}
-      >
-        {loading ? "Mise à jour..." : "Enregistrer"}
-      </button>
-      {message && <p className="mt-2 text-sm text-center">{message}</p>}
-    </form>
-  );
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <User className="h-5 w-5" />
+          Edit Profile
+        </CardTitle>
+        <CardDescription>Update your personal information and account details</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Full Name</Label>
+            <Input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your full name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email Address</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+            />
+          </div>
+          <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+            {loading ? "Updating..." : "Save Changes"}
+          </Button>
+          {message && (
+            <Alert className={messageType === "error" ? "border-red-200 bg-red-50" : "border-green-200 bg-green-50"}>
+              {messageType === "error" ? (
+                <AlertTriangle className="h-4 w-4 text-red-600" />
+              ) : (
+                <CheckCircle className="h-4 w-4 text-green-600" />
+              )}
+              <AlertDescription className={messageType === "error" ? "text-red-800" : "text-green-800"}>
+                {message}
+              </AlertDescription>
+            </Alert>
+          )}
+        </form>
+      </CardContent>
+    </Card>
+  )
 }
 
 export default function AccountPage() {
-  const { session } = useSupabase();
-  const user = session?.user;
+  const { session } = useSupabase()
+  const user = session?.user
+
+  if (!user) {
+    return (
+      <Alert>
+        <AlertTriangle className="h-4 w-4" />
+        <AlertDescription>No user session found. Please log in to access your account.</AlertDescription>
+      </Alert>
+    )
+  }
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Basic information</h1>
-        <form action="/logout" method="post">
-          <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded">Se déconnecter</button>
-        </form>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Profile</h1>
+        <p className="text-slate-600 dark:text-slate-400 mt-2">
+          Manage your personal information and account preferences
+        </p>
       </div>
-      <div className="mb-8">
-        {user ? (
-          <div className="bg-gray-900 p-4 rounded mb-4">
-            <div className="mb-2"><span className="font-semibold text-gray-300">User ID:</span> <span className="text-gray-200">{user.id}</span></div>
-            <div className="mb-2"><span className="font-semibold text-gray-300">Email:</span> <span className="text-gray-200">{user.email}</span></div>
-            <div className="mb-2"><span className="font-semibold text-gray-300">Status:</span> <span className="text-gray-200">{user.email_confirmed_at ? "Email confirmé" : "Non confirmé"}</span></div>
-            <div className="mb-2"><span className="font-semibold text-gray-300">Créé le:</span> <span className="text-gray-200">{user.created_at ? new Date(user.created_at).toLocaleString() : "-"}</span></div>
+
+      {/* Account Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <User className="h-5 w-5" />
+            Account Information
+          </CardTitle>
+          <CardDescription>Your current account details and status</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <User className="h-5 w-5 text-slate-500" />
+              <div>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">User ID</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 font-mono">{user.id}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <Mail className="h-5 w-5 text-slate-500" />
+              <div>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">Email</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{user.email}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <CheckCircle className="h-5 w-5 text-slate-500" />
+              <div>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">Status</p>
+                <Badge variant={user.email_confirmed_at ? "default" : "secondary"}>
+                  {user.email_confirmed_at ? "Verified" : "Unverified"}
+                </Badge>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <Calendar className="h-5 w-5 text-slate-500" />
+              <div>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">Member Since</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  {user.created_at ? new Date(user.created_at).toLocaleDateString() : "-"}
+                </p>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="text-red-400">Aucun utilisateur connecté.</div>
-        )}
-      </div>
-      {/* Formulaire d'édition du nom/email */}
-      {user && (
-        <EditProfileForm user={user} />
-      )}
-      <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-2 text-red-400">Delete account</h2>
-        <div className="bg-gray-900 p-4 rounded mb-2">
-          <p className="text-red-300 mb-2 font-medium">Important Information</p>
-          <ul className="text-sm text-red-200 list-disc ml-6 mb-2">
-            <li>All your personal information and settings will be permanently erased</li>
-            <li>Your account cannot be recovered once deleted</li>
-            <li>All your data will be removed from our servers</li>
-          </ul>
-          <button className="bg-red-600 text-white px-4 py-2 rounded mt-2">I understand, delete my account</button>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
+
+      {/* Edit Profile Form */}
+      <EditProfileForm user={user} />
+
+      <Separator />
+
+      {/* Danger Zone */}
+      <Card className="border-red-200 dark:border-red-800">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
+            <Trash2 className="h-5 w-5" />
+            Danger Zone
+          </CardTitle>
+          <CardDescription>Irreversible and destructive actions</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/20">
+            <AlertTriangle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800 dark:text-red-200">
+              <strong>Delete Account</strong>
+              <ul className="mt-2 text-sm space-y-1">
+                <li>• All your personal information and settings will be permanently erased</li>
+                <li>• Your account cannot be recovered once deleted</li>
+                <li>• All your data will be removed from our servers</li>
+              </ul>
+            </AlertDescription>
+          </Alert>
+          <Button variant="destructive" className="mt-4">
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete Account
+          </Button>
+        </CardContent>
+      </Card>
     </div>
-  );
+  )
 }

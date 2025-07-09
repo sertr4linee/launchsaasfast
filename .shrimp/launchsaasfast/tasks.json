@@ -234,6 +234,128 @@
       ],
       "implementationGuide": "Intégrer un système de toasts, améliorer les feedbacks, personnaliser l'UI.",
       "verificationCriteria": "L'UI est moderne, feedback utilisateur clair, notifications fonctionnelles."
+    },
+    {
+      "id": "04ffabfa-608d-4f24-9d86-7c8aea7918b9",
+      "name": "API REST - Lister les sessions/devices utilisateur",
+      "description": "Créer une route API Next.js /api/account/devices qui retourne la liste des sessions/devices actifs pour l'utilisateur courant (via Supabase ou table custom).",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-07-09T13:21:31.238Z",
+      "updatedAt": "2025-07-09T13:21:31.238Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/account/devices/route.ts",
+          "type": "CREATE",
+          "description": "Route API pour lister les devices/sessions utilisateur."
+        }
+      ],
+      "implementationGuide": "Utiliser supabase.auth.admin.listSessionsByUser côté serverless, ou une table custom si besoin. Retourner id, device, date, user agent, etc.",
+      "verificationCriteria": "L'API retourne la liste des sessions/devices pour l'utilisateur authentifié.",
+      "analysisResult": "La solution est cohérente, modulaire, respecte l'architecture et les patterns du projet. Prévoir un hook custom pour la gestion des sessions/devices, et une abstraction pour le provider (Supabase/table custom). L'intégration UI/UX et sécurité est naturelle. Prêt pour la découpe en tâches concrètes."
+    },
+    {
+      "id": "71e691cc-1312-4d1f-8b7f-8ca6d3200f3b",
+      "name": "API REST - Révoquer une session/device utilisateur",
+      "description": "Créer une route API Next.js /api/account/devices/revoke qui permet de révoquer une session/device (Supabase ou table custom).",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "04ffabfa-608d-4f24-9d86-7c8aea7918b9"
+        }
+      ],
+      "createdAt": "2025-07-09T13:21:31.238Z",
+      "updatedAt": "2025-07-09T13:21:31.238Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/account/devices/revoke/route.ts",
+          "type": "CREATE",
+          "description": "Route API pour révoquer une session/device utilisateur."
+        }
+      ],
+      "implementationGuide": "Prendre en paramètre un sessionId/deviceId, vérifier l'ownership, révoquer la session côté Supabase ou table custom. Retourner succès/erreur.",
+      "verificationCriteria": "L'utilisateur peut révoquer une session/device, la session disparaît de la liste.",
+      "analysisResult": "La solution est cohérente, modulaire, respecte l'architecture et les patterns du projet. Prévoir un hook custom pour la gestion des sessions/devices, et une abstraction pour le provider (Supabase/table custom). L'intégration UI/UX et sécurité est naturelle. Prêt pour la découpe en tâches concrètes."
+    },
+    {
+      "id": "de9113c9-23e9-46a5-95c9-e25e78d3e4ed",
+      "name": "Hook custom - Gestion des sessions/devices côté client",
+      "description": "Créer un hook React (useUserDevices) pour fetch la liste des sessions/devices et gérer la révocation.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "04ffabfa-608d-4f24-9d86-7c8aea7918b9"
+        },
+        {
+          "taskId": "71e691cc-1312-4d1f-8b7f-8ca6d3200f3b"
+        }
+      ],
+      "createdAt": "2025-07-09T13:21:31.238Z",
+      "updatedAt": "2025-07-09T13:21:31.238Z",
+      "relatedFiles": [
+        {
+          "path": "components/hooks/useUserDevices.ts",
+          "type": "CREATE",
+          "description": "Hook React pour la gestion des devices/sessions utilisateur."
+        }
+      ],
+      "implementationGuide": "Utiliser fetch sur les routes API, gérer loading, error, refresh, mutation locale.",
+      "verificationCriteria": "Le hook expose la liste, loading, error, et une fonction de révocation.",
+      "analysisResult": "La solution est cohérente, modulaire, respecte l'architecture et les patterns du projet. Prévoir un hook custom pour la gestion des sessions/devices, et une abstraction pour le provider (Supabase/table custom). L'intégration UI/UX et sécurité est naturelle. Prêt pour la découpe en tâches concrètes."
+    },
+    {
+      "id": "7490e292-c3c3-4e20-8d30-025caef6bbe2",
+      "name": "UI - Section gestion des devices/sessions sur /account",
+      "description": "Ajouter une section sur /account (ou /account/security) listant les devices/sessions, avec bouton de révocation (sauf session courante).",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "de9113c9-23e9-46a5-95c9-e25e78d3e4ed"
+        }
+      ],
+      "createdAt": "2025-07-09T13:21:31.238Z",
+      "updatedAt": "2025-07-09T13:21:31.238Z",
+      "relatedFiles": [
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Section UI pour la gestion des devices/sessions utilisateur."
+        }
+      ],
+      "implementationGuide": "Utiliser le hook useUserDevices, afficher la liste, bouton Révoquer, feedback UX (toast, modal confirmation).",
+      "verificationCriteria": "L'utilisateur voit ses sessions/devices et peut les révoquer, feedback UX visible.",
+      "analysisResult": "La solution est cohérente, modulaire, respecte l'architecture et les patterns du projet. Prévoir un hook custom pour la gestion des sessions/devices, et une abstraction pour le provider (Supabase/table custom). L'intégration UI/UX et sécurité est naturelle. Prêt pour la découpe en tâches concrètes."
+    },
+    {
+      "id": "d1cfca1a-211e-44ec-9131-56b7beffd576",
+      "name": "Sécurité & feedback - Ownership, logout, UX",
+      "description": "Sécuriser les routes API (ownership), forcer le logout si session courante révoquée, feedback UX (toast, modal).",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "71e691cc-1312-4d1f-8b7f-8ca6d3200f3b"
+        },
+        {
+          "taskId": "7490e292-c3c3-4e20-8d30-025caef6bbe2"
+        }
+      ],
+      "createdAt": "2025-07-09T13:21:31.238Z",
+      "updatedAt": "2025-07-09T13:21:31.238Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/account/devices/revoke/route.ts",
+          "type": "TO_MODIFY",
+          "description": "Sécurisation et feedback de la révocation."
+        },
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Gestion du logout et feedback UX."
+        }
+      ],
+      "implementationGuide": "Vérifier l'ownership côté API, logout côté client si besoin, intégrer une librairie de toast (Sonner, Radix, etc.).",
+      "verificationCriteria": "Impossible de révoquer une session d'un autre utilisateur, feedback UX moderne, logout si session courante révoquée.",
+      "analysisResult": "La solution est cohérente, modulaire, respecte l'architecture et les patterns du projet. Prévoir un hook custom pour la gestion des sessions/devices, et une abstraction pour le provider (Supabase/table custom). L'intégration UI/UX et sécurité est naturelle. Prêt pour la découpe en tâches concrètes."
     }
   ]
 }
