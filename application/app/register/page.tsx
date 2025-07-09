@@ -12,9 +12,18 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) setMessage(error.message);
-    else setMessage("Vérifie ta boîte mail pour confirmer ton inscription.");
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) setMessage(data.error || "Erreur inconnue");
+      else setMessage(data.message);
+    } catch (err) {
+      setMessage("Erreur réseau ou serveur");
+    }
     setLoading(false);
   };
 

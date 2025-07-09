@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Check project status",
+			"command": "echo \"Tasks d'authentification en cours :\\n- Inscription (OK)\\n- Connexion (OK)\\n- Déconnexion (OK)\\n- Mot de passe oublié (OK)\\n- Reste à faire : reset-password (formulaire de nouveau mot de passe après email), vérification email, flows avancés (2FA, social login, etc.)\"",
+			"group": "build",
+			"isBackground": false
+		}
+	]
+}
