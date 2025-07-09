@@ -1,0 +1,462 @@
+{
+  "tasks": [
+    {
+      "id": "f50d3417-df84-4b7f-b042-8104b5f3c0aa",
+      "name": "Initialiser le projet Next.js 15 avec TypeScript strict",
+      "description": "Créer la structure de base du projet avec Next.js 15, TypeScript en mode strict, et les dépendances essentielles (Tailwind CSS, ESLint, Prettier). Configurer les fichiers de base : package.json, tsconfig.json, next.config.js, et structure de dossiers selon les standards du projet.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-07-09T22:35:23.719Z",
+      "updatedAt": "2025-07-09T22:35:23.719Z",
+      "relatedFiles": [
+        {
+          "path": "package.json",
+          "type": "CREATE",
+          "description": "Configuration npm avec dépendances Next.js 15"
+        },
+        {
+          "path": "tsconfig.json",
+          "type": "CREATE",
+          "description": "Configuration TypeScript strict mode"
+        },
+        {
+          "path": "next.config.js",
+          "type": "CREATE",
+          "description": "Configuration Next.js avec sécurité"
+        },
+        {
+          "path": "tailwind.config.js",
+          "type": "CREATE",
+          "description": "Configuration Tailwind CSS"
+        },
+        {
+          "path": ".eslintrc.json",
+          "type": "CREATE",
+          "description": "Configuration ESLint strict"
+        },
+        {
+          "path": "prettier.config.js",
+          "type": "CREATE",
+          "description": "Configuration Prettier"
+        }
+      ],
+      "implementationGuide": "1. Exécuter `npx create-next-app@latest launchsaasfast --typescript --tailwind --eslint --app`\\n2. Modifier tsconfig.json pour activer strict mode : `\\\"strict\\\": true, \\\"noUncheckedIndexedAccess\\\": true`\\n3. Configurer next.config.js avec options de sécurité : headers CSP, HSTS\\n4. Créer structure dossiers : /lib, /components, /config, /types, /services, /schemas\\n5. Installer dépendances additionnelles : @types/node, zod, clsx, tailwind-merge\\n6. Configurer ESLint strict et Prettier\\n7. Créer scripts npm : dev, build, start, lint, type-check",
+      "verificationCriteria": "Le projet doit démarrer avec `npm run dev` sans erreurs TypeScript, ESLint doit passer sans warnings, la page d'accueil doit s'afficher avec Tailwind CSS fonctionnel, et la structure de dossiers doit être conforme aux standards du projet.",
+      "analysisResult": "Développement d'un starter SaaS sophistiqué avec authentification enterprise-grade, device confidence scoring conforme AAL NIST, et architecture modulaire Next.js 15 + Supabase + Redis. Phase 1 critique : fondations techniques avec setup Next.js, configuration hiérarchique, et schémas PostgreSQL avancés."
+    },
+    {
+      "id": "de1e23b3-f643-4f9c-883d-978739b81f51",
+      "name": "Configurer l'environnement de développement et outils",
+      "description": "Installer et configurer les outils de développement essentiels : VS Code settings, extensions recommandées, Git hooks (Husky), lint-staged, et scripts de qualité de code. Mettre en place l'environnement de développement optimal pour le projet.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "f50d3417-df84-4b7f-b042-8104b5f3c0aa"
+        }
+      ],
+      "createdAt": "2025-07-09T22:35:23.719Z",
+      "updatedAt": "2025-07-09T22:35:23.719Z",
+      "relatedFiles": [
+        {
+          "path": ".vscode/settings.json",
+          "type": "CREATE",
+          "description": "Configuration VS Code pour le projet"
+        },
+        {
+          "path": ".vscode/extensions.json",
+          "type": "CREATE",
+          "description": "Extensions VS Code recommandées"
+        },
+        {
+          "path": ".husky/pre-commit",
+          "type": "CREATE",
+          "description": "Git hook pre-commit"
+        },
+        {
+          "path": ".lintstagedrc.json",
+          "type": "CREATE",
+          "description": "Configuration lint-staged"
+        },
+        {
+          "path": ".gitignore",
+          "type": "CREATE",
+          "description": "Fichiers à ignorer par Git"
+        }
+      ],
+      "implementationGuide": "1. Créer .vscode/settings.json avec config TypeScript, ESLint, Prettier\\n2. Créer .vscode/extensions.json avec extensions recommandées\\n3. Installer Husky : `npx husky-init && npm install`\\n4. Configurer pre-commit hook : lint-staged pour ESLint + Prettier\\n5. Créer .gitignore complet (node_modules, .env*, .next, etc.)\\n6. Configurer scripts package.json : lint:fix, format, prepare\\n7. Installer @types/react, @types/react-dom pour TypeScript support",
+      "verificationCriteria": "Les commits doivent déclencher automatiquement lint-staged, les extensions VS Code doivent être suggérées à l'ouverture, ESLint et Prettier doivent fonctionner en mode auto-fix, et aucun fichier sensible ne doit être tracké par Git.",
+      "analysisResult": "Développement d'un starter SaaS sophistiqué avec authentification enterprise-grade, device confidence scoring conforme AAL NIST, et architecture modulaire Next.js 15 + Supabase + Redis. Phase 1 critique : fondations techniques avec setup Next.js, configuration hiérarchique, et schémas PostgreSQL avancés."
+    },
+    {
+      "id": "deb9a9d9-df14-459b-9db8-0ed791729260",
+      "name": "Implémenter le système de configuration hiérarchique",
+      "description": "Créer le système de configuration centralisée avec validation Zod, support multi-environnements, et ordre de priorité strict (default → environment → .env → runtime). Structure modulaire avec schemas de validation et types TypeScript.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "f50d3417-df84-4b7f-b042-8104b5f3c0aa"
+        }
+      ],
+      "createdAt": "2025-07-09T22:35:23.719Z",
+      "updatedAt": "2025-07-09T22:35:23.719Z",
+      "relatedFiles": [
+        {
+          "path": "config/default.ts",
+          "type": "CREATE",
+          "description": "Configuration par défaut"
+        },
+        {
+          "path": "config/environments/development.ts",
+          "type": "CREATE",
+          "description": "Config spécifique développement"
+        },
+        {
+          "path": "config/environments/staging.ts",
+          "type": "CREATE",
+          "description": "Config spécifique staging"
+        },
+        {
+          "path": "config/environments/production.ts",
+          "type": "CREATE",
+          "description": "Config spécifique production"
+        },
+        {
+          "path": "config/schemas/index.ts",
+          "type": "CREATE",
+          "description": "Schémas Zod validation"
+        },
+        {
+          "path": "config/types.ts",
+          "type": "CREATE",
+          "description": "Types TypeScript configuration"
+        },
+        {
+          "path": "config/index.ts",
+          "type": "CREATE",
+          "description": "Point d'entrée configuration"
+        }
+      ],
+      "implementationGuide": "1. Créer /config/default.ts avec configuration de base\\n2. Créer /config/environments/ avec dev.ts, staging.ts, production.ts\\n3. Créer /config/schemas/ avec validation Zod pour chaque section\\n4. Créer /config/types.ts avec interfaces TypeScript\\n5. Créer /config/index.ts avec logique de merge hiérarchique\\n6. Implémenter loadConfig() avec ordre : default → env → .env → runtime\\n7. Ajouter validation stricte avec Zod.parse()\\n8. Créer utilitaire getConfig() pour accès type-safe",
+      "verificationCriteria": "La configuration doit se charger sans erreurs avec validation Zod réussie, les overrides par environnement doivent fonctionner, getConfig() doit retourner des types corrects, et les variables d'environnement invalides doivent lever des erreurs explicites.",
+      "analysisResult": "Développement d'un starter SaaS sophistiqué avec authentification enterprise-grade, device confidence scoring conforme AAL NIST, et architecture modulaire Next.js 15 + Supabase + Redis. Phase 1 critique : fondations techniques avec setup Next.js, configuration hiérarchique, et schémas PostgreSQL avancés."
+    },
+    {
+      "id": "2785eb25-5ef8-46e5-8664-aecc3a650363",
+      "name": "Configurer Supabase et variables d'environnement",
+      "description": "Installer le client Supabase, configurer les variables d'environnement sécurisées, et établir la connexion de base. Préparer l'environnement pour l'authentification et la base de données PostgreSQL.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "deb9a9d9-df14-459b-9db8-0ed791729260"
+        }
+      ],
+      "createdAt": "2025-07-09T22:35:23.719Z",
+      "updatedAt": "2025-07-09T22:35:23.719Z",
+      "relatedFiles": [
+        {
+          "path": ".env.local",
+          "type": "CREATE",
+          "description": "Variables d'environnement locales"
+        },
+        {
+          "path": ".env.example",
+          "type": "CREATE",
+          "description": "Template variables d'environnement"
+        },
+        {
+          "path": "lib/supabase/client.ts",
+          "type": "CREATE",
+          "description": "Client Supabase côté client"
+        },
+        {
+          "path": "lib/supabase/server.ts",
+          "type": "CREATE",
+          "description": "Client Supabase côté serveur"
+        },
+        {
+          "path": "lib/supabase/types.ts",
+          "type": "CREATE",
+          "description": "Types Database Supabase"
+        },
+        {
+          "path": "config/schemas/supabase.ts",
+          "type": "CREATE",
+          "description": "Validation Zod variables Supabase"
+        }
+      ],
+      "implementationGuide": "1. Installer @supabase/supabase-js et @supabase/ssr\\n2. Créer .env.local avec SUPABASE_URL et SUPABASE_ANON_KEY\\n3. Créer .env.example avec variables template\\n4. Créer /lib/supabase/client.ts pour client-side\\n5. Créer /lib/supabase/server.ts pour server-side (SSR)\\n6. Ajouter validation Zod pour variables Supabase dans config\\n7. Configurer types TypeScript pour Database (placeholder)\\n8. Tester connexion basique avec health check",
+      "verificationCriteria": "La connexion Supabase doit être établie sans erreurs, les variables d'environnement doivent être validées par Zod, les clients server/client doivent être correctement configurés, et un health check basique doit confirmer la connectivité.",
+      "analysisResult": "Développement d'un starter SaaS sophistiqué avec authentification enterprise-grade, device confidence scoring conforme AAL NIST, et architecture modulaire Next.js 15 + Supabase + Redis. Phase 1 critique : fondations techniques avec setup Next.js, configuration hiérarchique, et schémas PostgreSQL avancés."
+    },
+    {
+      "id": "1c0330c4-55c4-4456-b2fa-f704aab80ef1",
+      "name": "Créer les schémas PostgreSQL avancés",
+      "description": "Définir et créer les tables PostgreSQL sophistiquées : users, user_devices, device_sessions, security_events avec RLS activé, constraints appropriés, et indexes optimisés. Inclure les fonctions SQL et triggers.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "2785eb25-5ef8-46e5-8664-aecc3a650363"
+        }
+      ],
+      "createdAt": "2025-07-09T22:35:23.719Z",
+      "updatedAt": "2025-07-09T22:35:23.719Z",
+      "relatedFiles": [
+        {
+          "path": "supabase/migrations/001_initial_schema.sql",
+          "type": "CREATE",
+          "description": "Migration initiale schéma",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "supabase/migrations/002_rls_policies.sql",
+          "type": "CREATE",
+          "description": "Policies Row Level Security"
+        },
+        {
+          "path": "supabase/migrations/003_functions_triggers.sql",
+          "type": "CREATE",
+          "description": "Fonctions SQL et triggers"
+        },
+        {
+          "path": "supabase/migrations/004_indexes.sql",
+          "type": "CREATE",
+          "description": "Index de performance"
+        },
+        {
+          "path": "docs/database.md",
+          "type": "TO_MODIFY",
+          "description": "Documentation schéma base de données",
+          "lineStart": 50,
+          "lineEnd": 150
+        }
+      ],
+      "implementationGuide": "1. Créer migration SQL pour table users (extend auth.users)\\n2. Créer table user_devices avec device fingerprinting\\n3. Créer table device_sessions avec confidence_score et AAL\\n4. Créer table security_events pour audit log\\n5. Activer RLS sur toutes les tables : ALTER TABLE ENABLE ROW LEVEL SECURITY\\n6. Créer policies RLS pour chaque opération (SELECT, INSERT, UPDATE, DELETE)\\n7. Créer fonction update_updated_at_column() et triggers\\n8. Créer fonction verify_user_password() pour AAL\\n9. Ajouter indexes composites pour performance",
+      "verificationCriteria": "Toutes les tables doivent être créées avec RLS activé, les policies doivent permettre l'accès approprié par utilisateur, les fonctions SQL doivent être opérationnelles, les triggers doivent automatiquement gérer updated_at, et les indexes doivent optimiser les requêtes fréquentes.",
+      "analysisResult": "Développement d'un starter SaaS sophistiqué avec authentification enterprise-grade, device confidence scoring conforme AAL NIST, et architecture modulaire Next.js 15 + Supabase + Redis. Phase 1 critique : fondations techniques avec setup Next.js, configuration hiérarchique, et schémas PostgreSQL avancés."
+    },
+    {
+      "id": "fd9d1b9f-c2f2-45d7-87f9-346abfe1b03f",
+      "name": "Générer et configurer les types TypeScript depuis Supabase",
+      "description": "Configurer la génération automatique des types TypeScript depuis le schéma PostgreSQL Supabase, créer les types custom complémentaires, et établir le système de types centralisé pour tout le projet.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "1c0330c4-55c4-4456-b2fa-f704aab80ef1"
+        }
+      ],
+      "createdAt": "2025-07-09T22:35:23.719Z",
+      "updatedAt": "2025-07-09T22:35:23.719Z",
+      "relatedFiles": [
+        {
+          "path": "supabase/config.toml",
+          "type": "CREATE",
+          "description": "Configuration Supabase CLI"
+        },
+        {
+          "path": "types/supabase.ts",
+          "type": "CREATE",
+          "description": "Types auto-générés Supabase"
+        },
+        {
+          "path": "types/custom.ts",
+          "type": "CREATE",
+          "description": "Types custom du projet"
+        },
+        {
+          "path": "types/index.ts",
+          "type": "CREATE",
+          "description": "Export centralisé des types"
+        },
+        {
+          "path": "types/config.ts",
+          "type": "CREATE",
+          "description": "Types pour configuration"
+        },
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "Script génération types",
+          "lineStart": 10,
+          "lineEnd": 30
+        }
+      ],
+      "implementationGuide": "1. Installer supabase CLI : npm install -g supabase\\n2. Initialiser projet Supabase : supabase init\\n3. Configurer supabase/config.toml avec database settings\\n4. Générer types : supabase gen types typescript --project-id > types/supabase.ts\\n5. Créer types custom dans /types/ : User, Device, Session, etc.\\n6. Créer /types/index.ts pour exports centralisés\\n7. Créer types pour configuration, erreurs, événements\\n8. Ajouter script npm pour régénération automatique\\n9. Intégrer types dans configuration globale",
+      "verificationCriteria": "Les types doivent être générés automatiquement depuis Supabase sans erreurs, tous les types custom doivent être correctement exportés, TypeScript doit reconnaître tous les types sans erreurs, et le script de régénération doit fonctionner via npm run.",
+      "analysisResult": "Développement d'un starter SaaS sophistiqué avec authentification enterprise-grade, device confidence scoring conforme AAL NIST, et architecture modulaire Next.js 15 + Supabase + Redis. Phase 1 critique : fondations techniques avec setup Next.js, configuration hiérarchique, et schémas PostgreSQL avancés."
+    },
+    {
+      "id": "9bf9eec3-f0b9-47db-afc9-1a229cba0285",
+      "name": "Implémenter les routes API d'authentification de base",
+      "description": "Créer les routes essentielles : POST /api/auth/signin, POST /api/auth/signup avec validation Zod, intégration Supabase Auth, extraction device info et error handling unifié",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "fd9d1b9f-c2f2-45d7-87f9-346abfe1b03f"
+        }
+      ],
+      "createdAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/auth/signin/route.ts",
+          "type": "CREATE",
+          "description": "Route connexion"
+        },
+        {
+          "path": "app/api/auth/signup/route.ts",
+          "type": "CREATE",
+          "description": "Route inscription"
+        },
+        {
+          "path": "schemas/auth.ts",
+          "type": "CREATE",
+          "description": "Schemas Zod auth"
+        },
+        {
+          "path": "lib/error-handler.ts",
+          "type": "REFERENCE",
+          "description": "Error handler centralisé"
+        }
+      ],
+      "implementationGuide": "1. Créer app/api/auth/signin/route.ts avec SigninSchema Zod\n2. Authentification Supabase signInWithPassword()\n3. Extraire User-Agent, IP\n4. Créer app/api/auth/signup/route.ts avec SignupSchema\n5. Vérification unicité email + création profil\n6. Intégrer error handler centralisé\n7. Tests Postman et integration",
+      "verificationCriteria": "Format APIResponse uniforme, validation Zod, auth Supabase OK, extraction device info fonctionnelle, gestion erreurs propre",
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+    },
+    {
+      "id": "d4430d77-f92f-4e9c-b601-1df0c79138c7",
+      "name": "Développer le module de détection d'appareils",
+      "description": "Créer /lib/device-detection.ts : parsing User-Agent, extraction IP (X-Forwarded-For, CF headers), génération fingerprint unique",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "9bf9eec3-f0b9-47db-afc9-1a229cba0285"
+        }
+      ],
+      "createdAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "relatedFiles": [
+        {
+          "path": "lib/device-detection.ts",
+          "type": "CREATE",
+          "description": "Module détection appareils"
+        },
+        {
+          "path": "types/device.ts",
+          "type": "CREATE",
+          "description": "Types DeviceInfo"
+        }
+      ],
+      "implementationGuide": "1. Implémenter parseUserAgent()\n2. Implémenter getClientIP()\n3. Générer fingerprint composite\n4. Exposer extractDeviceInfo()\n5. Tests unitaires pour chaque fonction",
+      "verificationCriteria": "Parsing UA correct, IP extraction fiable, fingerprint stable, edge cases traités",
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+    },
+    {
+      "id": "e6e57885-3414-4b80-a3fe-f9b25f1a2b7f",
+      "name": "Implémenter l'algorithme de confidence scoring",
+      "description": "Créer /lib/confidence-scoring.ts avec poids immuables (30/25/20/25), fonctions calculateConfidenceScore() et getConfidenceLevel()",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "d4430d77-f92f-4e9c-b601-1df0c79138c7"
+        }
+      ],
+      "createdAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "relatedFiles": [
+        {
+          "path": "lib/confidence-scoring.ts",
+          "type": "CREATE",
+          "description": "Algorithme scoring"
+        },
+        {
+          "path": "config/scoring-weights.ts",
+          "type": "CREATE",
+          "description": "Poids scoring immuables"
+        }
+      ],
+      "implementationGuide": "1. Définir constantes poids\n2. Implémenter calculateConfidenceScore()\n3. Implémenter getConfidenceLevel()\n4. Caching scores\n5. Tests exhaustifs",
+      "verificationCriteria": "Respect poids exacts, scores 0-100, niveaux corrects, caching valide",
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+    },
+    {
+      "id": "eab4535e-2a8d-43d4-8eb8-0abe7141c32a",
+      "name": "Gérer les sessions device",
+      "description": "Implémenter /lib/device-sessions.ts : create/update/delete sessions avec last_activity tracking et nettoyage automatique, plus API user sessions",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "e6e57885-3414-4b80-a3fe-f9b25f1a2b7f"
+        }
+      ],
+      "createdAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "relatedFiles": [
+        {
+          "path": "lib/device-sessions.ts",
+          "type": "CREATE",
+          "description": "Gestion CRUD sessions"
+        },
+        {
+          "path": "app/api/user/sessions/route.ts",
+          "type": "CREATE",
+          "description": "API sessions utilisateur"
+        }
+      ],
+      "implementationGuide": "1. Créer fonctions CRUD sessions\n2. Implémenter updateLastActivity()\n3. Scheduling cleanupExpiredSessions()\n4. Route app/api/user/sessions/route.ts\n5. Tests integration",
+      "verificationCriteria": "Sessions créées avec metadata, tracking et cleanup OK, API gestion sessions fonctionnelle",
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+    },
+    {
+      "id": "4dd8da19-0ed3-46cb-8987-fb84245a8358",
+      "name": "Créer le middleware d'authentification et ordering",
+      "description": "Développer middleware.ts : validation JWT Supabase + device session, injection headers, respect Auth→RateLimiting→Validation→BusinessLogic",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "eab4535e-2a8d-43d4-8eb8-0abe7141c32a"
+        }
+      ],
+      "createdAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "relatedFiles": [
+        {
+          "path": "middleware.ts",
+          "type": "CREATE",
+          "description": "Middleware global"
+        }
+      ],
+      "implementationGuide": "1. Implémenter withAuth() pour JWT\n2. Vérifier device session active\n3. Injecter user_id/device_session_id\n4. Configurer matcher routes\n5. Préparer pour rate limiter Phase 3",
+      "verificationCriteria": "JWT validé, session vérifiée, headers injectés, ordre respecté",
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+    },
+    {
+      "id": "f5c850de-bf3e-4342-8993-30f09e93d4e9",
+      "name": "Créer les routes de gestion des mots de passe",
+      "description": "Routes forgot-password, reset-password, change-password avec Zod, Supabase et verify_user_password() pour AAL, rate limiting et audit logging",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "4dd8da19-0ed3-46cb-8987-fb84245a8358"
+        }
+      ],
+      "createdAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/auth/forgot-password/route.ts",
+          "type": "CREATE",
+          "description": "Route forgot-password"
+        },
+        {
+          "path": "app/api/auth/reset-password/route.ts",
+          "type": "CREATE",
+          "description": "Route reset-password"
+        }
+      ],
+      "implementationGuide": "1. app/api/auth/forgot-password/route.ts\n2. app/api/auth/reset-password/route.ts\n3. app/api/auth/change-password/route.ts\n4. Intégrer verify_user_password()\n5. Tests de sécurité",
+      "verificationCriteria": "Fonction SQL utilisée, tokens sécurisés, AAL préservé, audits en place",
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+    }
+  ]
+}
