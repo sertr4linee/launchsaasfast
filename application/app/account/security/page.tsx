@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { TwoFactorEnrollment } from "@/components/TwoFactorEnrollment";
 
 export default function SecurityPage() {
   const [show2FA, setShow2FA] = useState(false);
@@ -25,8 +26,7 @@ export default function SecurityPage() {
         </div>
         {show2FA && (
           <div className="mt-6">
-            {/* Ici viendra le composant/processus d'enrollment 2FA (QR code, code, validation) */}
-            <p className="text-gray-300">Processus d'activation 2FA à implémenter ici.</p>
+            <TwoFactorEnrollment />
           </div>
         )}
       </div>
