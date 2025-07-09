@@ -1,194 +1,239 @@
 {
   "tasks": [
     {
-      "id": "5d24238d-1071-439d-b251-bde71947048d",
+      "id": "4dd5fde5-196c-45af-9ab0-fc3a9b9f5409",
       "name": "Initialisation du projet et configuration de base",
-      "description": "Créer le projet Next.js/TypeScript, initialiser le repo, installer les dépendances principales (Next.js, Tailwind, Supabase, Shadcn UI, etc.), configurer le linter et le formatteur.",
+      "description": "Projet Next.js/TypeScript initialisé, repo prêt, dépendances principales installées (Next.js, Tailwind, Supabase, Shadcn UI, etc.), linter et formatteur configurés.",
+      "notes": "Déjà réalisé.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2025-07-09T00:47:26.275Z",
-      "updatedAt": "2025-07-09T00:47:26.275Z",
-      "relatedFiles": [],
-      "implementationGuide": "- Créer le projet Next.js\n- Ajouter TypeScript\n- Installer Tailwind, Shadcn UI, Supabase JS, etc.\n- Configurer les fichiers de base (tsconfig, tailwind.config, etc.)\n- Mettre en place le repo Git\n- Ajouter un README\n- Vérifier que le projet démarre en dev.",
-      "verificationCriteria": "Le projet démarre, les dépendances sont installées, la base technique est prête."
-    },
-    {
-      "id": "29f4410d-1f64-49f7-b437-879d3291bd31",
-      "name": "Mise en place de l’authentification email/password",
-      "description": "Implémenter le flow d’inscription, connexion, vérification email, reset password via Supabase et API routes Next.js.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "5d24238d-1071-439d-b251-bde71947048d"
-        }
-      ],
-      "createdAt": "2025-07-09T00:47:26.275Z",
-      "updatedAt": "2025-07-09T00:47:26.275Z",
-      "relatedFiles": [],
-      "implementationGuide": "- Créer les pages/formulaires d’inscription et connexion\n- Créer les API routes pour signup/login/logout\n- Intégrer Supabase Auth côté serveur\n- Gérer la vérification email et le reset password\n- Afficher les erreurs et feedbacks utilisateur.",
-      "verificationCriteria": "Un utilisateur peut s’inscrire, se connecter, recevoir un email de vérification, réinitialiser son mot de passe."
-    },
-    {
-      "id": "631010c2-9e51-415a-acef-cee9338c1857",
-      "name": "Ajout de l’authentification sociale (Google, GitHub)",
-      "description": "Permettre la connexion/inscription via Google et GitHub (OAuth), gestion des callbacks et de la configuration Supabase.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "29f4410d-1f64-49f7-b437-879d3291bd31"
-        }
-      ],
-      "createdAt": "2025-07-09T00:47:26.275Z",
-      "updatedAt": "2025-07-09T00:47:26.275Z",
-      "relatedFiles": [],
-      "implementationGuide": "- Activer les providers dans Supabase\n- Créer les boutons de login social\n- Gérer les callbacks OAuth dans les API routes\n- Lier/délier les comptes sociaux dans les paramètres utilisateur.",
-      "verificationCriteria": "Un utilisateur peut se connecter/inscrire avec Google ou GitHub, lier/délier son compte social."
-    },
-    {
-      "id": "3441eb62-257a-42a2-bcd0-50ccc88fc253",
-      "name": "Implémentation de la double authentification (2FA)",
-      "description": "Ajouter la 2FA (app d’authentification, SMS, codes de secours), gestion de l’activation, vérification et récupération.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "631010c2-9e51-415a-acef-cee9338c1857"
-        }
-      ],
-      "createdAt": "2025-07-09T00:47:26.275Z",
-      "updatedAt": "2025-07-09T00:47:26.275Z",
-      "relatedFiles": [],
-      "implementationGuide": "- Ajouter la gestion 2FA dans les paramètres\n- Intégrer l’app d’authentification (TOTP)\n- Optionnel: intégrer SMS (Twilio)\n- Générer et stocker les codes de secours\n- Gérer les flows d’activation, vérification, récupération.",
-      "verificationCriteria": "Un utilisateur peut activer la 2FA, se connecter avec, utiliser un code de secours, désactiver la 2FA."
-    },
-    {
-      "id": "151dab3c-2c4c-4675-98c2-1d74b9688aee",
-      "name": "Gestion des sessions devices et sécurité avancée",
-      "description": "Mettre en place le tracking des devices, la révocation de session, le niveau d’authentification (AAL), et le rate limiting.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "3441eb62-257a-42a2-bcd0-50ccc88fc253"
-        }
-      ],
-      "createdAt": "2025-07-09T00:47:26.275Z",
-      "updatedAt": "2025-07-09T00:47:26.275Z",
-      "relatedFiles": [],
-      "implementationGuide": "- Créer la table device_sessions\n- Afficher la liste des devices connectés\n- Permettre la révocation\n- Gérer le AAL\n- Intégrer Upstash Redis pour le rate limiting sur les API routes.",
-      "verificationCriteria": "L’utilisateur peut voir/révoquer ses devices, le rate limiting fonctionne, la sécurité est renforcée."
-    },
-    {
-      "id": "c6300851-9ab3-4e80-b2e1-7c86e0240fd1",
-      "name": "Exports RGPD et gestion des données utilisateur",
-      "description": "Permettre à l’utilisateur d’exporter ses données (auth, activité, etc.) via Trigger.dev, stockage sécurisé, email de téléchargement.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "151dab3c-2c4c-4675-98c2-1d74b9688aee"
-        }
-      ],
-      "createdAt": "2025-07-09T00:47:26.275Z",
-      "updatedAt": "2025-07-09T00:47:26.275Z",
-      "relatedFiles": [],
-      "implementationGuide": "- Créer la table data_export_requests\n- Intégrer Trigger.dev\n- Générer et stocker l’export\n- Envoyer le lien de téléchargement par email\n- Supprimer le fichier après téléchargement.",
-      "verificationCriteria": "L’utilisateur peut demander et télécharger un export de ses données, le process est sécurisé."
-    },
-    {
-      "id": "82505bce-06df-4ba7-a45a-47fe0932df12",
-      "name": "Personnalisation UI/UX et documentation",
-      "description": "Adapter l’UI (Shadcn, Tailwind), personnaliser les emails, rédiger la documentation d’intégration et d’utilisation.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "c6300851-9ab3-4e80-b2e1-7c86e0240fd1"
-        }
-      ],
-      "createdAt": "2025-07-09T00:47:26.275Z",
-      "updatedAt": "2025-07-09T00:47:26.275Z",
-      "relatedFiles": [],
-      "implementationGuide": "- Personnaliser les composants UI\n- Adapter les templates d’emails\n- Rédiger un guide d’intégration et d’utilisation\n- Ajouter des exemples d’extension.",
-      "verificationCriteria": "L’UI est personnalisée, les emails sont cohérents, la doc est claire et complète."
-    },
-    {
-      "id": "deb2f208-f5c8-41dc-bbc6-38eec6c28292",
-      "name": "Configurer la double authentification (2FA/TOTP)",
-      "description": "Permettre à l’utilisateur d’activer la double authentification via une app TOTP (Google Authenticator, Authy, etc.) depuis son profil.",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2025-07-09T01:31:11.967Z",
-      "updatedAt": "2025-07-09T01:31:11.967Z",
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
       "relatedFiles": [
         {
-          "path": "app/profile/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "Page de gestion du profil utilisateur"
-        },
-        {
-          "path": "app/api/2fa/enable/route.ts",
-          "type": "CREATE",
-          "description": "API pour activer 2FA"
-        },
-        {
-          "path": "app/api/2fa/verify/route.ts",
-          "type": "CREATE",
-          "description": "API pour vérifier le code TOTP"
+          "path": "package.json",
+          "type": "REFERENCE",
+          "description": "Fichier de configuration des dépendances du projet."
         }
       ],
-      "implementationGuide": "- Ajouter une page/profil pour activer 2FA\n- Générer un secret TOTP côté backend\n- Afficher un QR code à scanner\n- Vérifier le code TOTP entré par l’utilisateur\n- Stocker l’état 2FA dans Supabase\n- Adapter le login pour demander le code si 2FA activé\n- Utiliser la lib speakeasy côté backend et qrcode côté front.",
-      "verificationCriteria": "L’utilisateur peut activer 2FA, scanner un QR code, valider un code TOTP, et la connexion demande le code si activé.",
-      "analysisResult": "Le système d’authentification est découpé en modules atomiques (email/password, social login, 2FA, gestion des sessions, export GDPR). Chaque provider social (Google, GitHub) a sa propre route et bouton, la logique est factorisable. L’architecture respecte Next.js et Supabase, l’UI est cohérente. Les tâches doivent être suivies, marquées comme complétées, et la prochaine étape proposée à chaque fois. Optimisation : centraliser la gestion des providers et automatiser la complétion des tâches."
+      "implementationGuide": "Créer le projet Next.js, installer les dépendances, configurer Tailwind, ESLint, Prettier, initialiser le repo Git.",
+      "verificationCriteria": "Le projet démarre, les dépendances sont installées, le linter fonctionne."
     },
     {
-      "id": "8cb8f1fa-a62f-4787-a151-5179a33e0cf5",
-      "name": "Gérer les sessions et devices utilisateurs",
-      "description": "Permettre à l’utilisateur de voir et révoquer ses sessions/devices actifs.",
+      "id": "0d3b3238-221c-4d87-85d7-b54662eae03f",
+      "name": "Mise en place du provider Supabase et synchronisation session utilisateur",
+      "description": "Implémenter le provider SupabaseProvider, exposer la session et le client via un contexte React, synchroniser la session côté client.",
+      "notes": "Déjà réalisé.",
       "status": "pending",
-      "dependencies": [],
-      "createdAt": "2025-07-09T01:31:11.967Z",
-      "updatedAt": "2025-07-09T01:31:11.967Z",
-      "relatedFiles": [
+      "dependencies": [
         {
-          "path": "app/profile/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "Section gestion des devices"
-        },
-        {
-          "path": "app/api/sessions/list/route.ts",
-          "type": "CREATE",
-          "description": "API pour lister les sessions"
-        },
-        {
-          "path": "app/api/sessions/revoke/route.ts",
-          "type": "CREATE",
-          "description": "API pour révoquer une session"
+          "taskId": "4dd5fde5-196c-45af-9ab0-fc3a9b9f5409"
         }
       ],
-      "implementationGuide": "- Ajouter une section dans le profil\n- Lister les sessions actives (via Supabase)\n- Permettre la révocation d’une session\n- Afficher device, date, IP\n- Adapter l’API pour gérer la suppression de session.",
-      "verificationCriteria": "L’utilisateur voit ses sessions/devices et peut en révoquer une.",
-      "analysisResult": "Le système d’authentification est découpé en modules atomiques (email/password, social login, 2FA, gestion des sessions, export GDPR). Chaque provider social (Google, GitHub) a sa propre route et bouton, la logique est factorisable. L’architecture respecte Next.js et Supabase, l’UI est cohérente. Les tâches doivent être suivies, marquées comme complétées, et la prochaine étape proposée à chaque fois. Optimisation : centraliser la gestion des providers et automatiser la complétion des tâches."
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "components/SupabaseProvider.tsx",
+          "type": "TO_MODIFY",
+          "description": "Provider React pour la session Supabase."
+        }
+      ],
+      "implementationGuide": "Créer SupabaseProvider, utiliser useEffect pour synchroniser la session, exposer useSupabase hook.",
+      "verificationCriteria": "Le provider fonctionne, la session est accessible partout."
     },
     {
-      "id": "e6691b7a-65ed-4608-9c47-657a0d337270",
-      "name": "Exporter les données utilisateur (GDPR)",
-      "description": "Permettre à l’utilisateur de télécharger toutes ses données personnelles (profil, sessions, historique, etc.) au format JSON.",
+      "id": "443ffc66-5ee3-45c2-be1c-569d087a2716",
+      "name": "Connexion utilisateur (email/password, OAuth)",
+      "description": "Permettre la connexion via email/password et Google/GitHub OAuth.",
+      "notes": "Déjà réalisé.",
       "status": "pending",
-      "dependencies": [],
-      "createdAt": "2025-07-09T01:31:11.967Z",
-      "updatedAt": "2025-07-09T01:31:11.967Z",
-      "relatedFiles": [
+      "dependencies": [
         {
-          "path": "app/profile/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "Bouton d’export GDPR"
-        },
-        {
-          "path": "app/api/gdpr/export/route.ts",
-          "type": "CREATE",
-          "description": "API d’export GDPR"
+          "taskId": "0d3b3238-221c-4d87-85d7-b54662eae03f"
         }
       ],
-      "implementationGuide": "- Ajouter un bouton d’export dans le profil\n- Créer une API qui rassemble les données\n- Générer un fichier JSON à télécharger\n- Sécuriser l’accès à l’API.",
-      "verificationCriteria": "L’utilisateur peut télécharger un fichier JSON avec toutes ses données.",
-      "analysisResult": "Le système d’authentification est découpé en modules atomiques (email/password, social login, 2FA, gestion des sessions, export GDPR). Chaque provider social (Google, GitHub) a sa propre route et bouton, la logique est factorisable. L’architecture respecte Next.js et Supabase, l’UI est cohérente. Les tâches doivent être suivies, marquées comme complétées, et la prochaine étape proposée à chaque fois. Optimisation : centraliser la gestion des providers et automatiser la complétion des tâches."
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "app/login/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de connexion utilisateur (email/password, OAuth)."
+        }
+      ],
+      "implementationGuide": "Créer le formulaire de login, intégrer les endpoints OAuth, gérer les erreurs et feedback utilisateur.",
+      "verificationCriteria": "L'utilisateur peut se connecter par email/password ou OAuth, feedback affiché."
+    },
+    {
+      "id": "9f006cd4-17fd-4bea-8f37-79fc33da4955",
+      "name": "Affichage des informations utilisateur et logout",
+      "description": "Afficher les infos utilisateur sur /account, permettre la déconnexion.",
+      "notes": "Déjà réalisé.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "443ffc66-5ee3-45c2-be1c-569d087a2716"
+        }
+      ],
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de compte utilisateur avec affichage des infos et logout."
+        }
+      ],
+      "implementationGuide": "Utiliser useSupabase pour afficher l'email, bouton logout, feedback UI.",
+      "verificationCriteria": "L'utilisateur voit ses infos et peut se déconnecter."
+    },
+    {
+      "id": "50c1c3a3-0d6e-4e05-8b64-9ae1fc2c2ae6",
+      "name": "Sécurisation des routes et redirection si non connecté",
+      "description": "Protéger les pages sensibles (account, security, etc.) en redirigeant vers /login si l'utilisateur n'est pas connecté.",
+      "notes": "Priorité sécurité.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "9f006cd4-17fd-4bea-8f37-79fc33da4955"
+        }
+      ],
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de compte à sécuriser par redirection si non connecté."
+        }
+      ],
+      "implementationGuide": "Créer un HOC ou composant wrapper pour vérifier la session, rediriger si besoin.",
+      "verificationCriteria": "Les pages sensibles ne sont accessibles qu'aux utilisateurs connectés."
+    },
+    {
+      "id": "be63424c-cacf-4a99-91e9-02087495d256",
+      "name": "Formulaire d'édition du profil utilisateur",
+      "description": "Permettre à l'utilisateur de modifier son nom et son email depuis la page /account.",
+      "notes": "UI/UX à soigner.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "50c1c3a3-0d6e-4e05-8b64-9ae1fc2c2ae6"
+        }
+      ],
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de compte avec formulaire d'édition du profil."
+        }
+      ],
+      "implementationGuide": "Ajouter un formulaire d'édition, valider les champs, appeler l'API Supabase pour update.",
+      "verificationCriteria": "L'utilisateur peut modifier son nom/email, feedback affiché."
+    },
+    {
+      "id": "4d4a8650-c99a-4543-81d9-f379faa6084b",
+      "name": "Suppression de compte utilisateur (API + UI)",
+      "description": "Permettre à l'utilisateur de supprimer définitivement son compte depuis /account.",
+      "notes": "Sécurité : confirmation requise.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "50c1c3a3-0d6e-4e05-8b64-9ae1fc2c2ae6"
+        }
+      ],
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de compte avec bouton de suppression de compte."
+        }
+      ],
+      "implementationGuide": "Créer un bouton de suppression, confirmation, appeler l'API pour delete, gérer la déconnexion.",
+      "verificationCriteria": "Le compte est supprimé, l'utilisateur est déconnecté, feedback affiché."
+    },
+    {
+      "id": "821e3e7a-f17a-4872-b349-d9de0f63e341",
+      "name": "Gestion des devices et sessions utilisateur",
+      "description": "Afficher la liste des devices/sessions actives, permettre la révocation.",
+      "notes": "Utiliser l'API Supabase si possible.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "50c1c3a3-0d6e-4e05-8b64-9ae1fc2c2ae6"
+        }
+      ],
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de compte avec gestion des devices et sessions."
+        }
+      ],
+      "implementationGuide": "Créer une section sur /account, lister les sessions, bouton de révocation.",
+      "verificationCriteria": "L'utilisateur voit ses sessions/devices et peut les révoquer."
+    },
+    {
+      "id": "a14caf8e-8a16-4195-9147-44cc6522f0c2",
+      "name": "Export GDPR des données utilisateur",
+      "description": "Permettre à l'utilisateur de télécharger toutes ses données personnelles (profil, sessions, historique, etc.) au format JSON.",
+      "notes": "Respect RGPD.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "50c1c3a3-0d6e-4e05-8b64-9ae1fc2c2ae6"
+        }
+      ],
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de compte avec export des données utilisateur."
+        }
+      ],
+      "implementationGuide": "Créer un bouton d'export, générer le JSON, proposer le téléchargement.",
+      "verificationCriteria": "L'utilisateur peut télécharger ses données au format JSON."
+    },
+    {
+      "id": "c828786d-641a-4563-87b8-ff3cd2c9f19f",
+      "name": "UI/UX avancée et feedback utilisateur",
+      "description": "Améliorer l'expérience utilisateur avec des notifications, toasts, personnalisation UI, etc.",
+      "notes": "Dernière étape, après les fonctionnalités principales.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "be63424c-cacf-4a99-91e9-02087495d256"
+        },
+        {
+          "taskId": "4d4a8650-c99a-4543-81d9-f379faa6084b"
+        },
+        {
+          "taskId": "821e3e7a-f17a-4872-b349-d9de0f63e341"
+        },
+        {
+          "taskId": "a14caf8e-8a16-4195-9147-44cc6522f0c2"
+        }
+      ],
+      "createdAt": "2025-07-09T02:21:00.203Z",
+      "updatedAt": "2025-07-09T02:21:00.203Z",
+      "relatedFiles": [
+        {
+          "path": "app/account/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page de compte avec UI/UX avancée et feedback utilisateur."
+        }
+      ],
+      "implementationGuide": "Intégrer un système de toasts, améliorer les feedbacks, personnaliser l'UI.",
+      "verificationCriteria": "L'UI est moderne, feedback utilisateur clair, notifications fonctionnelles."
     }
   ]
 }
