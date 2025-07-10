@@ -194,13 +194,31 @@ class RedisClient {
   /**
    * Count members in sorted set by score range
    */
-  async zcount(key: string, min: number, max: number): Promise<number> {
+  async zcount(key: string, min: number | string, max: number | string): Promise<number> {
     const result = await this.executeWithRetry(
       async () => {
         const response = await this.client!.zcount(key, min, max);
         return typeof response === 'number' ? response : 0;
       },
       `ZCOUNT ${key}`
+    );
+    return result;
+  }
+
+  /**
+   * Get range of members from sorted set
+   */
+  async zrange(key: string, start: number, stop: number, withScores?: boolean): Promise<string[]> {
+    const result = await this.executeWithRetry(
+      async () => {
+        if (withScores) {
+          const response = await this.client!.zrange(key, start, stop, { withScores: true });
+          return Array.isArray(response) ? response.map(String) : [];
+        }
+        const response = await this.client!.zrange(key, start, stop);
+        return Array.isArray(response) ? response.map(String) : [];
+      },
+      `ZRANGE ${key}`
     );
     return result;
   }

@@ -43,6 +43,11 @@ export function loadConfig(overrides: RuntimeOverrides = {}) {
       ...(rawEnv.redis && Object.fromEntries(Object.entries(rawEnv.redis).filter(([_, v]) => v !== undefined))),
       ...(overrides.redis || {}),
     },
+    rateLimiting: {
+      ...base.rateLimiting,
+      ...(envConfig as any)?.rateLimiting,
+      ...(overrides.rateLimiting || {}),
+    },
   };
   const parsed = EnvConfigSchema.parse(merged);
   cachedConfig = parsed;
