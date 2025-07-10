@@ -48,6 +48,11 @@ export function loadConfig(overrides: RuntimeOverrides = {}) {
       ...(envConfig as any)?.rateLimiting,
       ...(overrides.rateLimiting || {}),
     },
+    mfa: {
+      ...base.mfa,
+      ...(envConfig as any)?.mfa,
+      ...(overrides.mfa || {}),
+    },
   };
   const parsed = EnvConfigSchema.parse(merged);
   cachedConfig = parsed;

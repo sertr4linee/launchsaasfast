@@ -115,10 +115,10 @@
       "name": "Implement TOTP 2FA System",
       "description": "Create Time-based One-Time Password (TOTP) system compliant with RFC 6238 for 2FA. Implement QR code generation, secret management, and TOTP validation with tolerance window. Include backup codes generation and management.",
       "notes": "Use industry-standard TOTP implementation with proper security. Store secrets encrypted and backup codes hashed. Include rate limiting for verification attempts.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "createdAt": "2025-07-10T11:00:14.192Z",
-      "updatedAt": "2025-07-10T11:00:14.192Z",
+      "updatedAt": "2025-07-10T11:33:18.083Z",
       "relatedFiles": [
         {
           "path": "lib/totp.ts",
@@ -138,7 +138,9 @@
       ],
       "implementationGuide": "1. Create `/lib/totp.ts` with TOTP implementation using `otplib`\\n2. Generate secret keys and QR codes for authenticator apps\\n3. Implement TOTP validation with 30-second window tolerance\\n4. Create backup codes system (10 codes, single-use, hashed storage)\\n5. Add database schema for user secrets and backup codes\\n\\nPseudocode:\\n```typescript\\nclass TOTPManager {\\n  generateSecret(userId: string): { secret: string, qrCode: string, backupCodes: string[] } {\\n    const secret = authenticator.generateSecret();\\n    const qrCode = this.generateQRCode(secret, userId);\\n    const backupCodes = this.generateBackupCodes(10);\\n    \\n    // Store hashed versions in database\\n    await this.storeUserSecret(userId, secret);\\n    await this.storeBackupCodes(userId, backupCodes);\\n    \\n    return { secret, qrCode, backupCodes };\\n  }\\n  \\n  verifyTOTP(userId: string, token: string): boolean {\\n    const secret = await this.getUserSecret(userId);\\n    return authenticator.verify({ token, secret, window: 1 }); // ±30 seconds\\n  }\\n  \\n  verifyBackupCode(userId: string, code: string): boolean {\\n    const storedCodes = await this.getBackupCodes(userId);\\n    const isValid = storedCodes.some(stored => bcrypt.compare(code, stored.hash));\\n    \\n    if (isValid) {\\n      await this.invalidateBackupCode(userId, code);\\n    }\\n    \\n    return isValid;\\n  }\\n}\\n```",
       "verificationCriteria": "TOTP system generates valid secrets and QR codes, validates tokens with proper time window, manages backup codes securely with single-use invalidation, and integrates with existing user system.",
-      "analysisResult": "Phase 3 Advanced Security Implementation: Build enterprise-grade security features on existing Next.js 15 + Supabase authentication foundation. Core architecture: leverage existing middleware.ts Phase 2 slot, hierarchical config pattern, device confidence scoring (30/25/20/25 weights), and strict TypeScript compliance. Integration points: Redis ZSET sliding window rate limiting, NIST AAL2-compliant 2FA/MFA with TOTP, structured security logging replacing console.log, and Resend email notifications. Must maintain shrimp-rules.md compliance and existing Auth→RateLimiting→Validation→BusinessLogic middleware ordering."
+      "analysisResult": "Phase 3 Advanced Security Implementation: Build enterprise-grade security features on existing Next.js 15 + Supabase authentication foundation. Core architecture: leverage existing middleware.ts Phase 2 slot, hierarchical config pattern, device confidence scoring (30/25/20/25 weights), and strict TypeScript compliance. Integration points: Redis ZSET sliding window rate limiting, NIST AAL2-compliant 2FA/MFA with TOTP, structured security logging replacing console.log, and Resend email notifications. Must maintain shrimp-rules.md compliance and existing Auth→RateLimiting→Validation→BusinessLogic middleware ordering.",
+      "summary": "Successfully implemented RFC 6238 compliant TOTP 2FA system with QR code generation, secret management, and backup codes. Core features include secure secret generation with otplib, QR code creation for authenticator apps, 30-second window tolerance for TOTP validation, 10 single-use backup codes with bcrypt hashing, comprehensive database schema with RLS policies, and TypeScript-strict implementation. Configuration system extended with MFA settings, validation utilities created for token formats, and singleton pattern implemented for efficient resource management. All TypeScript compilation successful and ready for API route integration.",
+      "completedAt": "2025-07-10T11:33:18.081Z"
     },
     {
       "id": "db42c565-3f6d-490e-8e3d-dd660066b835",

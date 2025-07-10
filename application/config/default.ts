@@ -32,4 +32,25 @@ export default {
     // Key prefix for Redis storage
     keyPrefix: 'rate:',
   },
+  mfa: {
+    // TOTP configuration
+    totp: {
+      issuer: process.env.MFA_ISSUER || 'LaunchSaaSFast',
+      algorithm: 'sha1' as const,
+      digits: 6,
+      period: 30, // seconds
+      window: 1, // ±30 seconds tolerance
+    },
+    // Backup codes configuration
+    backupCodes: {
+      count: 10,
+      length: 8,
+      algorithm: 'base32' as const,
+    },
+    // Rate limiting for MFA operations
+    rateLimits: {
+      setupAttempts: { max: 3, window: 300 }, // 3 setups per 5 minutes
+      verifyAttempts: { max: 10, window: 60 }, // 10 attempts per minute
+    },
+  },
 };
