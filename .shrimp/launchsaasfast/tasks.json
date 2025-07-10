@@ -301,14 +301,14 @@
       "id": "9bf9eec3-f0b9-47db-afc9-1a229cba0285",
       "name": "Implémenter les routes API d'authentification de base",
       "description": "Créer les routes essentielles : POST /api/auth/signin, POST /api/auth/signup avec validation Zod, intégration Supabase Auth, extraction device info et error handling unifié",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "fd9d1b9f-c2f2-45d7-87f9-346abfe1b03f"
         }
       ],
       "createdAt": "2025-07-09T22:42:24.501Z",
-      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-10T09:59:43.129Z",
       "relatedFiles": [
         {
           "path": "app/api/auth/signin/route.ts",
@@ -333,7 +333,9 @@
       ],
       "implementationGuide": "1. Créer app/api/auth/signin/route.ts avec SigninSchema Zod\n2. Authentification Supabase signInWithPassword()\n3. Extraire User-Agent, IP\n4. Créer app/api/auth/signup/route.ts avec SignupSchema\n5. Vérification unicité email + création profil\n6. Intégrer error handler centralisé\n7. Tests Postman et integration",
       "verificationCriteria": "Format APIResponse uniforme, validation Zod, auth Supabase OK, extraction device info fonctionnelle, gestion erreurs propre",
-      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md.",
+      "summary": "Les routes API d'authentification ont été créées : `/api/auth/signin` et `/api/auth/signup` avec validation Zod, intégration Supabase Auth, extraction device info (User-Agent, IP), et error handler centralisé. Le format APIResponse uniforme est en place, la validation fonctionne, et l'authentification Supabase est opérationnelle. Les TODO restent pour l'enregistrement des device info en base.",
+      "completedAt": "2025-07-10T09:59:43.128Z"
     },
     {
       "id": "d4430d77-f92f-4e9c-b601-1df0c79138c7",
