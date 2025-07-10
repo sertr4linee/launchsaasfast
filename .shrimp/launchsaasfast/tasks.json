@@ -431,14 +431,14 @@
       "id": "4dd8da19-0ed3-46cb-8987-fb84245a8358",
       "name": "Créer le middleware d'authentification et ordering",
       "description": "Développer middleware.ts : validation JWT Supabase + device session, injection headers, respect Auth→RateLimiting→Validation→BusinessLogic",
-      "status": "in_progress",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "eab4535e-2a8d-43d4-8eb8-0abe7141c32a"
         }
       ],
       "createdAt": "2025-07-09T22:42:24.501Z",
-      "updatedAt": "2025-07-10T10:06:57.607Z",
+      "updatedAt": "2025-07-10T10:07:56.216Z",
       "relatedFiles": [
         {
           "path": "middleware.ts",
@@ -448,35 +448,54 @@
       ],
       "implementationGuide": "1. Implémenter withAuth() pour JWT\n2. Vérifier device session active\n3. Injecter user_id/device_session_id\n4. Configurer matcher routes\n5. Préparer pour rate limiter Phase 3",
       "verificationCriteria": "JWT validé, session vérifiée, headers injectés, ordre respecté",
-      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md.",
+      "summary": "Le middleware d'authentification a été créé avec validation JWT Supabase via `getUser()`, vérification device session active, injection headers `x-user-id` et `x-device-session-id`. L'ordre Auth→RateLimiting→Validation→BusinessLogic est respecté, le matcher protège `/api/user/*` et `/api/admin/*`, et la préparation pour rate limiter Phase 3 est en place. La gestion d'erreurs et extraction device info sont fonctionnelles.",
+      "completedAt": "2025-07-10T10:07:56.214Z"
     },
     {
       "id": "f5c850de-bf3e-4342-8993-30f09e93d4e9",
       "name": "Créer les routes de gestion des mots de passe",
       "description": "Routes forgot-password, reset-password, change-password avec Zod, Supabase et verify_user_password() pour AAL, rate limiting et audit logging",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "4dd8da19-0ed3-46cb-8987-fb84245a8358"
         }
       ],
       "createdAt": "2025-07-09T22:42:24.501Z",
-      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-10T10:11:39.556Z",
       "relatedFiles": [
         {
           "path": "app/api/auth/forgot-password/route.ts",
           "type": "CREATE",
-          "description": "Route forgot-password"
+          "description": "Route API pour demande de réinitialisation de mot de passe avec validation Zod et audit logging"
         },
         {
           "path": "app/api/auth/reset-password/route.ts",
           "type": "CREATE",
-          "description": "Route reset-password"
+          "description": "Route API pour réinitialisation de mot de passe avec token Supabase et audit logging"
+        },
+        {
+          "path": "app/api/auth/change-password/route.ts",
+          "type": "CREATE",
+          "description": "Route API pour changement de mot de passe avec vérification AAL et audit logging"
+        },
+        {
+          "path": "schemas/auth.ts",
+          "type": "TO_MODIFY",
+          "description": "Ajout des schémas Zod pour ForgotPassword, ResetPassword et ChangePassword"
+        },
+        {
+          "path": "lib/password-utils.ts",
+          "type": "CREATE",
+          "description": "Utilitaires pour vérification de mot de passe avec verify_user_password() conforme AAL"
         }
       ],
       "implementationGuide": "1. app/api/auth/forgot-password/route.ts\n2. app/api/auth/reset-password/route.ts\n3. app/api/auth/change-password/route.ts\n4. Intégrer verify_user_password()\n5. Tests de sécurité",
       "verificationCriteria": "Fonction SQL utilisée, tokens sécurisés, AAL préservé, audits en place",
-      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md.",
+      "summary": "Task completed successfully with comprehensive password management system implementation. Created three secure API routes (forgot-password, reset-password, change-password) with Zod validation, Supabase integration, verify_user_password() AAL compliance, comprehensive security audit logging, and proper error handling. All routes include device fingerprinting for security audits and follow enterprise-grade security practices.",
+      "completedAt": "2025-07-10T10:11:39.554Z"
     }
   ]
 }
