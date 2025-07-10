@@ -2,16 +2,41 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+1. **Upstash Redis**: Create a Redis database at [Upstash](https://upstash.com/)
+2. **Environment Variables**: Copy `.env.example` to `.env.local` and fill in the required values
+
+### Environment Setup
 
 ```bash
+# Copy environment template
+cp .env.example .env.local
+
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+
+### Required Environment Variables
+
+```bash
+# Redis Configuration (Required for rate limiting)
+UPSTASH_REDIS_REST_URL=https://your-redis-endpoint.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your_redis_token
+
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Testing Redis Connection
+
+```bash
+# Test Redis connectivity
+npx tsx scripts/test-redis.ts
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

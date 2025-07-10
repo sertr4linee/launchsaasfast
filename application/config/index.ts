@@ -25,12 +25,24 @@ export function loadConfig(overrides: RuntimeOverrides = {}) {
     port: process.env.PORT ? Number(process.env.PORT) : undefined,
     dbUrl: process.env.DATABASE_URL,
     logLevel: process.env.LOG_LEVEL,
+    redis: {
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      maxRetries: process.env.REDIS_MAX_RETRIES ? Number(process.env.REDIS_MAX_RETRIES) : undefined,
+      healthCheckInterval: process.env.REDIS_HEALTH_CHECK_INTERVAL ? Number(process.env.REDIS_HEALTH_CHECK_INTERVAL) : undefined,
+    },
   };
   const merged = {
     ...base,
     ...envConfig,
-    ...rawEnv,
+    ...Object.fromEntries(Object.entries(rawEnv).filter(([_, v]) => v !== undefined)),
     ...overrides,
+    redis: {
+      ...base.redis,
+      ...(envConfig as any)?.redis,
+      ...(rawEnv.redis && Object.fromEntries(Object.entries(rawEnv.redis).filter(([_, v]) => v !== undefined))),
+      ...(overrides.redis || {}),
+    },
   };
   const parsed = EnvConfigSchema.parse(merged);
   cachedConfig = parsed;
