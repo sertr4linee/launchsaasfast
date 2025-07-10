@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "id": "757c6710-a330-4eca-9b01-f6787a4892d7",
+      "name": "Create Security Event Types and Interfaces",
+      "description": "Define comprehensive security event types, severity levels, and TypeScript interfaces for structured logging system. Create foundational types that will be used throughout the security logging implementation.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-07-10T11:49:08.509Z",
+      "updatedAt": "2025-07-10T11:51:46.175Z",
+      "relatedFiles": [
+        {
+          "path": "types/security.ts",
+          "type": "CREATE",
+          "description": "Security event types and interfaces"
+        }
+      ],
+      "implementationGuide": "1. Create types/security.ts with SecurityEventType enum covering authentication events (auth:signin, auth:failed, auth:signout), authorization events (aal:upgrade, aal:insufficient), security events (device:new, rate_limit:exceeded, 2fa:enabled), and system events (error:api, error:db)\\n2. Define SecurityEventSeverity enum: INFO, WARNING, HIGH, CRITICAL\\n3. Create SecurityEventData interface with flexible metadata structure\\n4. Define SecurityEventContext interface for request context (userId, deviceSessionId, ipAddress, userAgent)\\n5. Create SecurityEvent interface combining all components\\n6. Export event category mappings for automated severity determination",
+      "verificationCriteria": "TypeScript interfaces compile without errors, cover all identified event types from console.log analysis, include proper PII sanitization fields, and provide comprehensive typing for security event system.",
+      "analysisResult": "Security Event Logging System: Create enterprise-grade structured security logging infrastructure to replace existing console.log statements throughout the codebase. Leverage existing security_events table in database, implement comprehensive event tracking for authentication, authorization, and security-related actions with proper metadata enrichment and PII sanitization.",
+      "summary": "Successfully created comprehensive security event types and interfaces in types/security.ts. Implemented SecurityEventType enum with 31 event types covering authentication, authorization, password management, 2FA, device management, rate limiting, security violations, system errors, data access, and email events. Defined SecurityEventSeverity levels (INFO, WARNING, HIGH, CRITICAL) with automated severity mapping. Created flexible SecurityEventData interface with PII sanitization fields, SecurityEventContext for request enrichment, and complete SecurityEvent structure. Added helper constants for critical events, rate-limited events, and PII fields. TypeScript compilation successful with no errors.",
+      "completedAt": "2025-07-10T11:51:46.173Z"
+    }
+  ]
+}
