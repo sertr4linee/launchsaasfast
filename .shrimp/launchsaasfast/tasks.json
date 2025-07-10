@@ -401,14 +401,14 @@
       "id": "eab4535e-2a8d-43d4-8eb8-0abe7141c32a",
       "name": "Gérer les sessions device",
       "description": "Implémenter /lib/device-sessions.ts : create/update/delete sessions avec last_activity tracking et nettoyage automatique, plus API user sessions",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "e6e57885-3414-4b80-a3fe-f9b25f1a2b7f"
         }
       ],
       "createdAt": "2025-07-09T22:42:24.501Z",
-      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-10T10:06:20.155Z",
       "relatedFiles": [
         {
           "path": "lib/device-sessions.ts",
@@ -423,7 +423,9 @@
       ],
       "implementationGuide": "1. Créer fonctions CRUD sessions\n2. Implémenter updateLastActivity()\n3. Scheduling cleanupExpiredSessions()\n4. Route app/api/user/sessions/route.ts\n5. Tests integration",
       "verificationCriteria": "Sessions créées avec metadata, tracking et cleanup OK, API gestion sessions fonctionnelle",
-      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md.",
+      "summary": "La gestion des sessions device est implémentée avec CRUD complet : `createDeviceSession()`, `updateLastActivity()`, `getSessionByToken()`, `deleteDeviceSession()`, `getUserSessions()`. Le nettoyage automatique via `cleanupExpiredSessions()` et `scheduleSessionCleanup()` fonctionne. L'API `/api/user/sessions` gère GET (liste) et DELETE (suppression) avec authentification par header. Les métadonnées incluent confidence score, AAL level, et timestamps.",
+      "completedAt": "2025-07-10T10:06:20.154Z"
     },
     {
       "id": "4dd8da19-0ed3-46cb-8987-fb84245a8358",
