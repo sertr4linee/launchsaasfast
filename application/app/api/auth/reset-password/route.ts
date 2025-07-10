@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server';
 import { ResetPasswordSchema } from '../../../../schemas/auth';
 import { supabaseServer } from '../../../../lib/supabase/server';
 import { handleError, successResponse } from '../../../../lib/error-handler';
+import { securityLogger } from '../../../../lib/security-logger';
+import { SecurityEventType } from '../../../../types/security';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,8 +22,11 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      // Log de sécurité pour tentative de reset échouée
-      console.log(`[SECURITY_AUDIT] Password reset failed from ${clientIp}:`, error.message);
+      // Log failed password reset
+      await securityLogger.logAuth(SecurityEventType.PASSWORD_RESET_FAILED, request, {
+        error: error.message,
+        authMethod: 'reset_password',
+      });
       
       return handleError(new Error('Token invalide ou expiré'));
     }
@@ -30,8 +35,11 @@ export async function POST(request: NextRequest) {
       return handleError(new Error('Impossible de réinitialiser le mot de passe'));
     }
 
-    // Log de sécurité pour reset réussi
-    console.log(`[SECURITY_AUDIT] Password reset successful for user ${data.user.id} from ${clientIp} - ${userAgent}`);
+    // Log successful password reset
+    await securityLogger.logAuth(SecurityEventType.PASSWORD_RESET_COMPLETED, request, {
+      userId: data.user.id,
+      authMethod: 'reset_password',
+    });
 
     // TODO: Invalider toutes les sessions existantes pour sécurité (Phase 3)
     // TODO: Envoyer notification email de changement de mot de passe
@@ -45,8 +53,11 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    // Log des erreurs pour audit de sécurité
-    console.error('[SECURITY_AUDIT] Reset password error:', error);
+    // Log security error
+    await securityLogger.logAuth(SecurityEventType.PASSWORD_RESET_FAILED, request, {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      authMethod: 'reset_password',
+    });
     return handleError(error);
   }
 }

@@ -1,6 +1,8 @@
 import { supabaseServer } from './supabase/server';
 import { DeviceInfo } from '../types/device';
 import { compareDevices, ConfidenceLevel } from './confidence-scoring';
+import { securityLogger } from './security-logger';
+import { SecurityEventType } from '../types/security';
 
 export interface DeviceSession {
   id: string;
@@ -44,7 +46,17 @@ export async function createDeviceSession(params: CreateSessionParams): Promise<
     .single();
 
   if (error || !data) {
-    console.error('Error creating device session:', error);
+    // Log device session creation error
+    await securityLogger.logEvent(SecurityEventType.DEVICE_SESSION_CREATED, {
+      error: error?.message || 'Failed to create device session',
+      metadata: {
+        operation: 'create_device_session',
+        deviceId: params.deviceId,
+        aalLevel: params.aalLevel,
+        confidenceScore: params.confidenceScore,
+        message: 'Error creating device session',
+      },
+    });
     return null;
   }
 
@@ -72,7 +84,15 @@ export async function updateLastActivity(sessionId: string): Promise<boolean> {
     .eq('id', sessionId);
 
   if (error) {
-    console.error('Error updating last activity:', error);
+    // Log session activity update error
+    await securityLogger.logEvent(SecurityEventType.DEVICE_SESSION_CREATED, {
+      sessionId,
+      error: error.message,
+      metadata: {
+        operation: 'update_last_activity',
+        message: 'Error updating last activity',
+      },
+    });
     return false;
   }
 
@@ -115,7 +135,15 @@ export async function deleteDeviceSession(sessionId: string): Promise<boolean> {
     .eq('id', sessionId);
 
   if (error) {
-    console.error('Error deleting device session:', error);
+    // Log session deletion error
+    await securityLogger.logEvent(SecurityEventType.DEVICE_SESSION_TERMINATED, {
+      sessionId,
+      error: error.message,
+      metadata: {
+        operation: 'delete_device_session',
+        message: 'Error deleting device session',
+      },
+    });
     return false;
   }
 
@@ -136,7 +164,15 @@ export async function getUserSessions(userId: string): Promise<DeviceSession[]> 
     .order('last_activity', { ascending: false });
 
   if (error || !data) {
-    console.error('Error fetching user sessions:', error);
+    // Log error fetching user sessions
+    await securityLogger.logEvent(SecurityEventType.DEVICE_SESSION_CREATED, {
+      userId,
+      error: error?.message || 'Failed to fetch user sessions',
+      metadata: {
+        operation: 'fetch_user_sessions',
+        message: 'Error fetching user sessions',
+      },
+    });
     return [];
   }
 
@@ -163,7 +199,14 @@ export async function cleanupExpiredSessions(): Promise<number> {
     .select('id');
 
   if (error) {
-    console.error('Error cleaning up expired sessions:', error);
+    // Log error cleaning up expired sessions
+    await securityLogger.logEvent(SecurityEventType.DEVICE_SESSION_EXPIRED, {
+      error: error.message,
+      metadata: {
+        operation: 'cleanup_expired_sessions',
+        message: 'Error cleaning up expired sessions',
+      },
+    });
     return 0;
   }
 
@@ -179,6 +222,13 @@ export function scheduleSessionCleanup(): NodeJS.Timeout {
   
   return setInterval(async () => {
     const deletedCount = await cleanupExpiredSessions();
-    console.log(`Cleaned up ${deletedCount} expired sessions`);
+    // Log successful cleanup
+    await securityLogger.logEvent(SecurityEventType.DEVICE_SESSION_EXPIRED, {
+      metadata: {
+        operation: 'scheduled_session_cleanup',
+        deletedCount,
+        message: `Cleaned up ${deletedCount} expired sessions`,
+      },
+    });
   }, CLEANUP_INTERVAL);
 }

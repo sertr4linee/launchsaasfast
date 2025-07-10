@@ -1,5 +1,7 @@
 import { supabaseServer } from './supabase/server';
 import { getTOTPManager } from './totp';
+import { securityLogger } from './security-logger';
+import { SecurityEventType } from '../types/security';
 import type { 
   AuthenticationLevel, 
   AuthenticationFactor, 
@@ -178,7 +180,18 @@ export class AALManager {
       await this.logAALUpgrade(userId, deviceSessionId, targetAAL, authFactor);
 
     } catch (error) {
-      console.error('Error upgrading AAL:', error);
+      // Log AAL upgrade error
+      await securityLogger.logEvent(SecurityEventType.AUTH_FAILED, {
+        userId,
+        sessionId: deviceSessionId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        metadata: {
+          targetAAL,
+          authFactor,
+          operation: 'aal_upgrade',
+          message: 'AAL upgrade failed',
+        },
+      });
       throw error;
     }
   }
@@ -201,7 +214,16 @@ export class AALManager {
       }
 
     } catch (error) {
-      console.error('Error downgrading AAL:', error);
+      // Log AAL downgrade error
+      await securityLogger.logEvent(SecurityEventType.AUTH_FAILED, {
+        sessionId: deviceSessionId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        metadata: {
+          targetAAL,
+          operation: 'aal_downgrade',
+          message: 'AAL downgrade failed',
+        },
+      });
       throw error;
     }
   }
@@ -224,7 +246,15 @@ export class AALManager {
       return data.aal_level === 2 ? 'AAL2' : 'AAL1';
 
     } catch (error) {
-      console.error('Error getting current AAL:', error);
+      // Log error getting current AAL
+      await securityLogger.logEvent(SecurityEventType.AUTH_FAILED, {
+        sessionId: deviceSessionId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        metadata: {
+          operation: 'get_current_aal',
+          message: 'Error getting current AAL',
+        },
+      });
       return null;
     }
   }
@@ -258,7 +288,15 @@ export class AALManager {
       return deviceData.user_id;
 
     } catch (error) {
-      console.error('Error getting device session user ID:', error);
+      // Log error getting device session user ID
+      await securityLogger.logEvent(SecurityEventType.AUTH_FAILED, {
+        sessionId: deviceSessionId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        metadata: {
+          operation: 'get_device_session_user_id',
+          message: 'Error getting device session user ID',
+        },
+      });
       return null;
     }
   }
@@ -272,14 +310,17 @@ export class AALManager {
     targetAAL: AuthenticationLevel,
     authFactor: AuthenticationFactor
   ): Promise<void> {
-    // TODO: Replace with structured logging once security logging system is implemented
-    console.log('AAL Upgrade:', {
+    // Log AAL upgrade event
+    await securityLogger.logEvent(SecurityEventType.AUTH_SIGNIN, {
       userId,
       sessionId,
-      targetAAL,
-      authFactor,
-      timestamp: new Date().toISOString(),
-      event: 'aal_upgrade',
+      metadata: {
+        targetAAL,
+        authFactor,
+        timestamp: new Date().toISOString(),
+        event: 'aal_upgrade',
+        message: 'AAL level upgraded successfully',
+      },
     });
   }
 
@@ -318,7 +359,15 @@ export class AALManager {
       };
 
     } catch (error) {
-      console.error('Error getting AAL session:', error);
+      // Log error getting AAL session
+      await securityLogger.logEvent(SecurityEventType.AUTH_FAILED, {
+        sessionId: deviceSessionId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        metadata: {
+          operation: 'get_aal_session',
+          message: 'Error getting AAL session',
+        },
+      });
       return null;
     }
   }

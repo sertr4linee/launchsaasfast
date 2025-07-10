@@ -5,6 +5,8 @@ import { getSessionByToken } from './lib/device-sessions';
 import { extractDeviceInfo, getClientIP } from './lib/device-detection';
 import { getRateLimiter } from './lib/rate-limiter';
 import { getAALManager } from './lib/aal-manager';
+import { securityLogger } from './lib/security-logger';
+import { SecurityEventType } from './types/security';
 
 export async function middleware(request: NextRequest) {
   // Ordre de traitement: Auth → RateLimiting → Validation → BusinessLogic
@@ -118,7 +120,12 @@ async function withAuth(request: NextRequest): Promise<AuthResult> {
     };
 
   } catch (error) {
-    console.error('Auth middleware error:', error);
+    // Log authentication error
+    await securityLogger.logAuth(SecurityEventType.AUTH_FAILED, request, {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      authMethod: 'middleware_bearer',
+    });
+    
     return {
       redirect: true,
       response: NextResponse.json(
@@ -169,6 +176,17 @@ async function withRateLimit(request: NextRequest, authResult: AuthResult): Prom
         headers['Retry-After'] = result.retryAfter;
       }
 
+      // Log rate limit violation
+      await securityLogger.logAuth(SecurityEventType.RATE_LIMIT_EXCEEDED, request, {
+        authMethod: 'middleware',
+        metadata: {
+          endpoint,
+          identifier,
+          limit: result.limit,
+          confidenceScore,
+        },
+      });
+
       return {
         blocked: true,
         response: NextResponse.json(
@@ -197,7 +215,16 @@ async function withRateLimit(request: NextRequest, authResult: AuthResult): Prom
     };
 
   } catch (error) {
-    console.error('Rate limiting middleware error:', error);
+    // Log rate limiting error
+    await securityLogger.logAuth(SecurityEventType.AUTH_FAILED, request, {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      authMethod: 'middleware_rate_limit',
+      metadata: {
+        component: 'middleware',
+        function: 'withRateLimit',
+      },
+    });
+    
     // Fail open - allow request if rate limiter fails
     return { blocked: false };
   }

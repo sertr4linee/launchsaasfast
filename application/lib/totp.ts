@@ -4,6 +4,8 @@ import * as bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { supabaseServer } from './supabase/server';
 import { getConfig } from '../config';
+import { securityLogger } from './security-logger';
+import { SecurityEventType } from '../types/security';
 import type { 
   TOTPSetupResult, 
   TOTPValidationResult, 
@@ -62,7 +64,15 @@ export class TOTPManager {
       };
       
     } catch (error) {
-      console.error('Error generating TOTP secret:', error);
+      // Log 2FA setup error
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        userId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        metadata: {
+          operation: 'generate_totp_secret',
+          message: 'Error generating TOTP secret',
+        },
+      });
       throw new Error('Failed to generate 2FA setup');
     }
   }
@@ -80,7 +90,16 @@ export class TOTPManager {
         return await this.verifyTOTPToken(userId, token);
       }
     } catch (error) {
-      console.error('Error verifying TOTP:', error);
+      // Log TOTP verification error
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        userId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        metadata: {
+          operation: 'verify_totp',
+          isBackupCode,
+          message: 'Error verifying TOTP',
+        },
+      });
       return { isValid: false };
     }
   }
@@ -186,7 +205,15 @@ export class TOTPManager {
       });
 
     if (error) {
-      console.error('Error storing TOTP secret:', error);
+      // Log error storing TOTP secret
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        userId,
+        error: error.message,
+        metadata: {
+          operation: 'store_totp_secret',
+          message: 'Error storing TOTP secret',
+        },
+      });
       throw new Error('Failed to store TOTP secret');
     }
   }
@@ -227,7 +254,15 @@ export class TOTPManager {
       .insert(codesWithIds);
 
     if (error) {
-      console.error('Error storing backup codes:', error);
+      // Log error storing backup codes
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        userId: codes[0]?.userId,
+        error: error.message,
+        metadata: {
+          operation: 'store_backup_codes',
+          message: 'Error storing backup codes',
+        },
+      });
       throw new Error('Failed to store backup codes');
     }
   }
@@ -243,7 +278,15 @@ export class TOTPManager {
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Error fetching backup codes:', error);
+      // Log error fetching backup codes
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        userId,
+        error: error.message,
+        metadata: {
+          operation: 'fetch_backup_codes',
+          message: 'Error fetching backup codes',
+        },
+      });
       return [];
     }
 
@@ -270,7 +313,15 @@ export class TOTPManager {
       .eq('id', codeId);
 
     if (error) {
-      console.error('Error marking backup code as used:', error);
+      // Log error marking backup code as used
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        error: error.message,
+        metadata: {
+          operation: 'mark_backup_code_used',
+          codeId,
+          message: 'Error marking backup code as used',
+        },
+      });
       throw new Error('Failed to update backup code');
     }
   }
@@ -288,7 +339,15 @@ export class TOTPManager {
       .eq('user_id', userId);
 
     if (error) {
-      console.error('Error enabling 2FA:', error);
+      // Log error enabling 2FA
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        userId,
+        error: error.message,
+        metadata: {
+          operation: 'enable_2fa',
+          message: 'Error enabling 2FA',
+        },
+      });
       throw new Error('Failed to enable 2FA');
     }
   }
@@ -304,7 +363,15 @@ export class TOTPManager {
       .eq('user_id', userId);
 
     if (secretError) {
-      console.error('Error removing TOTP secret:', secretError);
+      // Log error removing TOTP secret
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        userId,
+        error: secretError.message,
+        metadata: {
+          operation: 'remove_totp_secret',
+          message: 'Error removing TOTP secret',
+        },
+      });
       throw new Error('Failed to disable 2FA');
     }
 
@@ -315,7 +382,15 @@ export class TOTPManager {
       .eq('user_id', userId);
 
     if (codesError) {
-      console.error('Error removing backup codes:', codesError);
+      // Log error removing backup codes
+      await securityLogger.logEvent(SecurityEventType.MFA_FAILED, {
+        userId,
+        error: codesError.message,
+        metadata: {
+          operation: 'remove_backup_codes',
+          message: 'Error removing backup codes',
+        },
+      });
       // Don't throw here, TOTP secret is already removed
     }
   }

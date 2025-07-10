@@ -3,6 +3,8 @@ import { ChangePasswordSchema } from '../../../../schemas/auth';
 import { supabaseServer } from '../../../../lib/supabase/server';
 import { handleError, successResponse } from '../../../../lib/error-handler';
 import { verify_user_password } from '../../../../lib/password-utils';
+import { securityLogger } from '../../../../lib/security-logger';
+import { SecurityEventType } from '../../../../types/security';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +29,11 @@ export async function POST(request: NextRequest) {
     const { data: userData, error: userError } = await supabaseServer.auth.admin.getUserById(userId);
     
     if (userError || !userData.user || !userData.user.email) {
-      console.log(`[SECURITY_AUDIT] Change password failed - user not found: ${userId} from ${clientIp}`);
+      await securityLogger.logAuth(SecurityEventType.AUTH_FAILED, request, {
+        userId,
+        error: 'User not found during password change',
+        authMethod: 'password_change',
+      });
       return handleError(new Error('Utilisateur non trouvé'));
     }
 
@@ -38,7 +44,12 @@ export async function POST(request: NextRequest) {
     );
 
     if (!passwordVerification.success) {
-      console.log(`[SECURITY_AUDIT] Change password failed - invalid current password for ${userData.user.email} from ${clientIp}`);
+      await securityLogger.logAuth(SecurityEventType.AUTH_FAILED, request, {
+        userId,
+        email: userData.user.email,
+        error: 'Invalid current password during password change',
+        authMethod: 'password_change',
+      });
       return handleError(new Error('Mot de passe actuel incorrect'));
     }
 
@@ -49,12 +60,22 @@ export async function POST(request: NextRequest) {
     );
 
     if (error) {
-      console.log(`[SECURITY_AUDIT] Change password failed for ${userData.user.email} from ${clientIp}:`, error.message);
+      await securityLogger.logAuth(SecurityEventType.PASSWORD_RESET_FAILED, request, {
+        userId,
+        email: userData.user.email,
+        error: error.message,
+        authMethod: 'password_change',
+      });
       return handleError(new Error('Impossible de changer le mot de passe'));
     }
 
-    // Log de sécurité pour changement réussi
-    console.log(`[SECURITY_AUDIT] Password changed successfully for ${userData.user.email} from ${clientIp} - ${userAgent} (device_session: ${deviceSessionId})`);
+    // Log successful password change
+    await securityLogger.logAuth(SecurityEventType.PASSWORD_CHANGED, request, {
+      userId,
+      email: userData.user.email,
+      authMethod: 'password_change',
+      sessionId: deviceSessionId || undefined,
+    });
 
     // TODO: Invalider toutes les autres sessions pour sécurité (Phase 3)
     // TODO: Envoyer notification email de changement de mot de passe
@@ -68,8 +89,11 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    // Log des erreurs pour audit de sécurité
-    console.error('[SECURITY_AUDIT] Change password error:', error);
+    // Log API error
+    await securityLogger.logError(error as Error, request, {
+      endpoint: '/api/auth/change-password',
+    });
+    
     return handleError(error);
   }
 }

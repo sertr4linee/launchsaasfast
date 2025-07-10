@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server';
 import { SigninSchema } from '../../../../schemas/auth';
 import { supabaseServer } from '../../../../lib/supabase/server';
 import { handleError, successResponse } from '../../../../lib/error-handler';
+import { securityLogger } from '../../../../lib/security-logger';
+import { SecurityEventType } from '../../../../types/security';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,11 +23,24 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
+      // Log failed authentication attempt
+      await securityLogger.logAuth(SecurityEventType.AUTH_FAILED, request, {
+        email: validatedData.email,
+        error: error.message,
+        authMethod: 'password',
+      });
+      
       return handleError(new Error(error.message));
     }
 
+    // Log successful authentication
+    await securityLogger.logAuth(SecurityEventType.AUTH_SIGNIN, request, {
+      userId: data.user.id,
+      email: validatedData.email,
+      authMethod: 'password',
+    });
+
     // TODO: Enregistrer device info et créer session
-    console.log('Device info:', { userAgent, clientIp });
 
     return successResponse({
       user: data.user,
@@ -33,6 +48,11 @@ export async function POST(request: NextRequest) {
     }, 'Connexion réussie');
 
   } catch (error) {
+    // Log API error
+    await securityLogger.logError(error as Error, request, {
+      endpoint: '/api/auth/signin',
+    });
+    
     return handleError(error);
   }
 }

@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server';
 import { ForgotPasswordSchema } from '../../../../schemas/auth';
 import { supabaseServer } from '../../../../lib/supabase/server';
 import { handleError, successResponse } from '../../../../lib/error-handler';
+import { securityLogger } from '../../../../lib/security-logger';
+import { SecurityEventType } from '../../../../types/security';
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,8 +25,12 @@ export async function POST(request: NextRequest) {
     );
 
     if (error) {
-      // Log de sécurité pour tentative de reset
-      console.log(`[SECURITY_AUDIT] Forgot password attempt failed for ${validatedData.email} from ${clientIp}:`, error.message);
+      // Log failed password reset attempt
+      await securityLogger.logAuth(SecurityEventType.PASSWORD_RESET_FAILED, request, {
+        email: validatedData.email,
+        error: error.message,
+        authMethod: 'forgot_password',
+      });
       
       // Ne pas révéler si l'email existe ou non pour des raisons de sécurité
       return successResponse(
@@ -33,8 +39,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Log de sécurité pour demande valide
-    console.log(`[SECURITY_AUDIT] Forgot password requested for ${validatedData.email} from ${clientIp} - ${userAgent}`);
+    // Log successful password reset request
+    await securityLogger.logAuth(SecurityEventType.PASSWORD_RESET_REQUESTED, request, {
+      email: validatedData.email,
+      authMethod: 'forgot_password',
+    });
 
     // TODO: Rate limiting pour éviter les abus (Phase 3)
     
@@ -44,8 +53,11 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    // Log des erreurs pour audit de sécurité
-    console.error('[SECURITY_AUDIT] Forgot password error:', error);
+    // Log API error
+    await securityLogger.logError(error as Error, request, {
+      endpoint: '/api/auth/forgot-password',
+    });
+    
     return handleError(error);
   }
 }

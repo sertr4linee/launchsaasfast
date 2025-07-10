@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
+import { securityLogger } from './security-logger';
+import { SecurityEventType } from '../types/security';
 
 export interface APIResponse<T = any> {
   success: boolean;
@@ -9,7 +11,15 @@ export interface APIResponse<T = any> {
 }
 
 export function handleError(error: unknown): NextResponse<APIResponse> {
-  console.error('API Error:', error);
+  // Log API error using structured logging
+  securityLogger.logEvent(SecurityEventType.ERROR_API, {
+    error: error instanceof Error ? error.message : 'Unknown error',
+    metadata: {
+      operation: 'api_error_handler',
+      errorType: error instanceof ZodError ? 'validation' : error instanceof Error ? 'application' : 'unknown',
+      message: 'API error occurred',
+    },
+  }).catch(console.error); // Fallback to console.error for logging errors
 
   if (error instanceof ZodError) {
     return NextResponse.json({
