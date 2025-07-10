@@ -341,14 +341,14 @@
       "id": "d4430d77-f92f-4e9c-b601-1df0c79138c7",
       "name": "Développer le module de détection d'appareils",
       "description": "Créer /lib/device-detection.ts : parsing User-Agent, extraction IP (X-Forwarded-For, CF headers), génération fingerprint unique",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "9bf9eec3-f0b9-47db-afc9-1a229cba0285"
         }
       ],
       "createdAt": "2025-07-09T22:42:24.501Z",
-      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-10T10:01:30.193Z",
       "relatedFiles": [
         {
           "path": "lib/device-detection.ts",
@@ -363,7 +363,9 @@
       ],
       "implementationGuide": "1. Implémenter parseUserAgent()\n2. Implémenter getClientIP()\n3. Générer fingerprint composite\n4. Exposer extractDeviceInfo()\n5. Tests unitaires pour chaque fonction",
       "verificationCriteria": "Parsing UA correct, IP extraction fiable, fingerprint stable, edge cases traités",
-      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md.",
+      "summary": "Le module de détection d'appareils a été créé avec succès : `parseUserAgent()` détecte browser/OS/platform, `getClientIP()` extrait l'IP via headers CF/X-Forwarded-For/X-Real-IP, `generateFingerprint()` crée un hash SHA256 unique, et `extractDeviceInfo()` combine tout. Les types `DeviceInfo` et `ParsedUserAgent` sont définis. Le module gère les edge cases et utilise crypto pour la stabilité du fingerprint.",
+      "completedAt": "2025-07-10T10:01:30.187Z"
     },
     {
       "id": "e6e57885-3414-4b80-a3fe-f9b25f1a2b7f",
