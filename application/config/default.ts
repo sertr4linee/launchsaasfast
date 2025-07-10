@@ -70,4 +70,8 @@ export default {
     // Log AAL changes for security monitoring
     logAALChanges: true,
   },
+  resend: {
+    apiKey: process.env.RESEND_API_KEY,
+    from: process.env.RESEND_FROM_EMAIL || 'noreply@launchsaasfast.com',
+  },
 };

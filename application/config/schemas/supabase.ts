@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseConfigSchema } from '../schemas';
+import { BaseConfigSchema } from './index';
 
 export const SupabaseEnvSchema = BaseConfigSchema.extend({
   SUPABASE_URL: z.string().url(),

@@ -116,6 +116,12 @@ export interface SecurityEventData {
   method?: string;
   statusCode?: number;
   
+  // Threat detection
+  riskScore?: number;
+  patterns?: string[];
+  reason?: string;
+  success?: boolean;
+  
   // Custom metadata
   metadata?: Record<string, any>;
 }

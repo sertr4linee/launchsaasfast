@@ -13,7 +13,12 @@ import {
   RATE_LIMITED_EVENTS,
   PII_FIELDS,
   SanitizedSecurityEventData,
+  SecurityEventFilter,
+  SecurityEventQueryResult,
 } from '../types/security';
+import { getEmailService } from './email/email-service';
+import { User } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Rate limiting configuration for security events
@@ -49,11 +54,14 @@ interface SecurityLoggerConfig {
 export class SecurityLogger {
   private config: SecurityLoggerConfig;
   private rateLimitKeyPrefix: string;
+  private supabase: SupabaseClient;
+  private emailService = getEmailService();
 
   constructor() {
-    const appConfig = getConfig();
+    const config = getConfig();
+    this.supabase = createClient(config.dbUrl, process.env.SUPABASE_SERVICE_ROLE_KEY!);
     this.config = {
-      enabled: appConfig.environment === 'production' || appConfig.environment === 'staging',
+      enabled: config.environment === 'production' || config.environment === 'staging',
       rateLimit: {
         maxEventsPerMinute: 100,
         maxEventsPerHour: 1000,
@@ -112,6 +120,14 @@ export class SecurityLogger {
       // Handle critical events
       if (this.isCriticalEvent(type)) {
         await this.handleCriticalEvent(event);
+      }
+
+      // Send email notification for relevant events
+      if (this.shouldSendEmailNotification(type) && context?.userId) {
+        const user = await this.getUser(context.userId);
+        if (user) {
+          await this.emailService.sendSecurityNotification(type, user, data);
+        }
       }
 
       // Fallback console logging for development
@@ -439,6 +455,29 @@ export class SecurityLogger {
     } catch (error) {
       console.error('Failed to handle critical event:', error);
     }
+  }
+
+  private shouldSendEmailNotification(type: SecurityEventType): boolean {
+    const emailNotificationEvents = [
+        SecurityEventType.DEVICE_NEW,
+        SecurityEventType.MFA_ENABLED,
+        SecurityEventType.PASSWORD_RESET_REQUESTED,
+    ];
+    return emailNotificationEvents.includes(type);
+  }
+
+  private async getUser(userId: string): Promise<User | null> {
+    const { data, error } = await this.supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching user for email notification:', error);
+      return null;
+    }
+    return data as User;
   }
 }
 

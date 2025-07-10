@@ -7,9 +7,16 @@ import { getRateLimiter } from './lib/rate-limiter';
 import { getAALManager } from './lib/aal-manager';
 import { securityLogger } from './lib/security-logger';
 import { SecurityEventType } from './types/security';
+import { getThreatDetectionEngine, ThreatDetectionUtils } from './lib/threat-detection';
 
 export async function middleware(request: NextRequest) {
-  // Ordre de traitement: Auth → RateLimiting → Validation → BusinessLogic
+  // Ordre de traitement: Auth → ThreatDetection → RateLimiting → Validation → BusinessLogic
+  
+  // Phase 0: Threat Detection - Check for blocked IPs and suspicious activity
+  const threatCheckResult = await withThreatCheck(request);
+  if (threatCheckResult.blocked) {
+    return threatCheckResult.response;
+  }
   
   // Phase 1: Authentification
   const authResult = await withAuth(request);
@@ -17,8 +24,8 @@ export async function middleware(request: NextRequest) {
     return authResult.response;
   }
 
-  // Phase 2: Rate Limiting (préparé pour Phase 3)
-  const rateLimitResult = await withRateLimit(request, authResult);
+  // Phase 2: Rate Limiting (avec ajustements basés sur la détection de menaces)
+  const rateLimitResult = await withRateLimit(request, authResult, threatCheckResult);
   if (rateLimitResult.blocked) {
     return rateLimitResult.response;
   }
@@ -32,6 +39,7 @@ export async function middleware(request: NextRequest) {
     requestHeaders.set('x-user-id', authResult.userId);
     requestHeaders.set('x-device-session-id', authResult.deviceSessionId);
     requestHeaders.set('x-aal-level', String(authResult.aalLevel || 1));
+    requestHeaders.set('x-threat-score', String(threatCheckResult.riskScore || 0));
 
     // Add rate limit headers if available
     if (rateLimitResult.headers) {
@@ -59,10 +67,53 @@ interface AuthResult {
   response?: NextResponse;
 }
 
+interface ThreatCheckResult {
+  blocked: boolean;
+  response?: NextResponse;
+  riskScore?: number;
+  requiresEnhancedAuth?: boolean;
+}
+
 interface RateLimitResult {
   blocked: boolean;
   response?: NextResponse;
   headers?: Record<string, string | number>;
+}
+
+/**
+ * Middleware de vérification des menaces
+ */
+async function withThreatCheck(request: NextRequest): Promise<ThreatCheckResult> {
+  try {
+    const clientIP = getClientIP(request.headers);
+    
+    // Check if IP is currently blocked
+    if (clientIP && await ThreatDetectionUtils.isIPBlocked(clientIP)) {
+      return {
+        blocked: true,
+        response: NextResponse.json(
+          { 
+            success: false, 
+            error: 'Access temporarily blocked due to suspicious activity',
+            code: 'BLOCKED_IP'
+          },
+          { status: 403 }
+        )
+      };
+    }
+
+    // For now, we'll do lightweight checks here
+    // More comprehensive threat analysis will happen in API routes
+    return {
+      blocked: false,
+      riskScore: 0
+    };
+
+  } catch (error) {
+    console.error('Error in threat check middleware:', error);
+    // Fail open - allow request if threat check fails
+    return { blocked: false, riskScore: 0 };
+  }
 }
 
 /**
@@ -139,7 +190,7 @@ async function withAuth(request: NextRequest): Promise<AuthResult> {
 /**
  * Middleware de rate limiting adaptatif
  */
-async function withRateLimit(request: NextRequest, authResult: AuthResult): Promise<RateLimitResult> {
+async function withRateLimit(request: NextRequest, authResult: AuthResult, threatResult?: ThreatCheckResult): Promise<RateLimitResult> {
   try {
     // Extract endpoint from pathname
     const endpoint = extractEndpoint(request.nextUrl.pathname);
@@ -155,12 +206,20 @@ async function withRateLimit(request: NextRequest, authResult: AuthResult): Prom
     // Get confidence score from auth result
     const confidenceScore = authResult.confidenceScore || 0;
 
-    // Check rate limit
+    // Check rate limit with threat-based adjustments
     const rateLimiter = getRateLimiter();
+    
+    // Apply threat-based confidence score adjustment
+    let adjustedConfidenceScore = confidenceScore;
+    if (threatResult?.riskScore && threatResult.riskScore > 50) {
+      // Reduce confidence score for high-risk requests (stricter rate limiting)
+      adjustedConfidenceScore = Math.max(0, confidenceScore - (threatResult.riskScore - 50));
+    }
+    
     const result = await rateLimiter.checkLimit({
       endpoint,
       identifier,
-      confidenceScore,
+      confidenceScore: adjustedConfidenceScore
     });
 
     // Return headers for successful requests
@@ -184,6 +243,8 @@ async function withRateLimit(request: NextRequest, authResult: AuthResult): Prom
           identifier,
           limit: result.limit,
           confidenceScore,
+          adjustedConfidenceScore,
+          riskScore: threatResult?.riskScore || 0
         },
       });
 
