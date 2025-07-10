@@ -371,14 +371,14 @@
       "id": "e6e57885-3414-4b80-a3fe-f9b25f1a2b7f",
       "name": "Implémenter l'algorithme de confidence scoring",
       "description": "Créer /lib/confidence-scoring.ts avec poids immuables (30/25/20/25), fonctions calculateConfidenceScore() et getConfidenceLevel()",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "d4430d77-f92f-4e9c-b601-1df0c79138c7"
         }
       ],
       "createdAt": "2025-07-09T22:42:24.501Z",
-      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-10T10:03:44.355Z",
       "relatedFiles": [
         {
           "path": "lib/confidence-scoring.ts",
@@ -393,7 +393,9 @@
       ],
       "implementationGuide": "1. Définir constantes poids\n2. Implémenter calculateConfidenceScore()\n3. Implémenter getConfidenceLevel()\n4. Caching scores\n5. Tests exhaustifs",
       "verificationCriteria": "Respect poids exacts, scores 0-100, niveaux corrects, caching valide",
-      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md."
+      "analysisResult": "Phase 2 : Système d'authentification de base avec routes API sécurisées, module device detection/scoring, gestion device sessions, et middleware auth respectant shrimp-rules.md.",
+      "summary": "L'algorithme de confidence scoring a été implémenté avec les poids exacts (30/25/20/25), la fonction `calculateConfidenceScore()` retourne des scores 0-100, `getConfidenceLevel()` définit les niveaux LOW/MEDIUM/HIGH/VERY_HIGH, le caching avec TTL 5min est fonctionnel via `compareDevices()`, et `cleanupScoreCache()` gère l'expiration. Les constantes sont immuables et la validation de somme=100 est en place.",
+      "completedAt": "2025-07-10T10:03:44.353Z"
     },
     {
       "id": "eab4535e-2a8d-43d4-8eb8-0abe7141c32a",
