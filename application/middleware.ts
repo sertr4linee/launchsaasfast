@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { supabaseServer } from './lib/supabase/server';
 import { getSessionByToken } from './lib/device-sessions';
-import { extractDeviceInfo } from './lib/device-detection';
+import { extractDeviceInfo, getClientIP } from './lib/device-detection';
+import { getRateLimiter } from './lib/rate-limiter';
 
 export async function middleware(request: NextRequest) {
   // Ordre de traitement: Auth → RateLimiting → Validation → BusinessLogic
@@ -14,16 +15,26 @@ export async function middleware(request: NextRequest) {
   }
 
   // Phase 2: Rate Limiting (préparé pour Phase 3)
-  // TODO: Implémenter rate limiting
+  const rateLimitResult = await withRateLimit(request, authResult);
+  if (rateLimitResult.blocked) {
+    return rateLimitResult.response;
+  }
 
   // Phase 3: Validation (gérée dans les routes API)
   // Phase 4: Business Logic (gérée dans les routes API)
 
-  // Injecter les headers d'authentification
+  // Injecter les headers d'authentification et de rate limiting
   if (authResult.userId && authResult.deviceSessionId) {
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-user-id', authResult.userId);
     requestHeaders.set('x-device-session-id', authResult.deviceSessionId);
+
+    // Add rate limit headers if available
+    if (rateLimitResult.headers) {
+      Object.entries(rateLimitResult.headers).forEach(([key, value]) => {
+        requestHeaders.set(key, String(value));
+      });
+    }
 
     return NextResponse.next({
       request: {
@@ -38,8 +49,15 @@ export async function middleware(request: NextRequest) {
 interface AuthResult {
   userId?: string;
   deviceSessionId?: string;
+  confidenceScore?: number;
   redirect?: boolean;
   response?: NextResponse;
+}
+
+interface RateLimitResult {
+  blocked: boolean;
+  response?: NextResponse;
+  headers?: Record<string, string | number>;
 }
 
 /**
@@ -91,6 +109,7 @@ async function withAuth(request: NextRequest): Promise<AuthResult> {
     return {
       userId: user.id,
       deviceSessionId: deviceSession?.id,
+      confidenceScore: deviceSession?.confidenceScore || 0,
       redirect: false
     };
 
@@ -106,6 +125,108 @@ async function withAuth(request: NextRequest): Promise<AuthResult> {
   }
 }
 
+/**
+ * Middleware de rate limiting adaptatif
+ */
+async function withRateLimit(request: NextRequest, authResult: AuthResult): Promise<RateLimitResult> {
+  try {
+    // Extract endpoint from pathname
+    const endpoint = extractEndpoint(request.nextUrl.pathname);
+    
+    // Skip rate limiting for non-rate-limited endpoints
+    if (!requiresRateLimit(endpoint)) {
+      return { blocked: false };
+    }
+
+    // Determine identifier (user ID or IP address)
+    const identifier = authResult.userId || getClientIP(request.headers);
+    
+    // Get confidence score from auth result
+    const confidenceScore = authResult.confidenceScore || 0;
+
+    // Check rate limit
+    const rateLimiter = getRateLimiter();
+    const result = await rateLimiter.checkLimit({
+      endpoint,
+      identifier,
+      confidenceScore,
+    });
+
+    // Return headers for successful requests
+    const headers: Record<string, number> = {
+      'X-RateLimit-Limit': result.limit,
+      'X-RateLimit-Remaining': result.remaining,
+      'X-RateLimit-Reset': result.reset,
+    };
+
+    if (!result.allowed) {
+      // Add retry-after header for blocked requests
+      if (result.retryAfter) {
+        headers['Retry-After'] = result.retryAfter;
+      }
+
+      return {
+        blocked: true,
+        response: NextResponse.json(
+          { 
+            success: false, 
+            error: 'Rate limit exceeded',
+            limit: result.limit,
+            remaining: result.remaining,
+            retryAfter: result.retryAfter 
+          },
+          { 
+            status: 429,
+            headers: Object.fromEntries(
+              Object.entries(headers).map(([k, v]) => [k, String(v)])
+            )
+          }
+        )
+      };
+    }
+
+    return { 
+      blocked: false,
+      headers: Object.fromEntries(
+        Object.entries(headers).map(([k, v]) => [k, String(v)])
+      )
+    };
+
+  } catch (error) {
+    console.error('Rate limiting middleware error:', error);
+    // Fail open - allow request if rate limiter fails
+    return { blocked: false };
+  }
+}
+
+/**
+ * Extract endpoint name from pathname for rate limiting
+ */
+function extractEndpoint(pathname: string): string {
+  // Match authentication endpoints
+  if (pathname.includes('/api/auth/signin')) return 'signin';
+  if (pathname.includes('/api/auth/signup')) return 'signup';
+  if (pathname.includes('/api/auth/forgot-password')) return 'forgot-password';
+  if (pathname.includes('/api/auth/verify-email')) return 'verify-email';
+  if (pathname.includes('/api/auth/verify-2fa')) return 'verify-2fa';
+  if (pathname.includes('/api/auth/setup-2fa')) return 'setup-2fa';
+  
+  // Default endpoint for other API calls
+  return 'default';
+}
+
+/**
+ * Check if endpoint requires rate limiting
+ */
+function requiresRateLimit(endpoint: string): boolean {
+  const rateLimitedEndpoints = [
+    'signin', 'signup', 'forgot-password', 
+    'verify-email', 'verify-2fa', 'setup-2fa', 
+    'default'
+  ];
+  return rateLimitedEndpoints.includes(endpoint);
+}
+
 // Configuration des routes protégées
 export const config = {
   matcher: [
@@ -113,7 +234,9 @@ export const config = {
     '/api/user/:path*',
     // Protéger les routes admin
     '/api/admin/:path*',
-    // Exclure les routes publiques
-    '/((?!api/auth|api/health|_next/static|_next/image|favicon.ico).*)',
+    // Appliquer rate limiting sur les routes d'authentification
+    '/api/auth/:path*',
+    // Exclure les routes publiques (mais inclure auth pour rate limiting)
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
