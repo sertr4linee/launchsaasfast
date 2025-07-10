@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { Disable2FASchema } from '../../../../schemas/auth';
 import { getTOTPManager } from '../../../../lib/totp';
 import { getCurrentUser, getCurrentDeviceSessionId, unauthorizedResponse } from '../../../../lib/auth-utils';
+import { checkRequestAAL, createAALInsufficientResponse } from '../../../../lib/aal-utils';
 import { handleError, successResponse } from '../../../../lib/error-handler';
 import { supabaseServer } from '../../../../lib/supabase/server';
 
@@ -12,6 +13,12 @@ import { supabaseServer } from '../../../../lib/supabase/server';
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check AAL requirement first
+    const aalCheck = await checkRequestAAL(request, '2fa_disable');
+    if (!aalCheck.allowed) {
+      return createAALInsufficientResponse(aalCheck);
+    }
+
     // Validate request body
     const body = await request.json();
     const validatedData = Disable2FASchema.parse(body);

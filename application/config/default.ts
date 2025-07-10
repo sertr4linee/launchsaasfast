@@ -53,4 +53,21 @@ export default {
       verifyAttempts: { max: 10, window: 60 }, // 10 attempts per minute
     },
   },
+  aal: {
+    // AAL session management
+    aal2Duration: 12 * 60 * 60, // AAL2 sessions expire after 12 hours (NIST recommendation)
+    aal1Duration: 24 * 60 * 60, // AAL1 sessions expire after 24 hours
+    // Operations requiring AAL2
+    requireAAL2: [
+      'password_change',
+      'email_change', 
+      '2fa_disable',
+      'sensitive_data_access',
+      'account_deletion'
+    ],
+    // Automatic AAL upgrade on 2FA verification
+    autoUpgradeOnMFA: true,
+    // Log AAL changes for security monitoring
+    logAALChanges: true,
+  },
 };

@@ -55,3 +55,41 @@ export interface AALContext {
 }
 
 export type AuthenticationFactor = 'password' | 'totp' | 'backup_code';
+
+export interface AALCheckResult {
+  allowed: boolean;
+  currentAAL: AuthenticationLevel;
+  requiredAAL: AuthenticationLevel;
+  upgradeRequired?: boolean;
+  upgradeOptions?: AuthenticationFactor[];
+}
+
+export interface AALUpgradeRequest {
+  userId: string;
+  sessionId: string;
+  targetAAL: AuthenticationLevel;
+  authenticationFactor: AuthenticationFactor;
+}
+
+export interface AALRequirement {
+  level: AuthenticationLevel;
+  description: string;
+  factors: AuthenticationFactor[];
+}
+
+export interface AALSession {
+  level: AuthenticationLevel;
+  establishedAt: Date;
+  expiresAt?: Date;
+  factors: AuthenticationFactor[];
+  deviceSessionId: string;
+}
+
+export type AALOperation = 
+  | 'profile_update'
+  | 'password_change' 
+  | 'email_change'
+  | '2fa_setup'
+  | '2fa_disable'
+  | 'sensitive_data_access'
+  | 'account_deletion';

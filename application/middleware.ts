@@ -4,6 +4,7 @@ import { supabaseServer } from './lib/supabase/server';
 import { getSessionByToken } from './lib/device-sessions';
 import { extractDeviceInfo, getClientIP } from './lib/device-detection';
 import { getRateLimiter } from './lib/rate-limiter';
+import { getAALManager } from './lib/aal-manager';
 
 export async function middleware(request: NextRequest) {
   // Ordre de traitement: Auth → RateLimiting → Validation → BusinessLogic
@@ -28,6 +29,7 @@ export async function middleware(request: NextRequest) {
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-user-id', authResult.userId);
     requestHeaders.set('x-device-session-id', authResult.deviceSessionId);
+    requestHeaders.set('x-aal-level', String(authResult.aalLevel || 1));
 
     // Add rate limit headers if available
     if (rateLimitResult.headers) {
@@ -50,6 +52,7 @@ interface AuthResult {
   userId?: string;
   deviceSessionId?: string;
   confidenceScore?: number;
+  aalLevel?: number;
   redirect?: boolean;
   response?: NextResponse;
 }
@@ -110,6 +113,7 @@ async function withAuth(request: NextRequest): Promise<AuthResult> {
       userId: user.id,
       deviceSessionId: deviceSession?.id,
       confidenceScore: deviceSession?.confidenceScore || 0,
+      aalLevel: deviceSession?.aalLevel || 1,
       redirect: false
     };
 

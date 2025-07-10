@@ -51,6 +51,20 @@ export const MFAConfigSchema = z.object({
   }),
 });
 
+export const AALConfigSchema = z.object({
+  aal2Duration: z.number().int().min(300).max(86400).default(43200), // 5 min to 24 hours, default 12 hours
+  aal1Duration: z.number().int().min(3600).max(604800).default(86400), // 1 hour to 1 week, default 24 hours
+  requireAAL2: z.array(z.string()).default([
+    'password_change',
+    'email_change',
+    '2fa_disable',
+    'sensitive_data_access',
+    'account_deletion'
+  ]),
+  autoUpgradeOnMFA: z.boolean().default(true),
+  logAALChanges: z.boolean().default(true),
+});
+
 export const BaseConfigSchema = z.object({
   appName: z.string(),
   environment: z.enum(['development', 'staging', 'production']),
@@ -58,6 +72,7 @@ export const BaseConfigSchema = z.object({
   redis: RedisConfigSchema,
   rateLimiting: RateLimitConfigSchema,
   mfa: MFAConfigSchema,
+  aal: AALConfigSchema,
 });
 
 export const EnvConfigSchema = BaseConfigSchema.extend({

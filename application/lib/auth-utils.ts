@@ -35,6 +35,14 @@ export function getCurrentDeviceSessionId(request: NextRequest): string | null {
 }
 
 /**
+ * Extract current AAL level from request headers
+ */
+export function getCurrentAALLevel(request: NextRequest): number {
+  const aalLevel = request.headers.get('x-aal-level');
+  return aalLevel ? parseInt(aalLevel, 10) : 1;
+}
+
+/**
  * Create unauthorized response
  */
 export function unauthorizedResponse() {
