@@ -147,14 +147,14 @@
       "name": "Create 2FA API Routes",
       "description": "Implement API endpoints for 2FA setup and verification following existing authentication route patterns. Create /api/auth/setup-2fa and /api/auth/verify-2fa routes with proper validation and error handling.",
       "notes": "Follow existing error handling patterns. Implement proper rate limiting on verification attempts. Ensure secure handling of secrets.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "105731cd-5d28-4f8b-ba1e-465c195b9f0a"
         }
       ],
       "createdAt": "2025-07-10T11:00:14.192Z",
-      "updatedAt": "2025-07-10T11:00:14.192Z",
+      "updatedAt": "2025-07-10T11:38:10.818Z",
       "relatedFiles": [
         {
           "path": "app/api/auth/setup-2fa/route.ts",
@@ -181,7 +181,9 @@
       ],
       "implementationGuide": "1. Create `/app/api/auth/setup-2fa/route.ts` for initial 2FA setup\\n2. Create `/app/api/auth/verify-2fa/route.ts` for token verification\\n3. Follow existing route patterns from signin/signup\\n4. Use existing Zod schemas for validation\\n5. Integrate with TOTP system and return QR codes\\n\\nPseudocode:\\n```typescript\\n// app/api/auth/setup-2fa/route.ts\\nexport async function POST(request: Request) {\\n  try {\\n    const user = await getCurrentUser(request);\\n    if (!user) return unauthorized();\\n    \\n    const { secret, qrCode, backupCodes } = await totpManager.generateSecret(user.id);\\n    \\n    return NextResponse.json({\\n      qrCode,\\n      backupCodes,\\n      secret: secret // Only return for setup, remove after verification\\n    });\\n  } catch (error) {\\n    return handleError(error);\\n  }\\n}\\n\\n// app/api/auth/verify-2fa/route.ts\\nexport async function POST(request: Request) {\\n  const body = await request.json();\\n  const validatedData = Verify2FASchema.parse(body);\\n  \\n  const user = await getCurrentUser(request);\\n  if (!user) return unauthorized();\\n  \\n  const isValid = await totpManager.verifyTOTP(user.id, validatedData.token);\\n  \\n  if (isValid) {\\n    await updateUserAAL(user.id, 'aal2');\\n    return NextResponse.json({ verified: true });\\n  }\\n  \\n  return NextResponse.json({ error: 'Invalid token' }, { status: 400 });\\n}\\n```",
       "verificationCriteria": "API routes follow existing patterns, properly validate inputs, handle errors consistently, integrate with TOTP system, and manage AAL levels correctly. Rate limiting applied to prevent brute force attacks.",
-      "analysisResult": "Phase 3 Advanced Security Implementation: Build enterprise-grade security features on existing Next.js 15 + Supabase authentication foundation. Core architecture: leverage existing middleware.ts Phase 2 slot, hierarchical config pattern, device confidence scoring (30/25/20/25 weights), and strict TypeScript compliance. Integration points: Redis ZSET sliding window rate limiting, NIST AAL2-compliant 2FA/MFA with TOTP, structured security logging replacing console.log, and Resend email notifications. Must maintain shrimp-rules.md compliance and existing Auth→RateLimiting→Validation→BusinessLogic middleware ordering."
+      "analysisResult": "Phase 3 Advanced Security Implementation: Build enterprise-grade security features on existing Next.js 15 + Supabase authentication foundation. Core architecture: leverage existing middleware.ts Phase 2 slot, hierarchical config pattern, device confidence scoring (30/25/20/25 weights), and strict TypeScript compliance. Integration points: Redis ZSET sliding window rate limiting, NIST AAL2-compliant 2FA/MFA with TOTP, structured security logging replacing console.log, and Resend email notifications. Must maintain shrimp-rules.md compliance and existing Auth→RateLimiting→Validation→BusinessLogic middleware ordering.",
+      "summary": "Successfully implemented comprehensive 2FA API routes following existing authentication patterns. Created three endpoints: /api/auth/setup-2fa for TOTP initialization with QR codes, /api/auth/verify-2fa for token validation and AAL upgrading, and /api/auth/disable-2fa for secure 2FA removal. Features include Zod validation schemas, proper error handling with existing patterns, rate limiting integration via middleware, authentication via JWT headers, AAL level management, backup code support with usage tracking, and security measures like password confirmation for disabling. All TypeScript compilation successful and endpoints ready for frontend integration.",
+      "completedAt": "2025-07-10T11:38:10.816Z"
     },
     {
       "id": "f6e93c18-ffb4-41e0-90a1-8e21f5854a04",
