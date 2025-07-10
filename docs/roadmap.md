@@ -16,19 +16,19 @@ Créer un starter SaaS complet, sécurisé et scalable basé sur l'approche Maze
 
 ### 1.1 Setup du projet initial
 **Tâches LLM :**
-- [ ] **T1.1.1** : Initialiser le projet Next.js 15 avec TypeScript
+- [x] **T1.1.1** : Initialiser le projet Next.js 15 avec TypeScript
   - Créer `package.json` avec dépendances : Next.js, React, TypeScript, Tailwind CSS
   - Configurer `tsconfig.json` avec strict mode
   - Installer et configurer ESLint, Prettier
   - Créer structure de dossiers : `/app`, `/components`, `/lib`, `/utils`, `/types`
 
-- [ ] **T1.1.2** : Configuration Tailwind CSS + Shadcn/ui
+- [x] **T1.1.2** : Configuration Tailwind CSS + Shadcn/ui
   - Installer Tailwind CSS et ses dépendances
   - Configurer `tailwind.config.ts` avec thème custom
   - Initialiser Shadcn/ui avec `npx shadcn-ui@latest init`
   - Installer composants de base : Button, Input, Card, Dialog, Toast
 
-- [ ] **T1.1.3** : Setup Supabase
+- [x] **T1.1.3** : Setup Supabase
   - Créer projet Supabase
   - Installer `@supabase/supabase-js` et `@supabase/ssr`
   - Créer client Supabase dans `/lib/supabase/client.ts` et `/lib/supabase/server.ts`
@@ -36,30 +36,30 @@ Créer un starter SaaS complet, sécurisé et scalable basé sur l'approche Maze
 
 ### 1.2 Structure de la base de données
 **Tâches LLM :**
-- [ ] **T1.2.1** : Créer les migrations Supabase de base
+- [x] **T1.2.1** : Créer les migrations Supabase de base
   - Migration 001 : Table `users` avec profils étendus
   - Migration 002 : Table `devices` pour tracking des appareils
   - Migration 003 : Table `device_sessions` avec scoring de confiance
   - Migration 004 : Tables `verification_codes` et `backup_codes`
 
-- [ ] **T1.2.2** : Implémenter Row Level Security (RLS)
+- [x] **T1.2.2** : Implémenter Row Level Security (RLS)
   - Activer RLS sur toutes les tables
   - Créer policies pour accès utilisateur (SELECT, INSERT, UPDATE)
   - Tester les policies avec différents scénarios d'accès
 
-- [ ] **T1.2.3** : Fonctions SQL et triggers
+- [x] **T1.2.3** : Fonctions SQL et triggers
   - Fonction `update_updated_at_column()` pour timestamps
   - Fonction `verify_user_password()` pour vérification sans dégradation AAL
   - Triggers automatiques pour `updated_at` sur toutes les tables
 
 ### 1.3 Configuration et types
 **Tâches LLM :**
-- [ ] **T1.3.1** : Système de configuration centralisée
+- [x] **T1.3.1** : Système de configuration centralisée
   - Créer `/config/index.ts` avec configuration hiérarchique
   - Implémenter configs par environnement : development, staging, production
   - Schémas de validation Zod pour toutes les configurations
 
-- [ ] **T1.3.2** : Types TypeScript globaux
+- [x] **T1.3.2** : Types TypeScript globaux
   - Générer types depuis schéma Supabase avec CLI
   - Créer types custom dans `/types/` : User, Device, Session, etc.
   - Types pour configuration, erreurs, événements de sécurité
@@ -70,21 +70,21 @@ Créer un starter SaaS complet, sécurisé et scalable basé sur l'approche Maze
 
 ### 2.1 Routes API d'authentification
 **Tâches LLM :**
-- [ ] **T2.1.1** : Route POST `/api/auth/signin`
+- [x] **T2.1.1** : Route POST `/api/auth/signin`
   - Validation des données avec Zod (email, password)
   - Authentification via Supabase Auth
   - Extraction des informations device (user-agent, IP)
   - Calcul du score de confiance initial
   - Création de device_session avec métadonnées
 
-- [ ] **T2.1.2** : Route POST `/api/auth/signup`
+- [x] **T2.1.2** : Route POST `/api/auth/signup`
   - Validation des données d'inscription
   - Vérification unicité de l'email
   - Création compte Supabase + profil utilisateur
   - Envoi email de vérification
   - Création device session initiale
 
-- [ ] **T2.1.3** : Routes de gestion des mots de passe
+- [x] **T2.1.3** : Routes de gestion des mots de passe
   - POST `/api/auth/forgot-password` : envoi email de reset
   - POST `/api/auth/reset-password` : reset avec token
   - POST `/api/auth/change-password` : changement pour utilisateur connecté
@@ -92,19 +92,19 @@ Créer un starter SaaS complet, sécurisé et scalable basé sur l'approche Maze
 
 ### 2.2 Détection et scoring des appareils
 **Tâches LLM :**
-- [ ] **T2.2.1** : Module de détection d'appareil
+- [x] **T2.2.1** : Module de détection d'appareil
   - Créer `/lib/device-detection.ts`
   - Parser User-Agent pour extraire : navigateur, OS, version, plateforme
   - Récupérer IP réelle (gestion proxies, Cloudflare)
   - Générer fingerprint unique basé sur caractéristiques
 
-- [ ] **T2.2.2** : Algorithme de scoring de confiance
+- [x] **T2.2.2** : Algorithme de scoring de confiance
   - Créer `/lib/confidence-scoring.ts`
   - Algorithme de comparaison avec appareils connus
   - Scoring pondéré : browser (30%), OS (25%), IP (20%), fingerprint (25%)
   - Détermination niveau de confiance : Trusted (70+), Verified (40-69), Restricted (<40)
 
-- [ ] **T2.2.3** : Gestion des sessions device
+- [x] **T2.2.3** : Gestion des sessions device
   - CRUD operations pour device_sessions
   - Mise à jour automatique du last_activity_at
   - Nettoyage des sessions expirées
@@ -112,13 +112,13 @@ Créer un starter SaaS complet, sécurisé et scalable basé sur l'approche Maze
 
 ### 2.3 Middleware et sécurité
 **Tâches LLM :**
-- [ ] **T2.3.1** : Middleware d'authentification
+- [x] **T2.3.1** : Middleware d'authentification
   - Créer `/middleware.ts` pour validation des routes protégées
   - Vérification token JWT Supabase + device session
   - Injection user_id et device_session_id dans headers
   - Gestion des erreurs d'authentification
 
-- [ ] **T2.3.2** : Gestion d'erreurs centralisée
+- [x] **T2.3.2** : Gestion d'erreurs centralisée
   - Créer `/lib/error-handler.ts` avec types d'erreurs standardisés
   - Messages d'erreur génériques pour éviter fuites d'information
   - Logging des erreurs avec contexte sécuritaire
