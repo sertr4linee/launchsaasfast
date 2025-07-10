@@ -431,14 +431,14 @@
       "id": "4dd8da19-0ed3-46cb-8987-fb84245a8358",
       "name": "Créer le middleware d'authentification et ordering",
       "description": "Développer middleware.ts : validation JWT Supabase + device session, injection headers, respect Auth→RateLimiting→Validation→BusinessLogic",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         {
           "taskId": "eab4535e-2a8d-43d4-8eb8-0abe7141c32a"
         }
       ],
       "createdAt": "2025-07-09T22:42:24.501Z",
-      "updatedAt": "2025-07-09T22:42:24.501Z",
+      "updatedAt": "2025-07-10T10:06:57.607Z",
       "relatedFiles": [
         {
           "path": "middleware.ts",
