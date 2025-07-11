@@ -41,8 +41,8 @@ export async function POST(request: NextRequest) {
       authMethod: 'reset_password',
     });
 
-    // TODO: Invalider toutes les sessions existantes pour sécurité (Phase 3)
-    // TODO: Envoyer notification email de changement de mot de passe
+    // Note: Email de confirmation de réinitialisation géré automatiquement par Supabase
+    // Invalidation des sessions existantes pour sécurité peut être ajoutée ultérieurement
 
     return successResponse(
       { 

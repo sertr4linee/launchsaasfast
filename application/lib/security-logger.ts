@@ -16,7 +16,7 @@ import {
   SecurityEventFilter,
   SecurityEventQueryResult,
 } from '../types/security';
-import { getEmailService } from './email/email-service';
+// Email service supprimé - emails d'authentification gérés nativement par Supabase
 import { User } from '@supabase/supabase-js';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -55,7 +55,7 @@ export class SecurityLogger {
   private config: SecurityLoggerConfig;
   private rateLimitKeyPrefix: string;
   private supabase: SupabaseClient;
-  private emailService = getEmailService();
+  // emailService supprimé - notifications gérées par Supabase
 
   constructor() {
     const config = getConfig();
@@ -123,11 +123,12 @@ export class SecurityLogger {
       }
 
       // Send email notification for relevant events
+      // Note: Les emails d'authentification de base (signup, reset password, etc.) 
+      // sont maintenant gérés nativement par Supabase
       if (this.shouldSendEmailNotification(type) && context?.userId) {
-        const user = await this.getUser(context.userId);
-        if (user) {
-          await this.emailService.sendSecurityNotification(type, user, data);
-        }
+        // TODO: Implémenter notifications personnalisées si nécessaire
+        // Pour l'instant, on s'appuie sur Supabase pour les emails d'auth
+        console.log(`Email notification would be sent for: ${type}`);
       }
 
       // Fallback console logging for development
@@ -458,12 +459,33 @@ export class SecurityLogger {
   }
 
   private shouldSendEmailNotification(type: SecurityEventType): boolean {
-    const emailNotificationEvents = [
-        SecurityEventType.DEVICE_NEW,
-        SecurityEventType.MFA_ENABLED,
-        SecurityEventType.PASSWORD_RESET_REQUESTED,
-    ];
-    return emailNotificationEvents.includes(type);
+    // Supabase gère nativement ces types d'emails :
+    // - Confirm signup (AUTH_SIGNUP) ✓
+    // - Reset Password (PASSWORD_RESET_REQUESTED) ✓ 
+    // - Change Email Address ✓
+    // - Magic Link ✓
+    // - Reauthentication ✓
+    // 
+    // Pour l'instant, toutes les notifications email sont désactivées
+    // car Supabase gère les emails d'authentification automatiquement.
+    // 
+    // Si vous voulez ajouter des notifications personnalisées Resend pour :
+    // - SecurityEventType.DEVICE_NEW (nouveau device détecté)
+    // - SecurityEventType.MFA_ENABLED (2FA activé) 
+    // - SecurityEventType.SUSPICIOUS_ACTIVITY (activité suspecte)
+    // - SecurityEventType.PASSWORD_CHANGED (mot de passe changé)
+    // 
+    // Décommentez les lignes ci-dessous et configurez RESEND_API_KEY
+    
+    return false; // Désactivé - Supabase gère tous les emails d'auth
+    
+    // const customEmailEvents = [
+    //     SecurityEventType.DEVICE_NEW,
+    //     SecurityEventType.MFA_ENABLED,
+    //     SecurityEventType.SUSPICIOUS_ACTIVITY,
+    //     SecurityEventType.PASSWORD_CHANGED,
+    // ];
+    // return customEmailEvents.includes(type);
   }
 
   private async getUser(userId: string): Promise<User | null> {

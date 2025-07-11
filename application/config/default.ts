@@ -70,8 +70,9 @@ export default {
     // Log AAL changes for security monitoring
     logAALChanges: true,
   },
+  // Resend désactivé - emails d'authentification gérés par Supabase
   resend: {
-    apiKey: process.env.RESEND_API_KEY,
-    from: process.env.RESEND_FROM_EMAIL || 'noreply@launchsaasfast.com',
+    apiKey: undefined,
+    from: 'noreply@launchsaasfast.com',
   },
 };

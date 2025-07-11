@@ -1,388 +1,229 @@
 {
   "tasks": [
     {
-      "id": "916b8018-e430-4840-b24b-76ace244876b",
-      "name": "Setup UI Foundation avec Shadcn/ui",
-      "description": "Créer la structure des composants UI et installer Shadcn/ui pour établir les fondations de l'interface utilisateur moderne. Configurer le système de design cohérent avec la configuration existante.",
-      "notes": "Respecter les conventions de nommage PascalCase pour composants React. Utiliser les couleurs et thème définis dans /config/default.ts UI section. Maintenir cohérence avec fonts Geist existantes.",
-      "status": "completed",
+      "id": "8e7a4330-29ef-43a9-942d-21d002e25a40",
+      "name": "Configure Supabase Email Templates and SMTP Settings",
+      "description": "Set up custom email templates in Supabase Dashboard for authentication flows including signup confirmation, password reset, email verification, and magic link signin. Configure custom SMTP settings for branded email delivery and create template management system.",
+      "notes": "Templates must maintain responsive design and brand consistency with existing React Email templates. Ensure proper HTML escaping and accessibility standards.",
+      "status": "pending",
       "dependencies": [],
-      "createdAt": "2025-07-10T20:35:47.543Z",
-      "updatedAt": "2025-07-11T10:55:44.274Z",
+      "createdAt": "2025-07-11T11:27:41.044Z",
+      "updatedAt": "2025-07-11T11:27:41.044Z",
       "relatedFiles": [
         {
-          "path": "package.json",
+          "path": ".env.example",
           "type": "TO_MODIFY",
-          "description": "Ajout dépendances Shadcn/ui",
-          "lineStart": 20,
-          "lineEnd": 30
+          "description": "Add Supabase email SMTP configuration variables"
         },
         {
-          "path": "components/ui/",
+          "path": "docs/configuration.md",
+          "type": "TO_MODIFY",
+          "description": "Document new email configuration options"
+        }
+      ],
+      "implementationGuide": "1. Access Supabase Dashboard → Authentication → Email Templates\\n2. Configure SMTP settings with custom domain:\\n   - Host: smtp.yourdomain.com\\n   - Port: 587\\n   - Username: notifications@yourdomain.com\\n   - Password: from environment variable\\n3. Create custom HTML templates:\\n   - Signup confirmation template with LaunchSaasFast branding\\n   - Password reset template with secure reset links\\n   - Email verification template\\n   - Magic link signin template\\n4. Configure template variables: {{.SiteName}}, {{.Token}}, {{.RedirectTo}}\\n5. Test email delivery and template rendering\\n6. Update environment variables for SMTP configuration",
+      "verificationCriteria": "Supabase email templates render correctly with LaunchSaasFast branding, SMTP delivery works reliably, all auth email types (signup, reset, verification) send successfully, and templates are responsive across email clients.",
+      "analysisResult": "Migration from Resend to Supabase native email service for authentication emails while preserving existing device security framework and authentication architecture. Core implementation focuses on configuring Supabase email templates, creating transition layer for gradual migration, and maintaining security notification capabilities through native Supabase email functions."
+    },
+    {
+      "id": "b07bcb87-6359-48e2-b8c7-88d4d8e8a643",
+      "name": "Create Supabase Email Service Integration Layer",
+      "description": "Implement email service layer that integrates with Supabase native email functions for security notifications and device verification. Create SQL functions for complex email logic and custom email triggers for security events.",
+      "notes": "Maintain compatibility with existing SecurityEventType enum and User type definitions. Ensure proper error handling and logging.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "8e7a4330-29ef-43a9-942d-21d002e25a40"
+        }
+      ],
+      "createdAt": "2025-07-11T11:27:41.044Z",
+      "updatedAt": "2025-07-11T11:27:41.044Z",
+      "relatedFiles": [
+        {
+          "path": "lib/email/supabase-email-service.ts",
           "type": "CREATE",
-          "description": "Dossier composants Shadcn de base"
+          "description": "New Supabase email service implementation"
+        },
+        {
+          "path": "lib/email/email-service.ts",
+          "type": "REFERENCE",
+          "description": "Existing Resend email service for interface compatibility"
+        },
+        {
+          "path": "types/security.ts",
+          "type": "REFERENCE",
+          "description": "SecurityEventType enum and related types"
+        },
+        {
+          "path": "supabase/migrations",
+          "type": "CREATE",
+          "description": "SQL functions for custom email logic"
+        }
+      ],
+      "implementationGuide": "1. Create SupabaseEmailService class:\\n   ```typescript\\n   class SupabaseEmailService {\\n     async sendSecurityNotification(type: SecurityEventType, user: User, context: any) {\\n       const { data, error } = await supabaseServer.rpc('send_custom_email', {\\n         user_id: user.id,\\n         template_type: type,\\n         context_data: context\\n       });\\n     }\\n   }\\n   ```\\n2. Create SQL functions in Supabase:\\n   - send_custom_email(user_id, template_type, context_data)\\n   - log_email_event(user_id, email_type, status)\\n3. Implement device verification via Supabase magic links\\n4. Add email event logging to security audit trail\\n5. Create email template management interface",
+      "verificationCriteria": "Supabase email service successfully sends security notifications, device verification emails work correctly, SQL functions execute without errors, email events are properly logged, and integration maintains type safety.",
+      "analysisResult": "Migration from Resend to Supabase native email service for authentication emails while preserving existing device security framework and authentication architecture. Core implementation focuses on configuring Supabase email templates, creating transition layer for gradual migration, and maintaining security notification capabilities through native Supabase email functions."
+    },
+    {
+      "id": "3d4f1a6a-1ae0-4078-8d63-a2209293b0a1",
+      "name": "Implement Email Migration Transition Layer",
+      "description": "Create transition service that allows gradual migration from Resend to Supabase email service with feature flags and fallback mechanisms. Implement A/B testing capability and monitoring for email delivery success rates.",
+      "notes": "Ensure zero-downtime migration with proper monitoring and rollback capabilities. Maintain email delivery SLAs during transition period.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "b07bcb87-6359-48e2-b8c7-88d4d8e8a643"
+        }
+      ],
+      "createdAt": "2025-07-11T11:27:41.044Z",
+      "updatedAt": "2025-07-11T11:27:41.044Z",
+      "relatedFiles": [
+        {
+          "path": "lib/email/email-migration-service.ts",
+          "type": "CREATE",
+          "description": "Migration service with feature flags and fallback"
         },
         {
           "path": "config/default.ts",
-          "type": "REFERENCE",
-          "description": "Configuration UI et couleurs existantes",
-          "lineStart": 1,
-          "lineEnd": 50
-        },
-        {
-          "path": "app/globals.css",
           "type": "TO_MODIFY",
-          "description": "Styles Tailwind existants",
-          "lineStart": 1,
-          "lineEnd": 25
-        }
-      ],
-      "implementationGuide": "1. Installer Shadcn/ui: npx shadcn-ui@latest init\n2. Créer structure /components avec organisation modulaire:\n   - /components/ui (composants Shadcn de base)\n   - /components/auth (formulaires authentification)\n   - /components/security (gestion devices/sessions)\n3. Créer /hooks directory pour patterns React\n4. Configurer theme Shadcn avec colors du système /config/default.ts\n5. Installer composants base: Button, Input, Card, Dialog, Form, Toast\n6. Créer composants wrapper réutilisables avec classes Tailwind\n7. Tester intégration avec page d'accueil existante",
-      "verificationCriteria": "Shadcn/ui installé et configuré correctement, structure /components créée avec organisation modulaire, composants de base fonctionnels, thème cohérent avec configuration existante, aucune régression sur page d'accueil, TypeScript strict maintenu sans erreurs de compilation.",
-      "analysisResult": "Architecture combinée Phases 4-5 pour LaunchSaasFast: Transition de l'infrastructure backend sécurisée vers une expérience utilisateur complète. Réutilisation maximale des APIs auth existantes, systèmes de sécurité enterprise (AAL, device scoring, threat detection), et infrastructure email Resend. Création d'une interface moderne avec Shadcn/ui intégrée aux standards TypeScript strict et patterns architecturaux établis.",
-      "summary": "Tâche terminée avec succès : Shadcn/ui installé et configuré, structure des composants créée (/components/ui, /components/auth, /components/security), composants de base ajoutés (Button, Input, Card, Dialog, Sonner), composants wrapper créés (Container, LoadingSpinner), intégration testée avec page d'accueil, thème cohérent appliqué avec variables CSS personnalisées.",
-      "completedAt": "2025-07-11T10:55:44.271Z"
-    },
-    {
-      "id": "30e0138e-1015-42fd-a7aa-9d45593713b0",
-      "name": "Créer Hook d'Authentification Principal useAuth",
-      "description": "Développer le hook d'authentification central pour LaunchSaasFast intégrant Supabase Auth avec le système enterprise de device sessions et AAL. Ce hook doit fournir une interface unifiée pour toute l'application avec gestion d'état global, fonctions auth complètes, et synchronisation automatique avec le backend de sécurité existant.",
-      "notes": "Hook critique pour toute l'authentification. Doit respecter architecture security-first existante et device scoring weights immuables. Intégration obligatoire avec threat detection et rate limiting existants.",
-      "status": "completed",
-      "dependencies": [
-        {
-          "taskId": "916b8018-e430-4840-b24b-76ace244876b"
-        }
-      ],
-      "createdAt": "2025-07-10T20:42:55.376Z",
-      "updatedAt": "2025-07-11T11:09:04.438Z",
-      "relatedFiles": [
-        {
-          "path": "/hooks/useAuth.ts",
-          "type": "CREATE",
-          "description": "Hook principal d'authentification avec Context Provider"
+          "description": "Add email service selection configuration"
         },
         {
-          "path": "/types/auth.ts",
-          "type": "REFERENCE",
-          "description": "Types TypeScript pour authentification et AAL"
-        },
-        {
-          "path": "/lib/device-detection.ts",
-          "type": "REFERENCE",
-          "description": "Fonctions de détection et scoring des appareils"
-        },
-        {
-          "path": "/lib/supabase/client.ts",
-          "type": "REFERENCE",
-          "description": "Client Supabase existant pour référence"
-        },
-        {
-          "path": "/app/api/auth/signin/route.ts",
-          "type": "REFERENCE",
-          "description": "API signin pour intégration device sessions",
-          "lineStart": 1,
-          "lineEnd": 100
-        },
-        {
-          "path": "/app/layout.tsx",
+          "path": "lib/email/email-service.ts",
           "type": "TO_MODIFY",
-          "description": "Root layout pour wrapper AuthProvider",
-          "lineStart": 15,
-          "lineEnd": 30
+          "description": "Update to use migration service"
+        },
+        {
+          "path": "lib/security-logger.ts",
+          "type": "TO_MODIFY",
+          "description": "Add email delivery monitoring"
         }
       ],
-      "implementationGuide": "1. Créer /hooks/useAuth.ts avec React Context (AuthContext) et Provider (AuthProvider)\\n2. État global: { user, session, deviceSession, loading, error, aal, deviceConfidence }\\n3. Utiliser @supabase/ssr avec createBrowserClient pour optimisation Next.js 15\\n4. Fonctions principales: signin, signup, signout, refreshSession, upgradeAAL\\n5. Intégration hybride: Supabase auth state listening + fetch vers /app/api/auth/* pour device sessions\\n6. useEffect pour auth state changes avec onAuthStateChange\\n7. Device confidence scoring automatique via /lib/device-detection.ts\\n8. Types stricts depuis /types/auth.ts (AuthenticationLevel, AALContext, etc.)\\n9. Gestion erreurs centralisée via /lib/error-handler.ts\\n10. Cache device sessions avec TTL, sync AAL state\\n11. SSR compatibility avec état initial server-safe",
-      "verificationCriteria": "1. Hook fonctionne avec tous les auth flows (signin/signup/signout)\\n2. État global correctement synchronisé avec Supabase auth state\\n3. Device sessions créées et trackées automatiquement\\n4. AAL state management fonctionnel (AAL1/AAL2)\\n5. Types TypeScript stricts sans any\\n6. Gestion erreurs robuste avec messages utilisateur appropriés\\n7. Performance optimisée - pas de re-renders excessifs\\n8. SSR compatibility - pas d'erreurs hydration\\n9. Integration réussie avec device confidence scoring\\n10. Respect architecture security-first (pas de bypass sécurité)",
-      "analysisResult": "Implémentation des Phases 4-5 de LaunchSaasFast : système de vérification des appareils + interface utilisateur moderne. Architecture security-first avec device confidence scoring, AAL compliance NIST, et integration Supabase/Redis/Resend. Fondation UI avec Shadcn/ui et hooks React pour authentification enterprise-grade.",
-      "summary": "Hook d'authentification useAuth implémenté avec succès incluant React Context Provider, gestion complète des états auth/session/device, fonctions signin/signup/signout, gestion AAL (Authentication Assurance Level), intégration Supabase SSR, et types TypeScript complets. Composant AuthProvider prêt pour l'utilisation dans l'application avec gestion des erreurs robuste et suivi des sessions d'appareils. Architecture modulaire permettant l'extensibilité pour les fonctionnalités futures d'authentification. Code compilé avec succès sans erreurs TypeScript.",
-      "completedAt": "2025-07-11T11:09:04.436Z"
+      "implementationGuide": "1. Create EmailMigrationService class:\\n   ```typescript\\n   class EmailMigrationService {\\n     private useSupabase: boolean = process.env.USE_SUPABASE_EMAIL === 'true';\\n     async sendEmail(type: string, user: User, context: any) {\\n       if (this.useSupabase) {\\n         return await this.supabaseService.sendSecurityNotification(type, user, context);\\n       } else {\\n         return await this.resendService.sendSecurityNotification(type, user, context);\\n       }\\n     }\\n   }\\n   ```\\n2. Add feature flag configuration to config/default.ts\\n3. Implement delivery success monitoring and metrics\\n4. Create fallback mechanism for service failures\\n5. Add gradual rollout by user percentage\\n6. Update all existing email sending points to use migration service",
+      "verificationCriteria": "Migration service switches between Resend and Supabase based on feature flags, fallback mechanisms work during service failures, delivery metrics are accurately tracked, and gradual rollout functions correctly without affecting user experience.",
+      "analysisResult": "Migration from Resend to Supabase native email service for authentication emails while preserving existing device security framework and authentication architecture. Core implementation focuses on configuring Supabase email templates, creating transition layer for gradual migration, and maintaining security notification capabilities through native Supabase email functions."
     },
     {
-      "id": "dbafae28-27b9-49c7-b8ea-b20789d6c95a",
-      "name": "Pages d'Authentification avec Validation Temps Réel",
-      "description": "Créer les pages d'authentification complètes (/signin, /signup) pour LaunchSaasFast avec validation temps réel côté client, intégration device verification, et UX moderne. Pages doivent utiliser Shadcn/ui + React Hook Form, intégrer le hook useAuth, afficher device confidence scoring, et supporter tous les auth flows incluant 2FA.",
-      "notes": "Pages critiques pour onboarding utilisateurs. Doivent respecter UX moderne et intégrer seamlessly avec infrastructure sécurité existante. Performance optimisée pour Core Web Vitals.",
-      "status": "in_progress",
-      "dependencies": [
-        {
-          "taskId": "916b8018-e430-4840-b24b-76ace244876b"
-        },
-        {
-          "taskId": "30e0138e-1015-42fd-a7aa-9d45593713b0"
-        }
-      ],
-      "createdAt": "2025-07-10T20:46:18.224Z",
-      "updatedAt": "2025-07-11T11:14:48.794Z",
-      "relatedFiles": [
-        {
-          "path": "/app/signin/page.tsx",
-          "type": "CREATE",
-          "description": "Page signin avec formulaire et device verification"
-        },
-        {
-          "path": "/app/signup/page.tsx",
-          "type": "CREATE",
-          "description": "Page signup avec validation confirmPassword"
-        },
-        {
-          "path": "/components/auth/signin-form.tsx",
-          "type": "CREATE",
-          "description": "Composant formulaire signin réutilisable"
-        },
-        {
-          "path": "/components/auth/signup-form.tsx",
-          "type": "CREATE",
-          "description": "Composant formulaire signup réutilisable"
-        },
-        {
-          "path": "/schemas/auth.ts",
-          "type": "REFERENCE",
-          "description": "Schemas Zod existants pour validation",
-          "lineStart": 1,
-          "lineEnd": 20
-        },
-        {
-          "path": "/hooks/useAuth.ts",
-          "type": "DEPENDENCY",
-          "description": "Hook auth pour operations signin/signup"
-        },
-        {
-          "path": "/lib/device-detection.ts",
-          "type": "REFERENCE",
-          "description": "Device confidence scoring pour UI",
-          "lineStart": 50,
-          "lineEnd": 80
-        }
-      ],
-      "implementationGuide": "1. Installer React Hook Form: npm install react-hook-form @hookform/resolvers\\n2. Créer /app/signin/page.tsx avec formulaire Shadcn/ui Form + Input + Button\\n3. Créer /app/signup/page.tsx avec validation confirmPassword\\n4. Utiliser schemas Zod existants (/schemas/auth.ts) avec zodResolver\\n5. Intégrer hook useAuth pour signin/signup operations\\n6. Composants réutilisables dans /components/auth/signin-form.tsx et signup-form.tsx\\n7. Device confidence scoring UI automatique via /lib/device-detection.ts\\n8. Gestion d'erreurs robuste avec toast notifications\\n9. Loading states pendant auth operations\\n10. Redirection automatique post-signin/signup\\n11. Support 2FA flow si activé sur compte\\n12. Design responsive + accessibilité WCAG\\n13. SEO metadata pour pages auth",
-      "verificationCriteria": "1. Pages /signin et /signup accessibles et fonctionnelles\\n2. Validation temps réel avec messages d'erreur appropriés\\n3. Intégration réussie avec hook useAuth (signin/signup)\\n4. Device confidence score affiché correctement\\n5. Loading states et feedback visuel appropriés\\n6. Redirection post-auth fonctionnelle\\n7. Support 2FA flow si activé\\n8. Design responsive sur mobile/desktop\\n9. Accessibilité WCAG niveau AA\\n10. Performance optimisée (LCP < 2.5s)\\n11. SEO metadata et meta tags appropriés\\n12. Aucune erreur TypeScript strict",
-      "analysisResult": "Implémentation des Phases 4-5 de LaunchSaasFast : système de vérification des appareils + interface utilisateur moderne. Architecture security-first avec device confidence scoring, AAL compliance NIST, et integration Supabase/Redis/Resend. Fondation UI avec Shadcn/ui et hooks React pour authentification enterprise-grade."
-    },
-    {
-      "id": "ebcd3308-1fae-43c8-b2df-fbf358290577",
-      "name": "Système de Vérification des Appareils Intégré",
-      "description": "Créer le système complet de vérification et gestion des appareils pour LaunchSaasFast avec dashboard device sessions, interface confidence scoring, processus vérification email, et notifications temps réel. Interface doit exploiter l'infrastructure backend existante (device_sessions table, APIs) et fournir une UX enterprise-grade pour la sécurité avancée.",
-      "notes": "Système critique pour sécurité enterprise. Doit réutiliser infrastructure existante complètement (device_sessions, confidence scoring, APIs verify-device) et maintenir performance avec scaling.",
+      "id": "476a6438-b689-4a09-b5d6-756da925ed00",
+      "name": "Update Authentication Routes for Native Email Integration",
+      "description": "Modify existing authentication API routes to integrate with Supabase native email service while maintaining existing security logging and device session management. Update signup, forgot-password, and security notification triggers.",
+      "notes": "Preserve existing middleware functionality and security logging. Ensure backward compatibility during migration period.",
       "status": "pending",
       "dependencies": [
         {
-          "taskId": "916b8018-e430-4840-b24b-76ace244876b"
-        },
-        {
-          "taskId": "30e0138e-1015-42fd-a7aa-9d45593713b0"
+          "taskId": "3d4f1a6a-1ae0-4078-8d63-a2209293b0a1"
         }
       ],
-      "createdAt": "2025-07-10T20:56:29.564Z",
-      "updatedAt": "2025-07-10T20:56:29.564Z",
+      "createdAt": "2025-07-11T11:27:41.044Z",
+      "updatedAt": "2025-07-11T11:27:41.044Z",
       "relatedFiles": [
         {
-          "path": "/app/dashboard/devices/page.tsx",
-          "type": "CREATE",
-          "description": "Dashboard principal device management"
+          "path": "app/api/auth/signup/route.ts",
+          "type": "TO_MODIFY",
+          "description": "Update to use Supabase native email"
         },
         {
-          "path": "/hooks/useDeviceManagement.ts",
-          "type": "CREATE",
-          "description": "Hook CRUD device sessions avec cache"
+          "path": "app/api/auth/forgot-password/route.ts",
+          "type": "TO_MODIFY",
+          "description": "Integrate with new email service"
         },
         {
-          "path": "/components/security/device-table.tsx",
-          "type": "CREATE",
-          "description": "Table responsive devices avec actions"
+          "path": "app/api/auth/change-password/route.ts",
+          "type": "TO_MODIFY",
+          "description": "Update security notifications"
         },
         {
-          "path": "/components/security/device-confidence-badge.tsx",
-          "type": "CREATE",
-          "description": "Badge confidence score avec niveaux couleur"
-        },
-        {
-          "path": "/app/api/devices/route.ts",
-          "type": "CREATE",
-          "description": "API endpoints device management"
-        },
-        {
-          "path": "/lib/confidence-scoring.ts",
+          "path": "lib/device-session-manager.ts",
           "type": "REFERENCE",
-          "description": "Algorithme confidence scoring existant",
-          "lineStart": 1,
-          "lineEnd": 50
-        },
-        {
-          "path": "/docs/api.md",
-          "type": "REFERENCE",
-          "description": "API verify-device existante",
-          "lineStart": 340,
-          "lineEnd": 400
+          "description": "Device session creation triggers"
         }
       ],
-      "implementationGuide": "1. Créer hooks personnalisés: useDeviceManagement (CRUD device sessions), useDeviceVerification (flow email codes)\\n2. Dashboard principal: /app/dashboard/devices/page.tsx avec table Shadcn/ui\\n3. Composants réutilisables: /components/security/device-table.tsx, device-confidence-badge.tsx, device-session-card.tsx\\n4. Confidence scoring UI: progress bars, badges (Trusted 70+, Verified 40-69, Restricted <40)\\n5. Intégrer /lib/confidence-scoring.ts pour calculs et /lib/device-detection.ts pour device info\\n6. Actions device: approve/reject/revoke avec AAL2 requirement via useAuth\\n7. API routes: /app/api/devices/ pour CRUD operations avec RLS policies\\n8. Notifications temps réel via Supabase subscriptions pour nouveaux appareils\\n9. Device verification flow: /verify-device/[token] avec email codes\\n10. Modal device details avec historique connexions et géolocalisation IP\\n11. Filtres et pagination server-side optimisés",
-      "verificationCriteria": "1. Dashboard /dashboard/devices accessible et fonctionnel\\n2. Table devices avec sorting, filtering, pagination performante\\n3. Confidence scores affichés correctement avec explications visuelles\\n4. Actions approve/reject/revoke fonctionnelles avec AAL2 verification\\n5. Notifications temps réel pour nouveaux appareils suspects\\n6. Device verification flow complet avec email codes\\n7. Modal device details avec historique et géolocalisation\\n8. Performance optimisée (table render <500ms, pagination <2s)\\n9. Design responsive Shadcn/ui cohérent\\n10. API sécurisées avec RLS et rate limiting\\n11. Intégration seamless infrastructure existante\\n12. TypeScript strict sans erreurs compilation",
-      "analysisResult": "Implémentation des Phases 4-5 de LaunchSaasFast : système de vérification des appareils + interface utilisateur moderne. Architecture security-first avec device confidence scoring, AAL compliance NIST, et integration Supabase/Redis/Resend. Fondation UI avec Shadcn/ui et hooks React pour authentification enterprise-grade."
+      "implementationGuide": "1. Update signup route to use Supabase email confirmation:\\n   ```typescript\\n   const { data, error } = await supabaseServer.auth.signUp({\\n     email: validatedData.email,\\n     password: validatedData.password,\\n     options: {\\n       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/verify-email`\\n     }\\n   });\\n   ```\\n2. Modify forgot-password route for native Supabase email handling\\n3. Update security notification triggers in device session creation\\n4. Integrate with new email migration service\\n5. Maintain existing security logging and audit trails\\n6. Update error handling for Supabase email errors",
+      "verificationCriteria": "Authentication routes successfully send emails via Supabase, signup confirmation emails are delivered correctly, password reset flows work end-to-end, security notifications trigger properly, and existing security logging remains functional.",
+      "analysisResult": "Migration from Resend to Supabase native email service for authentication emails while preserving existing device security framework and authentication architecture. Core implementation focuses on configuring Supabase email templates, creating transition layer for gradual migration, and maintaining security notification capabilities through native Supabase email functions."
     },
     {
-      "id": "6d407eba-1e1d-433d-ab40-387e52ec3c2e",
-      "name": "Dashboard Utilisateur et Paramètres de Sécurité",
-      "description": "Créer le dashboard utilisateur principal et les pages de paramètres de sécurité pour LaunchSaasFast. Interface complète avec overview sécurité, gestion profil utilisateur, paramètres 2FA avec QR codes, historique connexions, et navigation sidebar moderne. Design cohérent avec métriques temps réel et UX intuitive.",
-      "notes": "Interface critique pour UX utilisateur. Doit intégrer APIs 2FA existantes, exploiter security_events table, et maintenir cohérence design avec auth pages. Navigation intuitive essentielle.",
+      "id": "e8165ec3-e497-4e86-82a7-2f3d4a4ef6f3",
+      "name": "Migrate Security Notification Templates and Triggers",
+      "description": "Convert existing React Email templates to Supabase-compatible HTML templates and update security event triggers to use native Supabase email functions. Maintain responsive design and accessibility standards.",
+      "notes": "Ensure templates maintain LaunchSaasFast branding and are accessible across email clients. Preserve all existing security notification types and contexts.",
       "status": "pending",
       "dependencies": [
         {
-          "taskId": "916b8018-e430-4840-b24b-76ace244876b"
-        },
-        {
-          "taskId": "30e0138e-1015-42fd-a7aa-9d45593713b0"
+          "taskId": "476a6438-b689-4a09-b5d6-756da925ed00"
         }
       ],
-      "createdAt": "2025-07-10T20:59:41.694Z",
-      "updatedAt": "2025-07-10T20:59:41.694Z",
+      "createdAt": "2025-07-11T11:27:41.044Z",
+      "updatedAt": "2025-07-11T11:27:41.044Z",
       "relatedFiles": [
         {
-          "path": "/app/(dashboard)/layout.tsx",
-          "type": "CREATE",
-          "description": "Layout dashboard avec sidebar et navigation"
-        },
-        {
-          "path": "/app/(dashboard)/page.tsx",
-          "type": "CREATE",
-          "description": "Dashboard principal avec overview sécurité"
-        },
-        {
-          "path": "/app/(dashboard)/settings/page.tsx",
-          "type": "CREATE",
-          "description": "Page paramètres profil utilisateur"
-        },
-        {
-          "path": "/app/(dashboard)/security/page.tsx",
-          "type": "CREATE",
-          "description": "Page paramètres sécurité et 2FA"
-        },
-        {
-          "path": "/hooks/useUserProfile.ts",
-          "type": "CREATE",
-          "description": "Hook gestion profil utilisateur"
-        },
-        {
-          "path": "/hooks/useSecuritySettings.ts",
-          "type": "CREATE",
-          "description": "Hook paramètres sécurité et 2FA"
-        },
-        {
-          "path": "/app/api/user/profile/route.ts",
-          "type": "CREATE",
-          "description": "API endpoint gestion profil"
-        },
-        {
-          "path": "/lib/totp.ts",
+          "path": "lib/email/templates/",
           "type": "REFERENCE",
-          "description": "Librairie TOTP pour QR codes 2FA",
-          "lineStart": 1,
-          "lineEnd": 50
+          "description": "Existing React Email templates for conversion"
+        },
+        {
+          "path": "lib/security-triggers.ts",
+          "type": "CREATE",
+          "description": "Updated security notification triggers"
+        },
+        {
+          "path": "types/email.ts",
+          "type": "CREATE",
+          "description": "Email template and preference types"
+        },
+        {
+          "path": "lib/email/template-converter.ts",
+          "type": "CREATE",
+          "description": "Utility for template conversion"
         }
       ],
-      "implementationGuide": "1. Créer layout dashboard: /app/(dashboard)/layout.tsx avec sidebar navigation responsive\\n2. Dashboard principal: /app/(dashboard)/page.tsx avec overview sécurité et métriques\\n3. Pages settings: /app/(dashboard)/settings/page.tsx (profil), security/page.tsx (2FA), sessions/page.tsx (historique)\\n4. Composants navigation: sidebar avec sections organisées, header avec user menu\\n5. Hooks: useUserProfile (édition profil), useSecuritySettings (2FA management), useActivityLog (historique)\\n6. Métriques temps réel: confidence score global, activité récente, alertes sécurité\\n7. 2FA setup complet: QR codes via /lib/totp.ts, backup codes, disable flow\\n8. Historique connexions avec pagination et filtres via security_events\\n9. API routes: /app/api/user/profile, /app/api/user/settings pour CRUD\\n10. Design Shadcn/ui: cards, forms, tables, badges, progress bars\\n11. Responsive mobile/desktop avec navigation adaptative",
-      "verificationCriteria": "1. Layout dashboard avec navigation sidebar fonctionnelle\\n2. Dashboard overview avec métriques sécurité temps réel\\n3. Pages settings/profile avec édition informations personnelles\\n4. Page security avec 2FA setup/disable complet\\n5. Page sessions avec historique connexions paginé\\n6. Navigation responsive mobile/desktop\\n7. Hooks optimisés avec cache et error handling\\n8. APIs user management sécurisées\\n9. Design cohérent Shadcn/ui avec UX intuitive\\n10. Intégration seamless avec infrastructure existante\\n11. Performance optimisée (page load <2s)\\n12. TypeScript strict sans erreurs compilation",
-      "analysisResult": "Implémentation des Phases 4-5 de LaunchSaasFast : système de vérification des appareils + interface utilisateur moderne. Architecture security-first avec device confidence scoring, AAL compliance NIST, et integration Supabase/Redis/Resend. Fondation UI avec Shadcn/ui et hooks React pour authentification enterprise-grade."
+      "implementationGuide": "1. Convert React Email templates to HTML:\\n   - new-device-verification.tsx → Supabase HTML template\\n   - password-reset.tsx → Supabase password reset template\\n   - two-factor-setup.tsx → Supabase custom notification\\n2. Update security event triggers:\\n   ```typescript\\n   async function triggerSecurityNotification(event: SecurityEventType, user: User, context: any) {\\n     await supabaseEmailService.sendSecurityNotification(event, user, context);\\n   }\\n   ```\\n3. Implement template variable substitution for dynamic content\\n4. Create email preference management in user metadata\\n5. Add unsubscribe functionality for non-critical notifications\\n6. Update security logger to track Supabase email events",
+      "verificationCriteria": "Security notification templates render correctly in Supabase, all existing notification types work properly, templates are responsive and accessible, email preferences are manageable by users, and security event logging includes email delivery status.",
+      "analysisResult": "Migration from Resend to Supabase native email service for authentication emails while preserving existing device security framework and authentication architecture. Core implementation focuses on configuring Supabase email templates, creating transition layer for gradual migration, and maintaining security notification capabilities through native Supabase email functions."
     },
     {
-      "id": "49746d18-b2fb-4e3d-920d-31f55c27f8af",
-      "name": "Système d'Email Enhancement et Notifications",
-      "description": "Implémenter système d'email avancé avec templates personnalisés, notifications sécurité en temps réel, et gestion préférences utilisateur. Extension de l'infrastructure Resend existante avec emails triggered par événements device/auth, templates React Email modernes, et système de notification in-app cohérent.",
-      "notes": "Système critique pour engagement utilisateur et sécurité. Doit respecter RGPD avec opt-out facile. Templates doivent être responsive et accessible.",
+      "id": "ab82e56d-08dd-4e28-bc2a-6ef3426ede85",
+      "name": "Update Configuration and Environment Setup",
+      "description": "Update project configuration files, environment variables, and documentation for Supabase native email service. Create migration guide and update deployment configurations.",
+      "notes": "Ensure backward compatibility and provide clear migration path for existing deployments. Include rollback procedures in documentation.",
       "status": "pending",
       "dependencies": [
         {
-          "taskId": "6d407eba-1e1d-433d-ab40-387e52ec3c2e"
+          "taskId": "e8165ec3-e497-4e86-82a7-2f3d4a4ef6f3"
         }
       ],
-      "createdAt": "2025-07-10T21:01:44.446Z",
-      "updatedAt": "2025-07-10T21:01:44.446Z",
+      "createdAt": "2025-07-11T11:27:41.044Z",
+      "updatedAt": "2025-07-11T11:27:41.044Z",
       "relatedFiles": [
         {
-          "path": "/emails/templates/",
-          "type": "CREATE",
-          "description": "Dossier templates React Email"
+          "path": "config/default.ts",
+          "type": "TO_MODIFY",
+          "description": "Add Supabase email configuration"
         },
         {
-          "path": "/lib/email-service.ts",
-          "type": "CREATE",
-          "description": "Service email avancé avec queue"
+          "path": ".env.example",
+          "type": "TO_MODIFY",
+          "description": "New environment variables"
         },
         {
-          "path": "/hooks/useNotifications.ts",
+          "path": "docs/email-migration.md",
           "type": "CREATE",
-          "description": "Hook notifications in-app"
+          "description": "Migration guide and documentation"
         },
         {
-          "path": "/lib/email-triggers.ts",
-          "type": "CREATE",
-          "description": "Système triggers événements"
+          "path": "docs/configuration.md",
+          "type": "TO_MODIFY",
+          "description": "Updated configuration documentation"
         },
         {
-          "path": "/app/(dashboard)/settings/notifications/page.tsx",
+          "path": "config/schemas/email.ts",
           "type": "CREATE",
-          "description": "Page préférences notifications"
-        },
-        {
-          "path": "/lib/email.ts",
-          "type": "REFERENCE",
-          "description": "Service email existant Resend",
-          "lineStart": 1,
-          "lineEnd": 30
+          "description": "Validation schemas for email config"
         }
       ],
-      "implementationGuide": "1. Templates React Email: /emails/templates/ avec welcome, device-alert, 2fa-enabled, session-warning\\n2. Email service avancé: /lib/email-service.ts avec queue system et retry logic\\n3. Notification hooks: useNotifications avec toast system et preferences\\n4. Event triggers: /lib/email-triggers.ts connecté aux APIs auth et device events\\n5. Templates design: cohérent brand LaunchSaasFast avec Tailwind CSS\\n6. Préférences email: /app/(dashboard)/settings/notifications page\\n7. In-app notifications: composant NotificationCenter avec state management\\n8. Email queue: intégration avec Redis pour async processing\\n9. Analytics email: tracking ouverture/clics avec Resend webhook\\n10. API routes: /app/api/notifications/ pour CRUD preferences\\n11. Types TypeScript: EmailTemplate, NotificationSettings, EventTrigger",
-      "verificationCriteria": "1. Templates email responsive avec brand LaunchSaasFast\\n2. Service email avec retry logic et queue Redis\\n3. Notifications in-app temps réel avec toast system\\n4. Triggers automatiques événements sécurité\\n5. Page préférences notifications RGPD compliant\\n6. Analytics email tracking avec Resend webhook\\n7. Performance queue async sans blocking UI\\n8. TypeScript strict avec types complets\\n9. Tests unitaires service email et triggers\\n10. Accessibility AA sur templates et notifications",
-      "analysisResult": "Implémentation des Phases 4-5 de LaunchSaasFast : système de vérification des appareils + interface utilisateur moderne. Architecture security-first avec device confidence scoring, AAL compliance NIST, et integration Supabase/Redis/Resend. Fondation UI avec Shadcn/ui et hooks React pour authentification enterprise-grade."
-    },
-    {
-      "id": "a1482aa1-0d8f-4a6e-9cdf-9e6b7fb7f499",
-      "name": "Tests d'Intégration et Déploiement Final",
-      "description": "Suite complète de tests d'intégration pour toutes les fonctionnalités implémentées, configuration déploiement production, et documentation technique finale. Tests end-to-end couvrant flows authentification, device verification, dashboard, avec setup CI/CD et monitoring.",
-      "notes": "Étape finale critique. Tests doivent couvrir tous les edge cases sécurité. Documentation essentielle pour maintenance future.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "49746d18-b2fb-4e3d-920d-31f55c27f8af"
-        }
-      ],
-      "createdAt": "2025-07-10T21:01:44.446Z",
-      "updatedAt": "2025-07-10T21:01:44.446Z",
-      "relatedFiles": [
-        {
-          "path": "/tests/e2e/",
-          "type": "CREATE",
-          "description": "Tests end-to-end Playwright"
-        },
-        {
-          "path": "/tests/integration/",
-          "type": "CREATE",
-          "description": "Tests intégration APIs"
-        },
-        {
-          "path": "/playwright.config.ts",
-          "type": "CREATE",
-          "description": "Configuration Playwright"
-        },
-        {
-          "path": "/docs/",
-          "type": "CREATE",
-          "description": "Documentation technique"
-        },
-        {
-          "path": "/.github/workflows/",
-          "type": "CREATE",
-          "description": "CI/CD GitHub Actions"
-        },
-        {
-          "path": "/vercel.json",
-          "type": "CREATE",
-          "description": "Configuration production Vercel"
-        }
-      ],
-      "implementationGuide": "1. Tests E2E: /tests/e2e/ avec Playwright couvrant flows auth complets\\n2. Tests intégration: /tests/integration/ pour APIs et database interactions\\n3. Tests composants: /tests/components/ pour UI avec Testing Library\\n4. Configuration Vercel: optimisation pour production avec env variables\\n5. Monitoring setup: intégration Sentry pour error tracking\\n6. Performance tests: Core Web Vitals et load testing\\n7. Security tests: audit sécurité automatisé avec scanning\\n8. Documentation: /docs/ avec guides utilisateur et technique\\n9. CI/CD pipeline: GitHub Actions avec tests automatisés\\n10. Production checklist: validation déploiement avec rollback plan\\n11. Load testing: simulation trafic réel avec k6 ou similar",
-      "verificationCriteria": "1. Tests E2E couvrant flows auth complets (>90% coverage)\\n2. Tests intégration APIs avec mocks database\\n3. Tests composants UI avec snapshots\\n4. CI/CD pipeline fonctionnel avec auto-deploy\\n5. Monitoring production avec alertes\\n6. Performance Core Web Vitals >90 score\\n7. Security audit sans vulnérabilités critiques\\n8. Documentation complète utilisateur/technique\\n9. Load testing validation 1000+ users concurrent\\n10. Production deployment successful avec rollback plan\\n11. Tous tests passent automatiquement en CI",
-      "analysisResult": "Implémentation des Phases 4-5 de LaunchSaasFast : système de vérification des appareils + interface utilisateur moderne. Architecture security-first avec device confidence scoring, AAL compliance NIST, et integration Supabase/Redis/Resend. Fondation UI avec Shadcn/ui et hooks React pour authentification enterprise-grade."
+      "implementationGuide": "1. Update config/default.ts with Supabase email settings:\\n   ```typescript\\n   email: {\\n     provider: 'supabase' as const,\\n     supabase: {\\n       enableCustomSMTP: true,\\n       smtpHost: process.env.SUPABASE_SMTP_HOST,\\n       smtpPort: 587,\\n       smtpUser: process.env.SUPABASE_SMTP_USER\\n     },\\n     migration: {\\n       useSupabase: process.env.USE_SUPABASE_EMAIL === 'true',\\n       rolloutPercentage: parseInt(process.env.EMAIL_ROLLOUT_PERCENTAGE || '0')\\n     }\\n   }\\n   ```\\n2. Update .env.example with new variables\\n3. Create migration documentation in docs/email-migration.md\\n4. Update configuration.md with Supabase email setup\\n5. Create validation schemas for new email configuration\\n6. Update deployment scripts and CI/CD configuration",
+      "verificationCriteria": "Configuration validates correctly, environment variables are properly documented, migration guide is comprehensive and accurate, deployment configurations support both email services, and validation schemas prevent configuration errors.",
+      "analysisResult": "Migration from Resend to Supabase native email service for authentication emails while preserving existing device security framework and authentication architecture. Core implementation focuses on configuring Supabase email templates, creating transition layer for gradual migration, and maintaining security notification capabilities through native Supabase email functions."
     }
   ]
 }

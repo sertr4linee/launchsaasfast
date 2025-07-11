@@ -57,11 +57,11 @@ export default function Home() {
 
           {/* CTA Section */}
           <div className="flex gap-4 flex-col sm:flex-row">
-            <Button size="lg">
-              Commencer
+            <Button size="lg" asChild>
+              <a href="/signin">Se connecter</a>
             </Button>
-            <Button variant="outline" size="lg">
-              En savoir plus
+            <Button variant="outline" size="lg" asChild>
+              <a href="/signup">Créer un compte</a>
             </Button>
           </div>
         </main>

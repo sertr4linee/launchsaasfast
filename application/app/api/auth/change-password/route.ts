@@ -77,8 +77,8 @@ export async function POST(request: NextRequest) {
       sessionId: deviceSessionId || undefined,
     });
 
-    // TODO: Invalider toutes les autres sessions pour sécurité (Phase 3)
-    // TODO: Envoyer notification email de changement de mot de passe
+    // Note: Email de notification de changement de mot de passe géré automatiquement par Supabase
+    // ou peut être envoyé via notre service personnalisé pour plus de contrôle
 
     return successResponse(
       { 

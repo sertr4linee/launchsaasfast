@@ -1,2 +1,4 @@
 // Composants d'authentification
-// Seront implémentés dans la tâche suivante
+export { SigninForm } from './signin-form';
+export { SignupForm } from './signup-form';
+export { DeviceConfidenceIndicator } from './device-confidence-indicator';

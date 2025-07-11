@@ -14,6 +14,13 @@ export const SignupSchema = z.object({
   path: ["confirmPassword"],
 });
 
+// Schema for API endpoint (without confirmPassword)
+export const SignupAPISchema = z.object({
+  email: z.string().email('Email invalide'),
+  password: z.string().min(8, 'Mot de passe doit contenir au moins 8 caractères'),
+  metadata: z.record(z.string(), z.any()).optional(),
+});
+
 export const ForgotPasswordSchema = z.object({
   email: z.string().email('Email invalide'),
 });
@@ -54,6 +61,7 @@ export const Disable2FASchema = z.object({
 
 export type SigninRequest = z.infer<typeof SigninSchema>;
 export type SignupRequest = z.infer<typeof SignupSchema>;
+export type SignupAPIRequest = z.infer<typeof SignupAPISchema>;
 export type ForgotPasswordRequest = z.infer<typeof ForgotPasswordSchema>;
 export type ResetPasswordRequest = z.infer<typeof ResetPasswordSchema>;
 export type ChangePasswordRequest = z.infer<typeof ChangePasswordSchema>;

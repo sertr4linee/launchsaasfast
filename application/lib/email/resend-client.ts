@@ -1,12 +1,11 @@
 import { Resend } from 'resend';
 import { getConfig } from '../../config';
 
-const config = getConfig();
-
 let resend: Resend;
 
 export function getResendClient(): Resend {
   if (!resend) {
+    const config = getConfig();
     if (!config.resend.apiKey) {
       throw new Error('Resend API key is not configured.');
     }

@@ -45,7 +45,8 @@ export async function POST(request: NextRequest) {
       authMethod: 'forgot_password',
     });
 
-    // TODO: Rate limiting pour éviter les abus (Phase 3)
+    // Note: Email de réinitialisation envoyé automatiquement par Supabase
+    // Rate limiting sera ajouté en Phase 3
     
     return successResponse(
       { message: 'Un lien de réinitialisation a été envoyé à votre email' },

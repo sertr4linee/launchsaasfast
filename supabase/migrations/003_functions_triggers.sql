@@ -9,10 +9,13 @@ $$ LANGUAGE plpgsql;
 
 -- Attach trigger to tables
 DO $$
-DECLARE tbl text;
+DECLARE 
+  tbl_name text;
+  table_names text[] := ARRAY['users','user_devices','device_sessions','security_events'];
 BEGIN
-  FOR tbl IN ARRAY['public.users','public.user_devices','public.device_sessions','public.security_events'] LOOP
-    EXECUTE format('CREATE TRIGGER %I_updated_at BEFORE UPDATE ON %s FOR EACH ROW EXECUTE PROCEDURE public.update_updated_at_column()', tbl, tbl);
+  FOREACH tbl_name IN ARRAY table_names LOOP
+    EXECUTE format('CREATE TRIGGER %I_updated_at BEFORE UPDATE ON public.%I FOR EACH ROW EXECUTE PROCEDURE public.update_updated_at_column()', 
+                   tbl_name, tbl_name);
   END LOOP;
 END;
 $$;
