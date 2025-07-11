@@ -16,7 +16,6 @@ export function DeviceVerificationForm({ deviceId, onVerificationComplete }: Dev
   const [step, setStep] = useState<'request' | 'verify'>('request');
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const sendVerificationCode = async () => {
     setIsLoading(true);
@@ -33,18 +32,11 @@ export function DeviceVerificationForm({ deviceId, onVerificationComplete }: Dev
         throw new Error(data.error || 'Erreur lors de l\'envoi du code');
       }
 
-      toast({
-        title: 'Code envoyé',
-        description: 'Un code de vérification a été envoyé à votre adresse e-mail.',
-      });
+      toast.success('Un code de vérification a été envoyé à votre adresse e-mail.');
 
       setStep('verify');
     } catch (error) {
-      toast({
-        title: 'Erreur',
-        description: error instanceof Error ? error.message : 'Erreur inconnue',
-        variant: 'destructive',
-      });
+      toast.error(error instanceof Error ? error.message : 'Erreur inconnue');
     } finally {
       setIsLoading(false);
     }
@@ -52,11 +44,7 @@ export function DeviceVerificationForm({ deviceId, onVerificationComplete }: Dev
 
   const verifyCode = async () => {
     if (code.length !== 6) {
-      toast({
-        title: 'Code invalide',
-        description: 'Le code doit contenir 6 chiffres.',
-        variant: 'destructive',
-      });
+      toast.error('Le code doit contenir 6 chiffres.');
       return;
     }
 
@@ -74,18 +62,11 @@ export function DeviceVerificationForm({ deviceId, onVerificationComplete }: Dev
         throw new Error(data.error || 'Code de vérification invalide');
       }
 
-      toast({
-        title: 'Appareil vérifié',
-        description: 'Votre appareil a été vérifié avec succès.',
-      });
+      toast.success('Votre appareil a été vérifié avec succès.');
 
       onVerificationComplete?.();
     } catch (error) {
-      toast({
-        title: 'Erreur',
-        description: error instanceof Error ? error.message : 'Erreur inconnue',
-        variant: 'destructive',
-      });
+      toast.error(error instanceof Error ? error.message : 'Erreur inconnue');
     } finally {
       setIsLoading(false);
     }
