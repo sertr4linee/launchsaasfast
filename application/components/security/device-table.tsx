@@ -10,15 +10,15 @@ import { Monitor, Smartphone, Tablet, CheckCircle, XCircle, RotateCcw } from 'lu
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
-function getDeviceIcon(deviceType: string) {
-  switch (deviceType.toLowerCase()) {
-    case 'mobile':
-      return Smartphone;
-    case 'tablet':
-      return Tablet;
-    default:
-      return Monitor;
+function getDeviceIcon(metadata?: Record<string, any>) {
+  const deviceType = metadata?.browser?.toLowerCase() || '';
+  if (deviceType.includes('mobile') || deviceType.includes('android') || deviceType.includes('iphone')) {
+    return Smartphone;
   }
+  if (deviceType.includes('tablet') || deviceType.includes('ipad')) {
+    return Tablet;
+  }
+  return Monitor;
 }
 
 export function DeviceTable() {
@@ -67,16 +67,21 @@ export function DeviceTable() {
           </TableHeader>
           <TableBody>
             {devices.map((device) => {
-              const DeviceIcon = getDeviceIcon(device.deviceType);
+              const DeviceIcon = getDeviceIcon(device.metadata);
+              const deviceName = device.metadata?.deviceName || device.metadata?.browser || 'Appareil inconnu';
+              const browser = device.metadata?.browser || 'Navigateur inconnu';
+              const os = device.metadata?.os || 'OS inconnu';
+              const isActive = device.isVerified && new Date(device.expiresAt) > new Date();
+              
               return (
                 <TableRow key={device.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <DeviceIcon className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <div className="font-medium">{device.deviceName}</div>
+                        <div className="font-medium">{deviceName}</div>
                         <div className="text-sm text-muted-foreground">
-                          {device.browser} • {device.os}
+                          {browser} • {os}
                         </div>
                       </div>
                     </div>
@@ -86,19 +91,19 @@ export function DeviceTable() {
                   </TableCell>
                   <TableCell>
                     <Badge 
-                      variant={device.status === 'active' ? 'default' : 'secondary'}
+                      variant={isActive ? 'default' : 'secondary'}
                       className={
-                        device.status === 'active' 
+                        isActive 
                           ? 'bg-green-100 text-green-800 border-green-200'
                           : 'bg-gray-100 text-gray-800 border-gray-200'
                       }
                     >
-                      {device.status === 'active' ? 'Actif' : 'Inactif'}
+                      {isActive ? 'Actif' : 'Inactif'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <span className="text-sm text-muted-foreground">
-                      {formatDistanceToNow(new Date(device.lastActivity), { 
+                      {formatDistanceToNow(new Date(device.lastActivityAt), { 
                         addSuffix: true, 
                         locale: fr 
                       })}
