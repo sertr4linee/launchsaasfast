@@ -130,31 +130,31 @@ Créer un starter SaaS complet, sécurisé et scalable basé sur l'approche Maze
 
 ### 3.1 Rate limiting intelligent
 **Tâches LLM :**
-- [ ] **T3.1.1** : Setup Upstash Redis
+- [x] **T3.1.1** : Setup Upstash Redis
   - Configuration client Redis dans `/lib/redis.ts`
   - Variables d'environnement : `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`
   - Helper functions pour opérations Redis de base
 
-- [ ] **T3.1.2** : Middleware de rate limiting
+- [x] **T3.1.2** : Middleware de rate limiting
   - Créer `/lib/rate-limiter.ts` avec algorithme sliding window
   - Configuration des limites par endpoint et type d'utilisateur
   - Rate limiting adaptatif basé sur score de confiance device
   - Headers informatifs : X-RateLimit-Limit, X-RateLimit-Remaining
 
-- [ ] **T3.1.3** : Intégration rate limiting sur routes critiques
+- [x] **T3.1.3** : Intégration rate limiting sur routes critiques
   - Appliquer sur : signin, signup, forgot-password, verify-email
   - Limites différenciées par niveau de confiance utilisateur
   - Blocage temporaire des IPs abusives
 
 ### 3.2 Authentication Assurance Level (AAL)
 **Tâches LLM :**
-- [ ] **T3.2.1** : Système AAL de base
+- [x] **T3.2.1** : Système AAL de base
   - Créer `/lib/aal-manager.ts`
   - Logique de détermination AAL1 vs AAL2
   - Mise à jour AAL dans device_sessions
   - Middleware de vérification AAL pour actions sensibles
 
-- [ ] **T3.2.2** : Vérification 2FA et backup codes
+- [x] **T3.2.2** : Vérification 2FA et backup codes
   - Génération codes de sauvegarde lors du setup 2FA
   - Vérification TOTP avec fenêtre de tolérance
   - Vérification backup codes avec invalidation après usage
@@ -162,13 +162,13 @@ Créer un starter SaaS complet, sécurisé et scalable basé sur l'approche Maze
 
 ### 3.3 Monitoring et détection d'anomalies
 **Tâches LLM :**
-- [ ] **T3.3.1** : Système de logging des événements
+- [x] **T3.3.1** : Système de logging des événements
   - Créer `/lib/security-logger.ts`
   - Types d'événements : login, logout, failed_auth, device_added, etc.
   - Stockage dans table `account_events` avec métadonnées
   - Enrichissement automatique avec contexte (IP, user-agent, etc.)
 
-- [ ] **T3.3.2** : Détection de patterns suspects
+- [x] **T3.3.2** : Détection de patterns suspects
   - Créer `/lib/threat-detection.ts`
   - Détection tentatives de connexion répétées
   - Alertes pour connexions depuis nouvelles géolocalisations
