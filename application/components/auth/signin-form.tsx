@@ -37,6 +37,23 @@ export function SigninForm() {
       const result = await signin(data.email, data.password);
       
       if (result.success) {
+        // Enregistrer la session d'appareil
+        try {
+          const deviceFingerprint = window.navigator.userAgent + '_' + (window.crypto?.randomUUID?.() || Math.random().toString(36));
+          const confidenceScore = 100; // valeur par défaut
+          const aalLevel = 1; // valeur par défaut
+          await fetch('/api/devices', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              deviceFingerprint,
+              confidenceScore,
+              aalLevel,
+            }),
+          });
+        } catch (e) {
+          console.warn('Erreur lors de l’enregistrement de la session d’appareil:', e);
+        }
         // Redirection après connexion réussie
         router.push('/dashboard');
       } else {

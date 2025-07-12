@@ -1,3 +1,5 @@
+
+import LogoutButton from "@/components/LogoutButton";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -13,6 +15,7 @@ export default function DashboardPage() {
         <p className="text-muted-foreground">
           Bienvenue sur votre tableau de bord LaunchSaasFast !
         </p>
+        <LogoutButton />
       </div>
     </div>
   );

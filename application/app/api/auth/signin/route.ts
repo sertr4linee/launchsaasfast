@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { SigninSchema } from '../../../../schemas/auth';
 import { supabaseServer } from '../../../../lib/supabase/server';
+import { createRouteHandlerClient } from '../../../../lib/supabase/route-handler';
 import { handleError, successResponse } from '../../../../lib/error-handler';
 import { securityLogger } from '../../../../lib/security-logger';
 import { SecurityEventType, SecurityEventSeverity } from '../../../../types/security';
@@ -57,8 +58,11 @@ export async function POST(request: NextRequest) {
       return handleError(new Error('Authentication temporarily blocked due to suspicious activity'));
     }
 
-    // Authentification Supabase
-    const { data, error } = await supabaseServer.auth.signInWithPassword({
+    // Initialize both Supabase clients
+    const { supabase, response } = createRouteHandlerClient(request);
+    
+    // Authentification Supabase avec gestion des cookies
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: validatedData.email,
       password: validatedData.password,
     });
@@ -114,14 +118,25 @@ export async function POST(request: NextRequest) {
 
     // TODO: Enregistrer device info et créer session
 
-    return successResponse({
+    // Important: we need to return the response that has the cookies set
+    const responseData = {
       user: data.user,
       session: data.session,
       metadata: {
         riskScore: threatAssessment.riskScore,
         enhancedMonitoring: threatAssessment.riskScore > 25
       }
-    }, 'Connexion réussie');
+    };
+
+    // Return using the response that has the cookies
+    return Response.json({
+      success: true,
+      data: responseData,
+      message: 'Connexion réussie'
+    }, {
+      status: 200,
+      headers: response.headers,
+    });
 
   } catch (error) {
     // Log API error

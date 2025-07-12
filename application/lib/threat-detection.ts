@@ -267,7 +267,16 @@ export class ThreatDetectionEngine {
     
     // Check time-of-day pattern
     const currentHour = new Date().getHours();
-    const normalHours = normalHoursData ? JSON.parse(normalHoursData) : [];
+    let normalHours: number[] = [];
+    
+    if (normalHoursData) {
+      try {
+        normalHours = JSON.parse(normalHoursData);
+      } catch (error) {
+        console.error('Error parsing normal hours data:', error);
+        normalHours = [];
+      }
+    }
     
     if (normalHours.length > 0 && !normalHours.includes(currentHour)) {
       deviations.push('unusual_time_of_day');
@@ -275,13 +284,35 @@ export class ThreatDetectionEngine {
 
     // Check user agent pattern
     if (event.context.userAgent && knownAgentsData) {
-      const knownAgents = JSON.parse(knownAgentsData);
-      const isKnownAgent = knownAgents.some((agent: string) => 
-        this.compareUserAgents(event.context.userAgent!, agent) > 0.8
-      );
-      
-      if (!isKnownAgent) {
-        deviations.push('unknown_user_agent');
+      try {
+        let knownAgents: string[] = [];
+        
+        // Ensure knownAgentsData is a string
+        const agentsDataStr = typeof knownAgentsData === 'string' ? knownAgentsData : String(knownAgentsData);
+        
+        // Try to parse as JSON array first
+        if (agentsDataStr.trim().startsWith('[')) {
+          knownAgents = JSON.parse(agentsDataStr);
+        } else {
+          // If it's not a JSON array, treat it as a single user agent string
+          knownAgents = [agentsDataStr];
+        }
+        
+        const isKnownAgent = knownAgents.some((agent: string) => 
+          this.compareUserAgents(event.context.userAgent!, agent) > 0.8
+        );
+        
+        if (!isKnownAgent) {
+          deviations.push('unknown_user_agent');
+        }
+      } catch (error) {
+        console.error('Error parsing user agent data:', error);
+        // If parsing fails, treat the data as a single user agent string
+        const agentsDataStr = typeof knownAgentsData === 'string' ? knownAgentsData : String(knownAgentsData);
+        const isKnownAgent = this.compareUserAgents(event.context.userAgent!, agentsDataStr) > 0.8;
+        if (!isKnownAgent) {
+          deviations.push('unknown_user_agent');
+        }
       }
     }
 
@@ -423,10 +454,21 @@ export class ThreatDetectionEngine {
   }
 
   private compareUserAgents(ua1: string, ua2: string): number {
-    // Simplified user agent comparison
-    const normalize = (ua: string) => ua.toLowerCase().replace(/[\d.]+/g, 'X');
+    // Simplified user agent comparison with type safety
+    const normalize = (ua: unknown): string => {
+      if (typeof ua !== 'string') return '';
+      try {
+        return ua.toLowerCase().replace(/[\d.]+/g, 'X');
+      } catch {
+        return '';
+      }
+    };
+    
     const norm1 = normalize(ua1);
     const norm2 = normalize(ua2);
+    
+    // If either normalization failed, return no similarity
+    if (!norm1 || !norm2) return 0;
     
     if (norm1 === norm2) return 1.0;
     
@@ -444,7 +486,23 @@ export class ThreatDetectionEngine {
     // Update normal hours using separate keys
     const normalHoursKey = `${profileKey}:normal_hours`;
     const hoursData = await this.redis.get(normalHoursKey);
-    const normalHours = hoursData ? JSON.parse(hoursData) : [];
+    let normalHours: number[] = [];
+    
+    if (hoursData) {
+      try {
+        const parsedHours = JSON.parse(hoursData);
+        normalHours = Array.isArray(parsedHours) ? parsedHours : [];
+      } catch (error) {
+        console.error('Error parsing stored normal hours data:', error);
+        normalHours = [];
+      }
+    }
+    
+    // Ensure normalHours is an array before using array methods
+    if (!Array.isArray(normalHours)) {
+      normalHours = [];
+    }
+    
     if (!normalHours.includes(currentHour)) {
       normalHours.push(currentHour);
       if (normalHours.length > 24) normalHours.shift(); // Keep last 24 entries
@@ -454,7 +512,27 @@ export class ThreatDetectionEngine {
     if (event.context.userAgent) {
       const knownAgentsKey = `${profileKey}:known_user_agents`;
       const agentsData = await this.redis.get(knownAgentsKey);
-      const knownAgents = agentsData ? JSON.parse(agentsData) : [];
+      let knownAgents: string[] = [];
+      
+      if (agentsData) {
+        try {
+          // Ensure agentsData is a string
+          const agentsDataStr = typeof agentsData === 'string' ? agentsData : String(agentsData);
+          
+          if (agentsDataStr.trim().startsWith('[')) {
+            knownAgents = JSON.parse(agentsDataStr);
+          } else {
+            // If it's not a JSON array, treat it as a single user agent string
+            knownAgents = [agentsDataStr];
+          }
+        } catch (error) {
+          console.error('Error parsing stored user agents data:', error);
+          // If parsing fails, treat the data as a single user agent string
+          const agentsDataStr = typeof agentsData === 'string' ? agentsData : String(agentsData);
+          knownAgents = [agentsDataStr];
+        }
+      }
+      
       if (!knownAgents.includes(event.context.userAgent)) {
         knownAgents.push(event.context.userAgent);
         if (knownAgents.length > 10) knownAgents.shift(); // Keep last 10

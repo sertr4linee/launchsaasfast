@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { handleError, successResponse } from '@/lib/error-handler';
 import { getCurrentUser } from '@/lib/auth-utils';
+import { sendVerificationCode } from '@/lib/email-service';
 
 // POST /api/devices/verify/send-code - Envoyer un code de vérification par email
 export async function POST(request: NextRequest) {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // Générer un code de vérification à 6 chiffres
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
     // Stocker le code dans la base de données
     const { error: insertError } = await supabaseServer
@@ -35,6 +36,7 @@ export async function POST(request: NextRequest) {
       .insert({
         device_session_id: deviceId,
         code: verificationCode,
+        confidence_score: Math.min(90, device.confidence_score + 20), // Augmenter le score après vérification
         expires_at: expiresAt.toISOString(),
         used: false,
       });
@@ -44,14 +46,29 @@ export async function POST(request: NextRequest) {
       return handleError(new Error('Erreur lors de la génération du code'));
     }
 
-    // TODO: Envoyer l'email avec le code de vérification
-    // Pour le moment, nous retournons le code dans la réponse (à supprimer en production)
-    console.log(`Code de vérification pour l'appareil ${deviceId}: ${verificationCode}`);
+    // Préparer les informations de l'appareil pour l'email
+    const deviceInfo = {
+      browser: device.metadata?.browser || 'Navigateur inconnu',
+      os: device.metadata?.os || 'Système inconnu',
+      location: device.location || undefined,
+    };
+
+    try {
+      // Envoyer l'email avec le code de vérification
+      await sendVerificationCode(user.email!, verificationCode, deviceInfo);
+    } catch (emailError) {
+      console.error('Erreur envoi email:', emailError);
+      // En développement, on continue avec le code debug
+      // En production, retourner une erreur
+      if (process.env.NODE_ENV === 'production') {
+        return handleError(new Error('Impossible d\'envoyer l\'email de vérification'));
+      }
+    }
 
     return successResponse({ 
       message: 'Code de vérification envoyé par email',
-      // Retirer cette ligne en production :
-      debugCode: verificationCode 
+      // En mode debug uniquement - RETIRER EN PRODUCTION
+      debug: process.env.NODE_ENV === 'development' ? { code: verificationCode } : undefined
     });
   } catch (error) {
     return handleError(error);

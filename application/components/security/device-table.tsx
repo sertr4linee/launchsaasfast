@@ -2,6 +2,7 @@
 
 import { useDeviceManagement } from '@/hooks/useDeviceManagement';
 import { DeviceConfidenceBadge } from './device-confidence-badge';
+import { DeviceVerificationForm } from './device-verification-form';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Monitor, Smartphone, Tablet, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useState } from 'react';
 
 function getDeviceIcon(metadata?: Record<string, any>) {
   const deviceType = metadata?.browser?.toLowerCase() || '';
@@ -23,6 +25,7 @@ function getDeviceIcon(metadata?: Record<string, any>) {
 
 export function DeviceTable() {
   const { devices, loading, error, approveDevice, rejectDevice, revokeDevice } = useDeviceManagement();
+  const [verifyingDevice, setVerifyingDevice] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -111,6 +114,17 @@ export function DeviceTable() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
+                      {!device.isVerified && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setVerifyingDevice(device.id)}
+                          className="h-8 px-2 text-blue-600 border-blue-200 hover:bg-blue-50"
+                        >
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Vérifier
+                        </Button>
+                      )}
                       {device.confidenceScore < 70 && (
                         <Button
                           size="sm"
@@ -150,6 +164,29 @@ export function DeviceTable() {
           </div>
         )}
       </CardContent>
+      
+      {/* Modal de vérification */}
+      {verifyingDevice && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <DeviceVerificationForm
+              deviceId={verifyingDevice}
+              onVerificationComplete={() => {
+                setVerifyingDevice(null);
+                // Recharger les données
+                window.location.reload();
+              }}
+            />
+            <Button
+              variant="outline"
+              onClick={() => setVerifyingDevice(null)}
+              className="w-full mt-4"
+            >
+              Annuler
+            </Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
