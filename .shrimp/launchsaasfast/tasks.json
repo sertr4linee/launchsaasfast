@@ -1,0 +1,285 @@
+{
+  "tasks": [
+    {
+      "id": "074a6783-bb25-46df-a48a-3e76d966305e",
+      "name": "Setup Infrastructure et Configuration",
+      "description": "Installation et configuration des dépendances nécessaires pour l'API d'authentification. Installation de Zod pour la validation, configuration des types TypeScript depuis Supabase, et mise en place de la structure de dossiers /lib selon les standards du projet.",
+      "notes": "Cette tâche pose les fondations techniques. Aucune logique métier n'est implémentée ici, seulement la structure et les outils.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-07-13T23:30:23.555Z",
+      "updatedAt": "2025-07-13T23:38:49.372Z",
+      "relatedFiles": [
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "Ajout de la dépendance Zod"
+        },
+        {
+          "path": "lib/auth/types.ts",
+          "type": "CREATE",
+          "description": "Types TypeScript pour l'authentification"
+        },
+        {
+          "path": "lib/auth/schemas.ts",
+          "type": "CREATE",
+          "description": "Schémas de validation Zod"
+        },
+        {
+          "path": "lib/errors/handler.ts",
+          "type": "CREATE",
+          "description": "Gestionnaire d'erreurs centralisé"
+        },
+        {
+          "path": "tsconfig.json",
+          "type": "REFERENCE",
+          "description": "Configuration TypeScript existante"
+        }
+      ],
+      "implementationGuide": "1. Installer Zod: `npm install zod`\\n2. Créer la structure /lib/auth/, /lib/errors/, /lib/utils/\\n3. Générer les types TypeScript depuis Supabase schema avec `supabase gen types typescript`\\n4. Configurer les imports avec chemins absolus (@/)\\n5. Créer les fichiers de base: types.ts, schemas.ts (vides pour l'instant)\\n\\nRespect des standards shrimp-rules.md:\\n- TypeScript strict mode (déjà configuré)\\n- Zero 'any' types\\n- Structure modulaire /lib/ pour utilities",
+      "verificationCriteria": "Zod installé, structure /lib/ créée, types Supabase générés, compilation TypeScript sans erreur, imports absolus fonctionnels",
+      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape.",
+      "summary": "Tâche 'Setup Infrastructure et Configuration' complétée avec succès. Infrastructure complète mise en place : Zod installé (v4.0.5), structure modulaire /lib/ créée selon standards shrimp-rules.md, types TypeScript générés depuis Supabase et nettoyés, fichiers de base créés (types.ts, schemas.ts, handler.ts) avec validation stricte sans 'any' types, compilation TypeScript sans erreur, imports absolus fonctionnels. Foundation technique solide prête pour les tâches suivantes.",
+      "completedAt": "2025-07-13T23:38:49.365Z"
+    },
+    {
+      "id": "be4ae93b-4038-4681-a42c-5d0b6b6ce0d2",
+      "name": "Refactoring Auth Client et Schémas Zod",
+      "description": "Réorganisation du code d'authentification existant et création des schémas de validation Zod. Migration de supabaseAuth.ts vers la nouvelle structure /lib/auth/ et création des schémas de validation pour tous les endpoints API.",
+      "notes": "Maintient la compatibilité avec les pages frontend existantes. Aucun changement de comportement pour l'utilisateur final.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "074a6783-bb25-46df-a48a-3e76d966305e"
+        }
+      ],
+      "createdAt": "2025-07-13T23:30:23.555Z",
+      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "relatedFiles": [
+        {
+          "path": "supabaseAuth.ts",
+          "type": "TO_MODIFY",
+          "description": "Migration vers nouvelle structure"
+        },
+        {
+          "path": "lib/auth/client.ts",
+          "type": "CREATE",
+          "description": "Fonctions auth côté client refactorisées"
+        },
+        {
+          "path": "lib/auth/schemas.ts",
+          "type": "TO_MODIFY",
+          "description": "Ajout des schémas de validation"
+        },
+        {
+          "path": "lib/auth/types.ts",
+          "type": "TO_MODIFY",
+          "description": "Interfaces TypeScript complètes"
+        },
+        {
+          "path": "app/auth/login/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Mise à jour des imports"
+        },
+        {
+          "path": "app/auth/register/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Mise à jour des imports"
+        },
+        {
+          "path": "app/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Mise à jour des imports"
+        },
+        {
+          "path": "app/components/Navigation.tsx",
+          "type": "TO_MODIFY",
+          "description": "Mise à jour des imports"
+        }
+      ],
+      "implementationGuide": "1. Déplacer supabaseAuth.ts vers /lib/auth/client.ts\\n2. Créer /lib/auth/schemas.ts avec schémas Zod:\\n   - signinSchema: email (string.email), password (string.min(1))\\n   - signupSchema: email, password (regex validation), name\\n   - profileUpdateSchema: name, avatar_url (optional)\\n3. Créer /lib/auth/types.ts avec interfaces TypeScript:\\n   - AuthResponse, UserProfile, DeviceSession\\n4. Mettre à jour imports dans les 4 pages frontend existantes\\n5. Tester que les pages frontend fonctionnent toujours\\n\\nValidation stricte selon shrimp-rules.md:\\n- Pas de 'any' types\\n- Validation côté serveur obligatoire\\n- Messages d'erreur génériques pour sécurité",
+      "verificationCriteria": "Pages frontend fonctionnent identiquement, imports mis à jour, schémas Zod validés, types TypeScript corrects, aucune régression",
+      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+    },
+    {
+      "id": "b612c6ab-0df9-4365-b393-6e3b16acc7d2",
+      "name": "Middleware Authentification avec @supabase/ssr",
+      "description": "Implémentation du middleware d'authentification optimisé utilisant @supabase/ssr pour la gestion automatique des cookies et sessions. Remplacement du middleware actuel simplifié par une version production-ready selon les meilleures pratiques 2024.",
+      "notes": "Utilise le package @supabase/ssr déjà installé. Le middleware gère automatiquement les cookies et refresh tokens.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "be4ae93b-4038-4681-a42c-5d0b6b6ce0d2"
+        }
+      ],
+      "createdAt": "2025-07-13T23:30:23.555Z",
+      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "relatedFiles": [
+        {
+          "path": "middleware.ts",
+          "type": "TO_MODIFY",
+          "description": "Remplacement par middleware @supabase/ssr"
+        },
+        {
+          "path": "lib/auth/server.ts",
+          "type": "CREATE",
+          "description": "Utilitaires authentification server-side"
+        },
+        {
+          "path": ".env.local",
+          "type": "REFERENCE",
+          "description": "Variables d'environnement Supabase"
+        }
+      ],
+      "implementationGuide": "1. Créer /lib/auth/server.ts avec utilitaires server-side:\\n   - createServerClient() configuré\\n   - getUser() wrapper\\n   - refreshSession() helper\\n2. Remplacer middleware.ts actuel par version @supabase/ssr:\\n   - Routes publiques exemptées (/api/auth/signin, /signup, /signout)\\n   - Refresh automatique des sessions\\n   - Headers X-User-Id injectés pour routes protégées\\n3. Configuration matcher pour /api/:path* et /profile/:path*\\n4. Gestion d'erreurs avec redirections appropriées\\n\\nConformité shrimp-rules.md:\\n- Pas de bypass d'authentification\\n- Logging des événements sécurité\\n- Performance optimisée (pas de DB calls systématiques)",
+      "verificationCriteria": "Middleware fonctionne avec @supabase/ssr, sessions refreshées automatiquement, routes protégées, performance < 50ms, pas de régression",
+      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+    },
+    {
+      "id": "54e757ad-2130-444c-a420-b68300f902e2",
+      "name": "Route API POST /api/auth/signin",
+      "description": "Implémentation de la route d'authentification signin avec validation Zod, gestion d'erreurs centralisée, et intégration basique avec le système de device tracking existant via MCP Supabase.",
+      "notes": "Premier endpoint API. Intégration basique avec device tracking sans la complexité complète du confidence scoring.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "b612c6ab-0df9-4365-b393-6e3b16acc7d2"
+        }
+      ],
+      "createdAt": "2025-07-13T23:30:23.555Z",
+      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/auth/signin/route.ts",
+          "type": "CREATE",
+          "description": "Route handler signin"
+        },
+        {
+          "path": "lib/errors/handler.ts",
+          "type": "TO_MODIFY",
+          "description": "Ajout gestion erreurs auth"
+        },
+        {
+          "path": "lib/utils/device.ts",
+          "type": "CREATE",
+          "description": "Détection device basique"
+        },
+        {
+          "path": "lib/auth/schemas.ts",
+          "type": "REFERENCE",
+          "description": "Schema validation signin"
+        }
+      ],
+      "implementationGuide": "1. Créer /app/api/auth/signin/route.ts:\\n   - Validation body avec signinSchema\\n   - Authentification via supabase.auth.signInWithPassword()\\n   - Extraction device info basique (User-Agent, IP)\\n   - Utilisation MCP Supabase pour queries device_sessions\\n2. Gestion d'erreurs avec /lib/errors/handler.ts\\n3. Response format standardisé:\\n   { success: true, data: { user, session, deviceSession } }\\n4. Logging événements sécurité (success/failure)\\n5. Intégration basique device tracking (pas full confidence scoring)\\n\\nSécurité shrimp-rules.md:\\n- Messages d'erreur génériques\\n- Logging détaillé server-side\\n- Rate limiting préparé (headers)",
+      "verificationCriteria": "Route signin fonctionnelle, validation Zod active, device tracking basique, erreurs gérées, MCP Supabase intégré, tests manuels passent",
+      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+    },
+    {
+      "id": "397d93cf-2bec-48f2-9f58-9a118f9a380b",
+      "name": "Routes API signup et signout",
+      "description": "Implémentation des routes d'authentification signup et signout avec validation Zod et intégration complète avec le schéma de base de données existant via MCP Supabase.",
+      "notes": "Utilise les triggers DB existants pour la création automatique des profils utilisateur. Intégration native avec le schéma avancé.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "54e757ad-2130-444c-a420-b68300f902e2"
+        }
+      ],
+      "createdAt": "2025-07-13T23:30:23.555Z",
+      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/auth/signup/route.ts",
+          "type": "CREATE",
+          "description": "Route handler signup"
+        },
+        {
+          "path": "app/api/auth/signout/route.ts",
+          "type": "CREATE",
+          "description": "Route handler signout"
+        },
+        {
+          "path": "lib/auth/schemas.ts",
+          "type": "REFERENCE",
+          "description": "Schema validation signup"
+        },
+        {
+          "path": "lib/errors/handler.ts",
+          "type": "REFERENCE",
+          "description": "Gestion erreurs"
+        }
+      ],
+      "implementationGuide": "1. Créer /app/api/auth/signup/route.ts:\\n   - Validation avec signupSchema (email, password, name)\\n   - supabase.auth.signUp() via MCP Supabase\\n   - Création user_profile automatique via trigger DB\\n   - Device session initiale\\n2. Créer /app/api/auth/signout/route.ts:\\n   - supabase.auth.signOut()\\n   - Cleanup device_sessions via MCP Supabase\\n   - Clear cookies\\n3. Format responses standardisé\\n4. Gestion d'erreurs cohérente\\n5. Tests de base pour validation\\n\\nIntégration DB shrimp-rules.md:\\n- RLS policies respectées\\n- Triggers updated_at fonctionnels\\n- Device sessions gérées",
+      "verificationCriteria": "Routes signup/signout fonctionnelles, user_profiles créés automatiquement, device_sessions gérées, validation Zod, tests basiques passent",
+      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+    },
+    {
+      "id": "f5f4d032-eac2-4a9b-a258-945063888d8b",
+      "name": "Route API GET/PUT /api/user/profile",
+      "description": "Implémentation des routes de gestion du profil utilisateur avec authentification AAL1, validation Zod pour les updates, et intégration complète avec la table user_profiles via MCP Supabase.",
+      "notes": "Prépare l'infrastructure AAL mais n'implémente que AAL1 pour cette phase. AAL2 sera ajouté en Phase 2.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "397d93cf-2bec-48f2-9f58-9a118f9a380b"
+        }
+      ],
+      "createdAt": "2025-07-13T23:30:23.555Z",
+      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/user/profile/route.ts",
+          "type": "CREATE",
+          "description": "Routes GET/PUT profil utilisateur"
+        },
+        {
+          "path": "lib/auth/schemas.ts",
+          "type": "TO_MODIFY",
+          "description": "Ajout profileUpdateSchema"
+        },
+        {
+          "path": "middleware.ts",
+          "type": "REFERENCE",
+          "description": "Headers user-id injection"
+        }
+      ],
+      "implementationGuide": "1. Créer /app/api/user/profile/route.ts:\\n   - GET: Récupération profil via user-id header\\n   - PUT: Update avec profileUpdateSchema validation\\n   - Vérification authentification via middleware\\n2. Integration MCP Supabase:\\n   - Query user_profiles table\\n   - Update avec RLS policies\\n3. Gestion AAL levels basique:\\n   - AAL1 pour lecture profil\\n   - AAL1 pour updates non-sensibles (préparation AAL2)\\n4. Response format cohérent\\n5. Logging modifications profil\\n\\nSécurité shrimp-rules.md:\\n- RLS policies respectées\\n- Pas d'exposition data sensible\\n- Validation server-side obligatoire",
+      "verificationCriteria": "Routes profile GET/PUT fonctionnelles, RLS respecté, validation Zod updates, authentification requise, logging events",
+      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+    },
+    {
+      "id": "8e8b1e33-b28c-404b-916b-f795ce5563a0",
+      "name": "Tests et Validation Complète",
+      "description": "Création de tests basiques pour valider le fonctionnement de tous les endpoints API, vérification de l'intégration avec le schéma de base de données, et validation des performances selon les critères shrimp-rules.md.",
+      "notes": "Phase finale de validation. Assure que l'API MVP est prête pour utilisation et phases futures.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "f5f4d032-eac2-4a9b-a258-945063888d8b"
+        }
+      ],
+      "createdAt": "2025-07-13T23:30:23.555Z",
+      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "relatedFiles": [
+        {
+          "path": "tests/api/auth.test.ts",
+          "type": "CREATE",
+          "description": "Tests endpoints authentification"
+        },
+        {
+          "path": "tests/api/profile.test.ts",
+          "type": "CREATE",
+          "description": "Tests endpoints profil"
+        },
+        {
+          "path": "docs/api.md",
+          "type": "TO_MODIFY",
+          "description": "Documentation endpoints implémentés"
+        }
+      ],
+      "implementationGuide": "1. Créer tests manuels ou automatisés:\\n   - Test signin avec credentials valides/invalides\\n   - Test signup avec données correctes\\n   - Test signout et cleanup sessions\\n   - Test profile GET/PUT avec auth\\n2. Vérification MCP Supabase integration:\\n   - Device sessions créées correctement\\n   - User profiles synchronisés\\n   - RLS policies fonctionnelles\\n3. Tests performance:\\n   - Response time < 200ms par endpoint\\n   - Pas de memory leaks\\n4. Validation sécurité:\\n   - Headers sécurité présents\\n   - Pas d'exposition data sensible\\n   - Logging fonctionnel\\n\\nCritères shrimp-rules.md:\\n- Tous endpoints < 200ms\\n- RLS 100% actif\\n- Device tracking opérationnel",
+      "verificationCriteria": "Tous tests passent, performance < 200ms, sécurité validée, documentation à jour, MCP Supabase fonctionnel, prêt pour Phase 2",
+      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+    }
+  ]
+}
