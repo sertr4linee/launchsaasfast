@@ -12,6 +12,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useState } from 'react';
 
+import { ConfidenceLevel } from '@/types/device';
+
 function getDeviceIcon(metadata?: Record<string, any>) {
   const deviceType = metadata?.browser?.toLowerCase() || '';
   if (deviceType.includes('mobile') || deviceType.includes('android') || deviceType.includes('iphone')) {
@@ -23,9 +25,19 @@ function getDeviceIcon(metadata?: Record<string, any>) {
   return Monitor;
 }
 
-export function DeviceTable() {
-  const { devices, loading, error, approveDevice, rejectDevice, revokeDevice } = useDeviceManagement();
+interface DeviceTableProps {
+  filterLevel?: ConfidenceLevel;
+  showHeader?: boolean;
+}
+
+export function DeviceTable({ filterLevel, showHeader = true }: DeviceTableProps) {
+  const { devices, loading, error, approveDevice, rejectDevice, revokeDevice, getConfidenceLevel } = useDeviceManagement();
   const [verifyingDevice, setVerifyingDevice] = useState<string | null>(null);
+
+  // Filter devices based on confidence level if specified
+  const filteredDevices = filterLevel 
+    ? devices.filter(device => getConfidenceLevel(device.confidenceScore) === filterLevel)
+    : devices;
 
   if (loading) {
     return (
@@ -51,12 +63,14 @@ export function DeviceTable() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Monitor className="h-5 w-5" />
-          Appareils Connectés ({devices.length})
-        </CardTitle>
-      </CardHeader>
+      {showHeader && (
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Monitor className="h-5 w-5" />
+            Appareils Connectés ({filteredDevices.length})
+          </CardTitle>
+        </CardHeader>
+      )}
       <CardContent>
         <Table>
           <TableHeader>
@@ -69,7 +83,7 @@ export function DeviceTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {devices.map((device) => {
+            {filteredDevices.map((device) => {
               const DeviceIcon = getDeviceIcon(device.metadata);
               const deviceName = device.metadata?.deviceName || device.metadata?.browser || 'Appareil inconnu';
               const browser = device.metadata?.browser || 'Navigateur inconnu';
@@ -158,9 +172,12 @@ export function DeviceTable() {
             })}
           </TableBody>
         </Table>
-        {devices.length === 0 && (
+        {filteredDevices.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
-            Aucun appareil connecté
+            {filterLevel 
+              ? `Aucun appareil avec niveau de confiance "${filterLevel}"`
+              : "Aucun appareil connecté"
+            }
           </div>
         )}
       </CardContent>
