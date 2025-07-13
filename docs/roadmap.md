@@ -36,11 +36,11 @@ Créer un starter SaaS complet, sécurisé et scalable basé sur l'approche Maze
 
 ### 1.2 Structure de la base de données
 **Tâches LLM :**
-- [x] **T1.2.1** : Créer les migrations Supabase de base
-  - Migration 001 : Table `users` avec profils étendus
-  - Migration 002 : Table `devices` pour tracking des appareils
-  - Migration 003 : Table `device_sessions` avec scoring de confiance
-  - Migration 004 : Tables `verification_codes` et `backup_codes`
+- [x] **T1.2.1** : Créer les schema Supabase de base
+  - Table `users` avec profils étendus
+  - Table `devices` pour tracking des appareils
+  - Table `device_sessions` avec scoring de confiance
+  - Tables `verification_codes` et `backup_codes`
 
 - [x] **T1.2.2** : Implémenter Row Level Security (RLS)
   - Activer RLS sur toutes les tables
