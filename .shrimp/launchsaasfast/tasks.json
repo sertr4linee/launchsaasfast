@@ -1,285 +1,290 @@
 {
   "tasks": [
     {
-      "id": "074a6783-bb25-46df-a48a-3e76d966305e",
-      "name": "Setup Infrastructure et Configuration",
-      "description": "Installation et configuration des dépendances nécessaires pour l'API d'authentification. Installation de Zod pour la validation, configuration des types TypeScript depuis Supabase, et mise en place de la structure de dossiers /lib selon les standards du projet.",
-      "notes": "Cette tâche pose les fondations techniques. Aucune logique métier n'est implémentée ici, seulement la structure et les outils.",
+      "id": "2a67dbbb-471b-474b-b35c-2d188f40fadc",
+      "name": "Infrastructure API Routes et Middleware Base",
+      "description": "Création de la structure complète /app/api/ avec middleware d'authentification, validation et gestion d'erreurs centralisée. Établissement des fondations pour toutes les routes API avec standards REST uniformes.",
+      "notes": "Base critique pour toute l'API. Assurer la sécurité dès le départ avec validation stricte.",
       "status": "completed",
       "dependencies": [],
-      "createdAt": "2025-07-13T23:30:23.555Z",
-      "updatedAt": "2025-07-13T23:38:49.372Z",
-      "relatedFiles": [
-        {
-          "path": "package.json",
-          "type": "TO_MODIFY",
-          "description": "Ajout de la dépendance Zod"
-        },
-        {
-          "path": "lib/auth/types.ts",
-          "type": "CREATE",
-          "description": "Types TypeScript pour l'authentification"
-        },
-        {
-          "path": "lib/auth/schemas.ts",
-          "type": "CREATE",
-          "description": "Schémas de validation Zod"
-        },
-        {
-          "path": "lib/errors/handler.ts",
-          "type": "CREATE",
-          "description": "Gestionnaire d'erreurs centralisé"
-        },
-        {
-          "path": "tsconfig.json",
-          "type": "REFERENCE",
-          "description": "Configuration TypeScript existante"
-        }
-      ],
-      "implementationGuide": "1. Installer Zod: `npm install zod`\\n2. Créer la structure /lib/auth/, /lib/errors/, /lib/utils/\\n3. Générer les types TypeScript depuis Supabase schema avec `supabase gen types typescript`\\n4. Configurer les imports avec chemins absolus (@/)\\n5. Créer les fichiers de base: types.ts, schemas.ts (vides pour l'instant)\\n\\nRespect des standards shrimp-rules.md:\\n- TypeScript strict mode (déjà configuré)\\n- Zero 'any' types\\n- Structure modulaire /lib/ pour utilities",
-      "verificationCriteria": "Zod installé, structure /lib/ créée, types Supabase générés, compilation TypeScript sans erreur, imports absolus fonctionnels",
-      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape.",
-      "summary": "Tâche 'Setup Infrastructure et Configuration' complétée avec succès. Infrastructure complète mise en place : Zod installé (v4.0.5), structure modulaire /lib/ créée selon standards shrimp-rules.md, types TypeScript générés depuis Supabase et nettoyés, fichiers de base créés (types.ts, schemas.ts, handler.ts) avec validation stricte sans 'any' types, compilation TypeScript sans erreur, imports absolus fonctionnels. Foundation technique solide prête pour les tâches suivantes.",
-      "completedAt": "2025-07-13T23:38:49.365Z"
-    },
-    {
-      "id": "be4ae93b-4038-4681-a42c-5d0b6b6ce0d2",
-      "name": "Refactoring Auth Client et Schémas Zod",
-      "description": "Réorganisation du code d'authentification existant et création des schémas de validation Zod. Migration de supabaseAuth.ts vers la nouvelle structure /lib/auth/ et création des schémas de validation pour tous les endpoints API.",
-      "notes": "Maintient la compatibilité avec les pages frontend existantes. Aucun changement de comportement pour l'utilisateur final.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "074a6783-bb25-46df-a48a-3e76d966305e"
-        }
-      ],
-      "createdAt": "2025-07-13T23:30:23.555Z",
-      "updatedAt": "2025-07-13T23:30:23.555Z",
-      "relatedFiles": [
-        {
-          "path": "supabaseAuth.ts",
-          "type": "TO_MODIFY",
-          "description": "Migration vers nouvelle structure"
-        },
-        {
-          "path": "lib/auth/client.ts",
-          "type": "CREATE",
-          "description": "Fonctions auth côté client refactorisées"
-        },
-        {
-          "path": "lib/auth/schemas.ts",
-          "type": "TO_MODIFY",
-          "description": "Ajout des schémas de validation"
-        },
-        {
-          "path": "lib/auth/types.ts",
-          "type": "TO_MODIFY",
-          "description": "Interfaces TypeScript complètes"
-        },
-        {
-          "path": "app/auth/login/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "Mise à jour des imports"
-        },
-        {
-          "path": "app/auth/register/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "Mise à jour des imports"
-        },
-        {
-          "path": "app/profile/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "Mise à jour des imports"
-        },
-        {
-          "path": "app/components/Navigation.tsx",
-          "type": "TO_MODIFY",
-          "description": "Mise à jour des imports"
-        }
-      ],
-      "implementationGuide": "1. Déplacer supabaseAuth.ts vers /lib/auth/client.ts\\n2. Créer /lib/auth/schemas.ts avec schémas Zod:\\n   - signinSchema: email (string.email), password (string.min(1))\\n   - signupSchema: email, password (regex validation), name\\n   - profileUpdateSchema: name, avatar_url (optional)\\n3. Créer /lib/auth/types.ts avec interfaces TypeScript:\\n   - AuthResponse, UserProfile, DeviceSession\\n4. Mettre à jour imports dans les 4 pages frontend existantes\\n5. Tester que les pages frontend fonctionnent toujours\\n\\nValidation stricte selon shrimp-rules.md:\\n- Pas de 'any' types\\n- Validation côté serveur obligatoire\\n- Messages d'erreur génériques pour sécurité",
-      "verificationCriteria": "Pages frontend fonctionnent identiquement, imports mis à jour, schémas Zod validés, types TypeScript corrects, aucune régression",
-      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
-    },
-    {
-      "id": "b612c6ab-0df9-4365-b393-6e3b16acc7d2",
-      "name": "Middleware Authentification avec @supabase/ssr",
-      "description": "Implémentation du middleware d'authentification optimisé utilisant @supabase/ssr pour la gestion automatique des cookies et sessions. Remplacement du middleware actuel simplifié par une version production-ready selon les meilleures pratiques 2024.",
-      "notes": "Utilise le package @supabase/ssr déjà installé. Le middleware gère automatiquement les cookies et refresh tokens.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "be4ae93b-4038-4681-a42c-5d0b6b6ce0d2"
-        }
-      ],
-      "createdAt": "2025-07-13T23:30:23.555Z",
-      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "createdAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T00:45:50.026Z",
       "relatedFiles": [
         {
           "path": "middleware.ts",
-          "type": "TO_MODIFY",
-          "description": "Remplacement par middleware @supabase/ssr"
-        },
-        {
-          "path": "lib/auth/server.ts",
           "type": "CREATE",
-          "description": "Utilitaires authentification server-side"
+          "description": "Middleware Next.js principal"
         },
         {
-          "path": ".env.local",
-          "type": "REFERENCE",
-          "description": "Variables d'environnement Supabase"
+          "path": "lib/api/middleware.ts",
+          "type": "CREATE",
+          "description": "Utilitaires middleware"
+        },
+        {
+          "path": "lib/api/responses.ts",
+          "type": "CREATE",
+          "description": "Formats de réponse standardisés"
+        },
+        {
+          "path": "lib/api/types.ts",
+          "type": "CREATE",
+          "description": "Types API"
         }
       ],
-      "implementationGuide": "1. Créer /lib/auth/server.ts avec utilitaires server-side:\\n   - createServerClient() configuré\\n   - getUser() wrapper\\n   - refreshSession() helper\\n2. Remplacer middleware.ts actuel par version @supabase/ssr:\\n   - Routes publiques exemptées (/api/auth/signin, /signup, /signout)\\n   - Refresh automatique des sessions\\n   - Headers X-User-Id injectés pour routes protégées\\n3. Configuration matcher pour /api/:path* et /profile/:path*\\n4. Gestion d'erreurs avec redirections appropriées\\n\\nConformité shrimp-rules.md:\\n- Pas de bypass d'authentification\\n- Logging des événements sécurité\\n- Performance optimisée (pas de DB calls systématiques)",
-      "verificationCriteria": "Middleware fonctionne avec @supabase/ssr, sessions refreshées automatiquement, routes protégées, performance < 50ms, pas de régression",
-      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+      "implementationGuide": "1. Créer la structure /app/api/ avec dossiers auth/ et user/\\n2. Implémenter middleware.ts à la racine avec @supabase/ssr\\n3. Créer lib/api/middleware.ts pour validation Zod et gestion d'erreurs\\n4. Implémenter lib/api/responses.ts pour formats de réponse uniformes\\n5. Créer lib/api/types.ts pour types API\\n6. Configuration CORS et headers de sécurité\\n\\nPseudocode middleware.ts:\\n```typescript\\nexport async function middleware(request: NextRequest) {\\n  // 1. Créer client Supabase avec cookies\\n  const { supabase, response } = createServerClient(request)\\n  \\n  // 2. Vérifier authentification pour routes protégées\\n  if (request.nextUrl.pathname.startsWith('/api/user')) {\\n    const { data: { user } } = await supabase.auth.getUser()\\n    if (!user) return new Response('Unauthorized', { status: 401 })\\n  }\\n  \\n  // 3. Rate limiting\\n  await applyRateLimit(request)\\n  \\n  return response\\n}\\n```",
+      "verificationCriteria": "Structure /app/api/ créée, middleware fonctionnel avec authentification Supabase, validation Zod opérationnelle, formats de réponse uniformes, compilation TypeScript sans erreurs",
+      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité.",
+      "summary": "Infrastructure API complète créée avec succès. Structure /app/api/ avec dossiers auth/, user/ et test/ établie. Middleware Next.js principal implémenté avec authentification Supabase SSR, gestion des cookies et headers de sécurité. Utilitaires API créés : middleware.ts (auth, validation Zod, rate limiting), responses.ts (formats standardisés), types.ts (interfaces complètes). Route de test fonctionnelle, compilation TypeScript sans erreurs, serveur de développement opérationnel sur port 3001. Base sécurisée prête pour implémentation des routes métier.",
+      "completedAt": "2025-07-14T00:45:50.001Z"
     },
     {
-      "id": "54e757ad-2130-444c-a420-b68300f902e2",
-      "name": "Route API POST /api/auth/signin",
-      "description": "Implémentation de la route d'authentification signin avec validation Zod, gestion d'erreurs centralisée, et intégration basique avec le système de device tracking existant via MCP Supabase.",
-      "notes": "Premier endpoint API. Intégration basique avec device tracking sans la complexité complète du confidence scoring.",
+      "id": "ef122780-4cf8-4528-94e5-a186cec5c080",
+      "name": "Routes API Authentication Core",
+      "description": "Implémentation des routes d'authentification essentielles : signin, signup, signout, refresh et me. Chaque route utilise le middleware et valide les données avec Zod avant traitement Supabase.",
+      "notes": "Utiliser les schémas Zod existants. Assurer cohérence avec les fonctions client actuelles.",
       "status": "pending",
       "dependencies": [
         {
-          "taskId": "b612c6ab-0df9-4365-b393-6e3b16acc7d2"
+          "taskId": "2a67dbbb-471b-474b-b35c-2d188f40fadc"
         }
       ],
-      "createdAt": "2025-07-13T23:30:23.555Z",
-      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "createdAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T00:39:11.724Z",
       "relatedFiles": [
         {
           "path": "app/api/auth/signin/route.ts",
           "type": "CREATE",
-          "description": "Route handler signin"
+          "description": "Route POST signin"
         },
-        {
-          "path": "lib/errors/handler.ts",
-          "type": "TO_MODIFY",
-          "description": "Ajout gestion erreurs auth"
-        },
-        {
-          "path": "lib/utils/device.ts",
-          "type": "CREATE",
-          "description": "Détection device basique"
-        },
-        {
-          "path": "lib/auth/schemas.ts",
-          "type": "REFERENCE",
-          "description": "Schema validation signin"
-        }
-      ],
-      "implementationGuide": "1. Créer /app/api/auth/signin/route.ts:\\n   - Validation body avec signinSchema\\n   - Authentification via supabase.auth.signInWithPassword()\\n   - Extraction device info basique (User-Agent, IP)\\n   - Utilisation MCP Supabase pour queries device_sessions\\n2. Gestion d'erreurs avec /lib/errors/handler.ts\\n3. Response format standardisé:\\n   { success: true, data: { user, session, deviceSession } }\\n4. Logging événements sécurité (success/failure)\\n5. Intégration basique device tracking (pas full confidence scoring)\\n\\nSécurité shrimp-rules.md:\\n- Messages d'erreur génériques\\n- Logging détaillé server-side\\n- Rate limiting préparé (headers)",
-      "verificationCriteria": "Route signin fonctionnelle, validation Zod active, device tracking basique, erreurs gérées, MCP Supabase intégré, tests manuels passent",
-      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
-    },
-    {
-      "id": "397d93cf-2bec-48f2-9f58-9a118f9a380b",
-      "name": "Routes API signup et signout",
-      "description": "Implémentation des routes d'authentification signup et signout avec validation Zod et intégration complète avec le schéma de base de données existant via MCP Supabase.",
-      "notes": "Utilise les triggers DB existants pour la création automatique des profils utilisateur. Intégration native avec le schéma avancé.",
-      "status": "pending",
-      "dependencies": [
-        {
-          "taskId": "54e757ad-2130-444c-a420-b68300f902e2"
-        }
-      ],
-      "createdAt": "2025-07-13T23:30:23.555Z",
-      "updatedAt": "2025-07-13T23:30:23.555Z",
-      "relatedFiles": [
         {
           "path": "app/api/auth/signup/route.ts",
           "type": "CREATE",
-          "description": "Route handler signup"
+          "description": "Route POST signup"
         },
         {
           "path": "app/api/auth/signout/route.ts",
           "type": "CREATE",
-          "description": "Route handler signout"
+          "description": "Route POST signout"
+        },
+        {
+          "path": "app/api/auth/refresh/route.ts",
+          "type": "CREATE",
+          "description": "Route POST refresh token"
+        },
+        {
+          "path": "app/api/auth/me/route.ts",
+          "type": "CREATE",
+          "description": "Route GET utilisateur actuel"
         },
         {
           "path": "lib/auth/schemas.ts",
           "type": "REFERENCE",
-          "description": "Schema validation signup"
-        },
-        {
-          "path": "lib/errors/handler.ts",
-          "type": "REFERENCE",
-          "description": "Gestion erreurs"
+          "description": "Schémas Zod existants"
         }
       ],
-      "implementationGuide": "1. Créer /app/api/auth/signup/route.ts:\\n   - Validation avec signupSchema (email, password, name)\\n   - supabase.auth.signUp() via MCP Supabase\\n   - Création user_profile automatique via trigger DB\\n   - Device session initiale\\n2. Créer /app/api/auth/signout/route.ts:\\n   - supabase.auth.signOut()\\n   - Cleanup device_sessions via MCP Supabase\\n   - Clear cookies\\n3. Format responses standardisé\\n4. Gestion d'erreurs cohérente\\n5. Tests de base pour validation\\n\\nIntégration DB shrimp-rules.md:\\n- RLS policies respectées\\n- Triggers updated_at fonctionnels\\n- Device sessions gérées",
-      "verificationCriteria": "Routes signup/signout fonctionnelles, user_profiles créés automatiquement, device_sessions gérées, validation Zod, tests basiques passent",
-      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+      "implementationGuide": "1. Créer /app/api/auth/signin/route.ts\\n2. Créer /app/api/auth/signup/route.ts\\n3. Créer /app/api/auth/signout/route.ts\\n4. Créer /app/api/auth/refresh/route.ts\\n5. Créer /app/api/auth/me/route.ts\\n6. Utiliser les schémas Zod existants de lib/auth/schemas.ts\\n\\nPseudocode signin/route.ts:\\n```typescript\\nexport async function POST(request: Request) {\\n  try {\\n    // 1. Parser et valider avec Zod\\n    const body = await request.json()\\n    const { email, password } = signinSchema.parse(body)\\n    \\n    // 2. Authentifier avec Supabase\\n    const { data, error } = await supabase.auth.signInWithPassword({\\n      email, password\\n    })\\n    \\n    // 3. Gérer réponse\\n    if (error) return errorResponse(error)\\n    return successResponse(data)\\n  } catch (error) {\\n    return handleAPIError(error)\\n  }\\n}\\n```",
+      "verificationCriteria": "5 routes auth fonctionnelles, validation Zod active, authentification Supabase intégrée, gestion d'erreurs cohérente, tests avec curl/Postman réussis",
+      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité."
     },
     {
-      "id": "f5f4d032-eac2-4a9b-a258-945063888d8b",
-      "name": "Route API GET/PUT /api/user/profile",
-      "description": "Implémentation des routes de gestion du profil utilisateur avec authentification AAL1, validation Zod pour les updates, et intégration complète avec la table user_profiles via MCP Supabase.",
-      "notes": "Prépare l'infrastructure AAL mais n'implémente que AAL1 pour cette phase. AAL2 sera ajouté en Phase 2.",
+      "id": "00d08196-4359-4366-a0e6-6a9f57cfe773",
+      "name": "Client HTTP API et Adaptateur",
+      "description": "Création d'un client HTTP unifié pour remplacer les appels Supabase directs. Implémentation d'un adaptateur maintenant la compatibilité avec les fonctions existantes pendant la migration.",
+      "notes": "Maintenir la signature des fonctions existantes pour compatibilité. Permettre migration progressive.",
       "status": "pending",
       "dependencies": [
         {
-          "taskId": "397d93cf-2bec-48f2-9f58-9a118f9a380b"
+          "taskId": "ef122780-4cf8-4528-94e5-a186cec5c080"
         }
       ],
-      "createdAt": "2025-07-13T23:30:23.555Z",
-      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "createdAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T00:39:11.724Z",
+      "relatedFiles": [
+        {
+          "path": "lib/api/client.ts",
+          "type": "CREATE",
+          "description": "Client HTTP principal"
+        },
+        {
+          "path": "lib/api/auth-client.ts",
+          "type": "CREATE",
+          "description": "Adaptateur auth API"
+        },
+        {
+          "path": "lib/api/errors.ts",
+          "type": "CREATE",
+          "description": "Classes d'erreurs API"
+        },
+        {
+          "path": "lib/auth/client.ts",
+          "type": "REFERENCE",
+          "description": "Client auth existant"
+        }
+      ],
+      "implementationGuide": "1. Créer lib/api/client.ts avec fonctions HTTP\\n2. Créer lib/api/auth-client.ts adaptateur\\n3. Implémenter intercepteurs pour tokens automatiques\\n4. Gestion d'erreurs et retry logic\\n5. Types de retour compatibles avec l'existant\\n\\nPseudocode lib/api/client.ts:\\n```typescript\\nclass APIClient {\\n  private baseURL = '/api'\\n  \\n  async post<T>(endpoint: string, data: any): Promise<T> {\\n    const response = await fetch(`${this.baseURL}${endpoint}`, {\\n      method: 'POST',\\n      headers: { 'Content-Type': 'application/json' },\\n      body: JSON.stringify(data)\\n    })\\n    \\n    if (!response.ok) throw new APIError(response)\\n    return response.json()\\n  }\\n}\\n\\n// Adaptateur compatible\\nexport const signIn = async (email: string, password: string) => {\\n  return apiClient.post('/auth/signin', { email, password })\\n}\\n```",
+      "verificationCriteria": "Client HTTP fonctionnel, adaptateur compatible avec fonctions existantes, gestion d'erreurs robuste, intercepteurs tokens opérationnels, types TypeScript corrects",
+      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité."
+    },
+    {
+      "id": "72a2c5e1-9858-4b90-8291-a90349baf3d5",
+      "name": "Routes API User Management",
+      "description": "Implémentation des routes de gestion utilisateur : récupération profil, mise à jour profil, paramètres utilisateur. Routes protégées par middleware d'authentification.",
+      "notes": "Utiliser le schéma updateProfile existant. Assurer sécurité avec vérification user_id.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "00d08196-4359-4366-a0e6-6a9f57cfe773"
+        }
+      ],
+      "createdAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T00:39:11.724Z",
       "relatedFiles": [
         {
           "path": "app/api/user/profile/route.ts",
           "type": "CREATE",
-          "description": "Routes GET/PUT profil utilisateur"
+          "description": "Routes GET/PUT profil"
+        },
+        {
+          "path": "app/api/user/settings/route.ts",
+          "type": "CREATE",
+          "description": "Routes GET/PUT paramètres"
         },
         {
           "path": "lib/auth/schemas.ts",
-          "type": "TO_MODIFY",
-          "description": "Ajout profileUpdateSchema"
+          "type": "REFERENCE",
+          "description": "Schéma updateProfile"
         },
         {
-          "path": "middleware.ts",
+          "path": "lib/supabase-types.ts",
           "type": "REFERENCE",
-          "description": "Headers user-id injection"
+          "description": "Types database"
         }
       ],
-      "implementationGuide": "1. Créer /app/api/user/profile/route.ts:\\n   - GET: Récupération profil via user-id header\\n   - PUT: Update avec profileUpdateSchema validation\\n   - Vérification authentification via middleware\\n2. Integration MCP Supabase:\\n   - Query user_profiles table\\n   - Update avec RLS policies\\n3. Gestion AAL levels basique:\\n   - AAL1 pour lecture profil\\n   - AAL1 pour updates non-sensibles (préparation AAL2)\\n4. Response format cohérent\\n5. Logging modifications profil\\n\\nSécurité shrimp-rules.md:\\n- RLS policies respectées\\n- Pas d'exposition data sensible\\n- Validation server-side obligatoire",
-      "verificationCriteria": "Routes profile GET/PUT fonctionnelles, RLS respecté, validation Zod updates, authentification requise, logging events",
-      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+      "implementationGuide": "1. Créer /app/api/user/profile/route.ts (GET/PUT)\\n2. Créer /app/api/user/settings/route.ts (GET/PUT)\\n3. Implémenter validation avec schémas Zod\\n4. Intégration avec tables Supabase user_profiles\\n5. Gestion des permissions et accès\\n\\nPseudocode profile/route.ts:\\n```typescript\\nexport async function GET(request: Request) {\\n  const { user } = await getAuthenticatedUser(request)\\n  \\n  const { data } = await supabase\\n    .from('user_profiles')\\n    .select('*')\\n    .eq('user_id', user.id)\\n    .single()\\n    \\n  return successResponse(data)\\n}\\n\\nexport async function PUT(request: Request) {\\n  const { user } = await getAuthenticatedUser(request)\\n  const body = await request.json()\\n  const profileData = updateProfileSchema.parse(body)\\n  \\n  const { data } = await supabase\\n    .from('user_profiles')\\n    .update(profileData)\\n    .eq('user_id', user.id)\\n    .select()\\n    .single()\\n    \\n  return successResponse(data)\\n}\\n```",
+      "verificationCriteria": "Routes user fonctionnelles, authentification requise, validation Zod active, CRUD profil opérationnel, sécurité user_id vérifiée",
+      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité."
     },
     {
-      "id": "8e8b1e33-b28c-404b-916b-f795ce5563a0",
-      "name": "Tests et Validation Complète",
-      "description": "Création de tests basiques pour valider le fonctionnement de tous les endpoints API, vérification de l'intégration avec le schéma de base de données, et validation des performances selon les critères shrimp-rules.md.",
-      "notes": "Phase finale de validation. Assure que l'API MVP est prête pour utilisation et phases futures.",
+      "id": "315590e8-a40c-4cf4-9411-3fc8adabc620",
+      "name": "Migration Frontend vers API",
+      "description": "Migration progressive des composants frontend pour utiliser les nouvelles routes API au lieu des appels Supabase directs. Remplacement dans les pages login, register, profile et navigation.",
+      "notes": "Migration progressive, maintenir fonctionnalités existantes. Tester chaque page après modification.",
       "status": "pending",
       "dependencies": [
         {
-          "taskId": "f5f4d032-eac2-4a9b-a258-945063888d8b"
+          "taskId": "72a2c5e1-9858-4b90-8291-a90349baf3d5"
         }
       ],
-      "createdAt": "2025-07-13T23:30:23.555Z",
-      "updatedAt": "2025-07-13T23:30:23.555Z",
+      "createdAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T00:39:11.724Z",
       "relatedFiles": [
         {
-          "path": "tests/api/auth.test.ts",
-          "type": "CREATE",
-          "description": "Tests endpoints authentification"
+          "path": "app/auth/login/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page login"
         },
         {
-          "path": "tests/api/profile.test.ts",
+          "path": "app/auth/register/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page register"
+        },
+        {
+          "path": "app/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Page profile"
+        },
+        {
+          "path": "app/components/Navigation.tsx",
+          "type": "TO_MODIFY",
+          "description": "Navigation component"
+        },
+        {
+          "path": "lib/api/auth-client.ts",
+          "type": "REFERENCE",
+          "description": "Nouveau client auth"
+        }
+      ],
+      "implementationGuide": "1. Mettre à jour app/auth/login/page.tsx\\n2. Mettre à jour app/auth/register/page.tsx\\n3. Mettre à jour app/profile/page.tsx\\n4. Mettre à jour app/components/Navigation.tsx\\n5. Remplacer imports lib/auth/client par lib/api/auth-client\\n6. Tester fonctionnalités end-to-end\\n\\nPseudocode migration login:\\n```typescript\\n// Avant\\nimport { signIn } from '@/lib/auth/client'\\n\\n// Après\\nimport { signIn } from '@/lib/api/auth-client'\\n\\n// La signature reste identique\\nconst handleSubmit = async (e) => {\\n  const { data, error } = await signIn(email, password)\\n  // Même logique de gestion\\n}\\n```",
+      "verificationCriteria": "Toutes les pages utilisent les nouvelles API, authentification fonctionnelle, navigation fluide, aucune régression UX, appels Supabase directs supprimés du frontend",
+      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité."
+    },
+    {
+      "id": "2a2713e1-9653-4122-9801-5cb93faa7708",
+      "name": "Health Check et Monitoring",
+      "description": "Implémentation de routes de monitoring : health check, status API, métriques de base. Ajout de logging et observabilité pour le système API.",
+      "notes": "Route publique sans authentification. Utile pour monitoring externe et debugging.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "315590e8-a40c-4cf4-9411-3fc8adabc620"
+        }
+      ],
+      "createdAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T00:39:11.724Z",
+      "relatedFiles": [
+        {
+          "path": "app/api/health/route.ts",
           "type": "CREATE",
-          "description": "Tests endpoints profil"
+          "description": "Health check endpoint"
+        },
+        {
+          "path": "app/api/status/route.ts",
+          "type": "CREATE",
+          "description": "Status et métriques"
+        },
+        {
+          "path": "lib/api/monitoring.ts",
+          "type": "CREATE",
+          "description": "Logging et monitoring"
+        }
+      ],
+      "implementationGuide": "1. Créer /app/api/health/route.ts\\n2. Implémenter vérifications Supabase connectivity\\n3. Créer /app/api/status/route.ts pour métriques\\n4. Ajouter lib/api/monitoring.ts pour logging\\n5. Implémenter rate limiting avec compteurs\\n\\nPseudocode health/route.ts:\\n```typescript\\nexport async function GET() {\\n  try {\\n    // Test connexion Supabase\\n    const { data, error } = await supabase.auth.getSession()\\n    \\n    const health = {\\n      status: 'healthy',\\n      timestamp: new Date().toISOString(),\\n      services: {\\n        supabase: error ? 'down' : 'up',\\n        api: 'up'\\n      },\\n      version: process.env.npm_package_version\\n    }\\n    \\n    return Response.json(health)\\n  } catch (error) {\\n    return Response.json({ status: 'unhealthy' }, { status: 503 })\\n  }\\n}\\n```",
+      "verificationCriteria": "Health check fonctionnel, monitoring Supabase opérationnel, métriques accessibles, logging configuré, endpoints publics sécurisés",
+      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité."
+    },
+    {
+      "id": "c7be65f1-4b06-4ac2-8660-39e4cd088d5e",
+      "name": "Tests et Documentation API",
+      "description": "Création de tests d'intégration pour toutes les routes API et documentation complète. Validation finale du système et nettoyage du code legacy.",
+      "notes": "Tests complets nécessaires avant déploiement. Documenter tous les endpoints avec exemples.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "2a2713e1-9653-4122-9801-5cb93faa7708"
+        }
+      ],
+      "createdAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T00:39:11.724Z",
+      "relatedFiles": [
+        {
+          "path": "__tests__/api/auth.test.ts",
+          "type": "CREATE",
+          "description": "Tests routes auth"
+        },
+        {
+          "path": "__tests__/api/user.test.ts",
+          "type": "CREATE",
+          "description": "Tests routes user"
         },
         {
           "path": "docs/api.md",
+          "type": "CREATE",
+          "description": "Documentation API"
+        },
+        {
+          "path": "supabaseAuth.ts",
           "type": "TO_MODIFY",
-          "description": "Documentation endpoints implémentés"
+          "description": "Fichier à supprimer"
+        },
+        {
+          "path": "supabaseClient.ts",
+          "type": "TO_MODIFY",
+          "description": "Adapter pour server-side seulement"
         }
       ],
-      "implementationGuide": "1. Créer tests manuels ou automatisés:\\n   - Test signin avec credentials valides/invalides\\n   - Test signup avec données correctes\\n   - Test signout et cleanup sessions\\n   - Test profile GET/PUT avec auth\\n2. Vérification MCP Supabase integration:\\n   - Device sessions créées correctement\\n   - User profiles synchronisés\\n   - RLS policies fonctionnelles\\n3. Tests performance:\\n   - Response time < 200ms par endpoint\\n   - Pas de memory leaks\\n4. Validation sécurité:\\n   - Headers sécurité présents\\n   - Pas d'exposition data sensible\\n   - Logging fonctionnel\\n\\nCritères shrimp-rules.md:\\n- Tous endpoints < 200ms\\n- RLS 100% actif\\n- Device tracking opérationnel",
-      "verificationCriteria": "Tous tests passent, performance < 200ms, sécurité validée, documentation à jour, MCP Supabase fonctionnel, prêt pour Phase 2",
-      "analysisResult": "Implémentation complète de l'API d'authentification MVP (Phase 1) pour LaunchSaasFast, optimisée pour Next.js 15 + Supabase + MCP tools. L'architecture se base sur les standards shrimp-rules.md, évite la duplication avec le code existant, et prépare les fondations pour les phases futures. Approche progressive avec tests et validation à chaque étape."
+      "implementationGuide": "1. Créer __tests__/api/ avec tests Jest\\n2. Tests d'intégration pour chaque route\\n3. Créer docs/api.md avec documentation complète\\n4. Tests end-to-end avec Playwright\\n5. Nettoyage fichiers legacy (supabaseAuth.ts, etc.)\\n6. Validation performance et sécurité\\n\\nPseudocode test auth:\\n```typescript\\ndescribe('/api/auth', () => {\\n  test('POST /signin valide credentials', async () => {\\n    const response = await request(app)\\n      .post('/api/auth/signin')\\n      .send({ email: 'test@example.com', password: 'password123' })\\n      \\n    expect(response.status).toBe(200)\\n    expect(response.body.data.user).toBeDefined()\\n  })\\n  \\n  test('POST /signin invalid credentials', async () => {\\n    const response = await request(app)\\n      .post('/api/auth/signin')\\n      .send({ email: 'wrong@example.com', password: 'wrong' })\\n      \\n    expect(response.status).toBe(401)\\n  })\\n})\\n```",
+      "verificationCriteria": "Tests passent à 100%, documentation complète, code legacy supprimé, performance validée, sécurité auditée, système prêt pour production",
+      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité."
     }
   ]
 }
