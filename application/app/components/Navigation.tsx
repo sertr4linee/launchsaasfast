@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '../../supabaseClient';
-import { signOut } from '@/lib/auth/client';
+import { signOut } from '@/lib/api/auth-client';
 import type { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 export default function Navigation() {

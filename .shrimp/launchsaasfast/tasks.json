@@ -134,14 +134,14 @@
       "name": "Routes API User Management",
       "description": "Implémentation des routes de gestion utilisateur : récupération profil, mise à jour profil, paramètres utilisateur. Routes protégées par middleware d'authentification.",
       "notes": "Utiliser le schéma updateProfile existant. Assurer sécurité avec vérification user_id.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "00d08196-4359-4366-a0e6-6a9f57cfe773"
         }
       ],
       "createdAt": "2025-07-14T00:39:11.724Z",
-      "updatedAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T01:07:31.290Z",
       "relatedFiles": [
         {
           "path": "app/api/user/profile/route.ts",
@@ -166,7 +166,9 @@
       ],
       "implementationGuide": "1. Créer /app/api/user/profile/route.ts (GET/PUT)\\n2. Créer /app/api/user/settings/route.ts (GET/PUT)\\n3. Implémenter validation avec schémas Zod\\n4. Intégration avec tables Supabase user_profiles\\n5. Gestion des permissions et accès\\n\\nPseudocode profile/route.ts:\\n```typescript\\nexport async function GET(request: Request) {\\n  const { user } = await getAuthenticatedUser(request)\\n  \\n  const { data } = await supabase\\n    .from('user_profiles')\\n    .select('*')\\n    .eq('user_id', user.id)\\n    .single()\\n    \\n  return successResponse(data)\\n}\\n\\nexport async function PUT(request: Request) {\\n  const { user } = await getAuthenticatedUser(request)\\n  const body = await request.json()\\n  const profileData = updateProfileSchema.parse(body)\\n  \\n  const { data } = await supabase\\n    .from('user_profiles')\\n    .update(profileData)\\n    .eq('user_id', user.id)\\n    .select()\\n    .single()\\n    \\n  return successResponse(data)\\n}\\n```",
       "verificationCriteria": "Routes user fonctionnelles, authentification requise, validation Zod active, CRUD profil opérationnel, sécurité user_id vérifiée",
-      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité."
+      "analysisResult": "Migration complète vers API REST Next.js avec architecture modulaire sécurisée, intégrant middleware d'authentification @supabase/ssr, validation Zod universelle, et transition progressive du client-side vers server-side pour améliorer sécurité, performance et maintenabilité.",
+      "summary": "Task 4 \"Routes API User Management\" complètement implémentée avec succès. Les routes API /api/user/profile et /api/user/settings ont été créées avec méthodes GET/PUT, validation Zod et protection par middleware d'authentification. L'adaptateur auth-client.ts a été enrichi avec les fonctions getProfile, updateProfile, getSettings et updateSettings maintenant une compatibilité parfaite. La migration complète des imports frontend de @/lib/auth/client vers @/lib/api/auth-client a été effectuée dans tous les fichiers (login, register, profile, navigation), éliminant toutes les erreurs TypeScript de compilation. L'architecture API REST est maintenant opérationnelle avec routes d'authentification et de gestion utilisateur entièrement fonctionnelles.",
+      "completedAt": "2025-07-14T01:07:31.287Z"
     },
     {
       "id": "315590e8-a40c-4cf4-9411-3fc8adabc620",

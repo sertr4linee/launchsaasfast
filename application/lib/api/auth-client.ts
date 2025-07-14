@@ -143,6 +143,58 @@ export const refreshSession = async (): Promise<AuthResponse> => {
   }
 };
 
+// Fonction getProfile pour récupérer le profil utilisateur
+export const getProfile = async (): Promise<any> => {
+  try {
+    const result = await apiClient.get<any>('/user/profile');
+    return result;
+  } catch (error: any) {
+    if (error instanceof APIError && error.status === 401) {
+      throw new Error('Authentication required');
+    }
+    throw error;
+  }
+};
+
+// Fonction updateProfile pour mettre à jour le profil utilisateur
+export const updateProfile = async (profileData: any): Promise<any> => {
+  try {
+    const result = await apiClient.put<any>('/user/profile', profileData);
+    return result;
+  } catch (error: any) {
+    if (error instanceof APIError && error.status === 401) {
+      throw new Error('Authentication required');
+    }
+    throw error;
+  }
+};
+
+// Fonction getSettings pour récupérer les paramètres utilisateur
+export const getSettings = async (): Promise<any> => {
+  try {
+    const result = await apiClient.get<any>('/user/settings');
+    return result;
+  } catch (error: any) {
+    if (error instanceof APIError && error.status === 401) {
+      throw new Error('Authentication required');
+    }
+    throw error;
+  }
+};
+
+// Fonction updateSettings pour mettre à jour les paramètres utilisateur
+export const updateSettings = async (settingsData: any): Promise<any> => {
+  try {
+    const result = await apiClient.put<any>('/user/settings', settingsData);
+    return result;
+  } catch (error: any) {
+    if (error instanceof APIError && error.status === 401) {
+      throw new Error('Authentication required');
+    }
+    throw error;
+  }
+};
+
 // Export par défaut pour compatibilité
 export default {
   signIn,
@@ -151,5 +203,9 @@ export default {
   getCurrentUser,
   getCurrentSession,
   isAuthenticated,
-  refreshSession
+  refreshSession,
+  getProfile,
+  updateProfile,
+  getSettings,
+  updateSettings
 };
