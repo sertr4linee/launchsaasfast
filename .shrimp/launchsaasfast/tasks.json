@@ -175,14 +175,14 @@
       "name": "Migration Frontend vers API",
       "description": "Migration progressive des composants frontend pour utiliser les nouvelles routes API au lieu des appels Supabase directs. Remplacement dans les pages login, register, profile et navigation.",
       "notes": "Migration progressive, maintenir fonctionnalités existantes. Tester chaque page après modification.",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         {
           "taskId": "72a2c5e1-9858-4b90-8291-a90349baf3d5"
         }
       ],
       "createdAt": "2025-07-14T00:39:11.724Z",
-      "updatedAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T01:08:08.165Z",
       "relatedFiles": [
         {
           "path": "app/auth/login/page.tsx",

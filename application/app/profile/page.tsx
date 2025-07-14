@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '../../supabaseClient';
-import { signOut } from '@/lib/api/auth-client';
-import type { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { updateProfile } from '@/lib/api/auth-client';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading, signOut, refreshUser } = useAuth();
   const [updating, setUpdating] = useState(false);
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
@@ -16,33 +14,16 @@ export default function ProfilePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        router.push('/auth/login');
-        return;
-      }
+    if (!loading && !user) {
+      router.push('/auth/login');
+      return;
+    }
 
-      setUser(user);
+    if (user) {
       setEmail(user.email || '');
       setFullName(user.user_metadata?.full_name || '');
-      setLoading(false);
-    };
-
-    getUser();
-
-    // Écouter les changements d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event: AuthChangeEvent, session: Session | null) => {
-        if (event === 'SIGNED_OUT' || !session) {
-          router.push('/auth/login');
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, [router]);
+    }
+  }, [user, loading, router]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,17 +31,17 @@ export default function ProfilePage() {
     setMessage('');
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        data: { full_name: fullName }
+      await updateProfile({
+        full_name: fullName
       });
-
-      if (error) {
-        setMessage(`Erreur: ${error.message}`);
-      } else {
-        setMessage('Profil mis à jour avec succès!');
-      }
-    } catch (err) {
-      setMessage('Une erreur inattendue s\'est produite');
+      
+      setMessage('Profil mis à jour avec succès!');
+      
+      // Rafraîchir les données utilisateur
+      await refreshUser();
+    } catch (error: any) {
+      console.error('Erreur lors de la mise à jour:', error);
+      setMessage(`Erreur: ${error.message || 'Une erreur inattendue s\'est produite'}`);
     } finally {
       setUpdating(false);
     }
