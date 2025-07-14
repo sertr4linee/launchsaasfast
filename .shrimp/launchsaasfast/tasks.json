@@ -42,14 +42,14 @@
       "name": "Routes API Authentication Core",
       "description": "Implémentation des routes d'authentification essentielles : signin, signup, signout, refresh et me. Chaque route utilise le middleware et valide les données avec Zod avant traitement Supabase.",
       "notes": "Utiliser les schémas Zod existants. Assurer cohérence avec les fonctions client actuelles.",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         {
           "taskId": "2a67dbbb-471b-474b-b35c-2d188f40fadc"
         }
       ],
       "createdAt": "2025-07-14T00:39:11.724Z",
-      "updatedAt": "2025-07-14T00:39:11.724Z",
+      "updatedAt": "2025-07-14T00:46:43.233Z",
       "relatedFiles": [
         {
           "path": "app/api/auth/signin/route.ts",
