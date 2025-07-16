@@ -337,6 +337,52 @@ Suspicious Activity Detected → Immediate Block
 
 ---
 
+## Task Completion and Roadmap Tracking Rules
+
+### Automatic Roadmap Updates
+- **MANDATORY**: When a task is marked as completed in the task management system, automatically check the corresponding item in `/docs/roadmap.md`
+- **REQUIRED**: Maintain synchronization between task system and roadmap documentation
+- **PATTERN**: Task IDs must match roadmap bullet points (e.g., INFRA-001-A → "Setup Next.js 15" bullet point)
+- **VERIFICATION**: Each completed task must include verification that the roadmap checkbox has been updated
+
+### Task Completion Workflow
+1. **Complete Task**: Execute and verify task according to implementation guide
+2. **Run Tests**: Ensure all verification criteria are met
+3. **Update Roadmap**: Check the corresponding checkbox in `/docs/roadmap.md`
+4. **Document Results**: Update task summary with completion details
+5. **Verify Dependencies**: Confirm dependent tasks can now proceed
+
+### Roadmap Checkbox Format
+**CORRECT Example:**
+```markdown
+**🔧 INFRA-001 : Setup projet Next.js 15**
+- [x] Initialiser projet Next.js 15 avec TypeScript
+- [x] Configuration ESLint + Prettier  
+- [ ] Setup Tailwind CSS + Shadcn/ui
+- [ ] Structure de dossiers selon architecture.md
+- [ ] **Test** : `npm run dev` démarre sans erreur
+```
+
+### Task-to-Roadmap Mapping Rules
+- **INFRA-001-A** → First bullet point under "🔧 INFRA-001"
+- **INFRA-001-B** → Second bullet point under "🔧 INFRA-001"
+- **DB-001-A** → First bullet point under "🗄️ DB-001"
+- **AUTH-002-C** → Third bullet point under "🔐 AUTH-002"
+
+### Verification Requirements
+- **MANDATORY**: Before marking a task as complete, verify the roadmap checkbox is checked
+- **REQUIRED**: Include screenshot or confirmation of roadmap update in task completion
+- **FORBIDDEN**: Mark tasks complete without updating corresponding roadmap items
+- **PATTERN**: Use exact roadmap bullet point text when referencing completed items
+
+### Progress Tracking Integration
+- **REQUIRED**: Maintain overall progress percentage based on checked roadmap items
+- **MANDATORY**: Update phase completion status as tasks are finished
+- **PATTERN**: Weekly progress reports should reference both task completion and roadmap advancement
+- **VERIFICATION**: Cross-reference task system completion with roadmap checkboxes for accuracy
+
+---
+
 ## Emergency Procedures
 
 ### Security Incident Response
@@ -353,4 +399,4 @@ Suspicious Activity Detected → Immediate Block
 
 ---
 
-**Remember: This is an enterprise-grade SaaS starter focused on security and compliance. Every modification must maintain the security posture and architectural integrity of the system.**
+**Remember: This is an enterprise-grade SaaS starter focused on security and compliance. Every modification must maintain the security posture and architectural integrity of the system. All completed tasks must be immediately reflected in the roadmap documentation to maintain project transparency and progress tracking.**
