@@ -20,6 +20,21 @@
                 "--access-token",
                 "sbp_9bbeefbe264dbe9e9364c3bfc74e4d58dae7ef3e"
             ]
+        },
+        "sequential-thinking": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ]
+        },
+        "context7": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp"
+            ]
         }
     }
 }
